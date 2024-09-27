@@ -89,5 +89,5 @@ public class Product {
     private Brand brand;
 
     @Column(name = "deleted")
-    private Boolean deleted = false;
+    private boolean deleted = false;
 }

@@ -52,5 +52,5 @@ public class Inventory {
     private Employee modifiedBy;
 
     @Column(name = "deleted")
-    private Boolean deleted = false;
+    private boolean deleted = false;
 }

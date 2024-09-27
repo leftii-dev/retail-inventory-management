@@ -59,5 +59,5 @@ public class Category {
     private Discount discount;
 
     @Column(name = "deleted")
-    private Boolean deleted = false;
+    private boolean deleted = false;
 }

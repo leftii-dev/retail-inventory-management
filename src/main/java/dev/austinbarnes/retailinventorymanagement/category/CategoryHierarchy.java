@@ -28,5 +28,5 @@ public class CategoryHierarchy {
     private Category parentCategory;
 
     @Column(name = "deleted")
-    private Boolean deleted = false;
+    private boolean deleted = false;
 }

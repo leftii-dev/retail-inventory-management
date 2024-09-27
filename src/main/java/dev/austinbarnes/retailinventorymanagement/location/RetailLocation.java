@@ -1,4 +1,4 @@
-package dev.austinbarnes.retailinventorymanagement.warehouse;
+package dev.austinbarnes.retailinventorymanagement.location;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -10,20 +10,19 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "warehouse")
+@Table(name = "retail_location")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class Warehouse {
+public class RetailLocation {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    //TODO: Create method for auto generated codes. Use util and another table?
-    @Column(name = "warehouse_code")
+    @Column(name = "retail_location_code")
     @Size(min = 6, max = 6)
-    private String warehouseCode;
+    private String retailLocationCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id", referencedColumnName = "id")
@@ -31,5 +30,4 @@ public class Warehouse {
 
     @Column(name = "deleted")
     private boolean deleted = false;
-
 }
