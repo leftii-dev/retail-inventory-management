@@ -1,4 +1,4 @@
-package dev.austinbarnes.retailinventorymanagement.product;
+package dev.austinbarnes.retailinventorymanagement.product.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMax;

@@ -1,4 +1,4 @@
-package dev.austinbarnes.retailinventorymanagement.location;
+package dev.austinbarnes.retailinventorymanagement.location.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -10,19 +10,23 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "location_type")
+@Table(name = "retail_location")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class LocationType {
+public class RetailLocation {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "name")
-    @Size(min = 1, max = 50)
-    private String name;
+    @Column(name = "retail_location_code")
+    @Size(min = 6, max = 6)
+    private String retailLocationCode;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_id", referencedColumnName = "id")
+    private Location location;
 
     @Column(name = "deleted")
     private boolean deleted = false;

@@ -1,6 +1,6 @@
-package dev.austinbarnes.retailinventorymanagement.inventory;
+package dev.austinbarnes.retailinventorymanagement.inventory.entity;
 
-import dev.austinbarnes.retailinventorymanagement.product.Product;
+import dev.austinbarnes.retailinventorymanagement.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

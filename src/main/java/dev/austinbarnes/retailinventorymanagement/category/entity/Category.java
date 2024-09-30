@@ -1,7 +1,6 @@
-package dev.austinbarnes.retailinventorymanagement.category;
+package dev.austinbarnes.retailinventorymanagement.category.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package dev.austinbarnes.retailinventorymanagement.location;
+package dev.austinbarnes.retailinventorymanagement.location.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.logging.log4j.util.Lazy;
 
 import java.util.UUID;
 

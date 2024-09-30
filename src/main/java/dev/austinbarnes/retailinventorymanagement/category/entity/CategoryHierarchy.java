@@ -1,4 +1,4 @@
-package dev.austinbarnes.retailinventorymanagement.category;
+package dev.austinbarnes.retailinventorymanagement.category.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
