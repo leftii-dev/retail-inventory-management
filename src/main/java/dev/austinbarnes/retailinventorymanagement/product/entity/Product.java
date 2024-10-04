@@ -1,5 +1,7 @@
 package dev.austinbarnes.retailinventorymanagement.product.entity;
 
+import dev.austinbarnes.retailinventorymanagement.category.entity.Category;
+import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.Max;
@@ -10,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
@@ -60,6 +63,11 @@ public class Product {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "dimensions", columnDefinition = "jsonb")
     private Map<String, Object> dimensions;
+
+    // For attributes that may not apply to all items (Size, Color, Box Counts, etc.)
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "additional_details", columnDefinition = "jsonb")
+    private Map<String, Object> additionalDetails;
 
     @Column(name = "created_at", updatable = false, columnDefinition = "timestamptz")
     @CreationTimestamp
