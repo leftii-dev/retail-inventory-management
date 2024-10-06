@@ -1,14 +1,13 @@
 package dev.austinbarnes.retailinventorymanagement.product.dto.product;
 
-import dev.austinbarnes.retailinventorymanagement.category.entity.Category;
-import dev.austinbarnes.retailinventorymanagement.product.entity.Brand;
-
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
 
 /**
- * Product Response DTO for Shoppers
+ * Product Response DTO for Admin panel
+ * Includes other members for business purposes
  *
  * @param id
  * @param sku
@@ -16,27 +15,35 @@ import java.util.UUID;
  * @param name
  * @param description
  * @param price
+ * @param cost
  * @param weight
  * @param dimensions
  * @param additionalDetails
+ * @param createdAt
+ * @param modifiedAt
  * @param isActive
  * @param category
- * @param brand
+ * @param employee
  * @param discount
+ * @param deleted
  */
-public record ProductResponseShopperDTO(
+public record ProductResponseDetailDTO(
         UUID id,
         String sku,
         String productCode,
         String name,
         String description,
         BigDecimal price,
+        BigDecimal cost,
         BigDecimal weight,
         Map<String, Object> dimensions,
         Map<String, Object> additionalDetails,
+        Instant createdAt,
+        Instant modifiedAt,
         boolean isActive,
         CategoryDTO category,
-        BrandDTO brand,
-        DiscountDTO discount
+        EmployeeDTO employee,
+        DiscountDTO discount,
+        boolean deleted
 ) {
 }
