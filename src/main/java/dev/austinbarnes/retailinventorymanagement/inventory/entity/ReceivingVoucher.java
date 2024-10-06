@@ -1,7 +1,9 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.entity;
 
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
+import dev.austinbarnes.retailinventorymanagement.location.entity.Location;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,8 +28,8 @@ public class ReceivingVoucher {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    //TODO: GENERATOR
-    @Column(name = "receiving_voucher_code", updatable = false)
+    @Column(name = "receiving_voucher_code", updatable = false, nullable = false, unique = true)
+    @Size(min = 10, max = 10, message = "Receiving voucher code must be 10 characters")
     @NotNull
     private String receivingVoucherCode;
 
@@ -83,31 +85,37 @@ public class ReceivingVoucher {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "purchase_order_id", referencedColumnName = "id")
+    @Valid
     private PurchaseOrder purchaseOrder;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id", referencedColumnName = "id")
     @NotNull(message = "Location must be set")
+    @Valid
     private Location location;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vendor_id", referencedColumnName = "id")
     @NotNull(message = "Vendor must be set")
+    @Valid
     private Vendor vendor;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_id", referencedColumnName = "id")
     @NotNull(message = "Status must be set")
+    @Valid
     private Status status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by_id", referencedColumnName = "id", updatable = false)
     @NotNull(message = "Created By cannot be null")
+    @Valid
     private Employee createdBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "modified_by_id", referencedColumnName = "id")
     @NotNull(message = "Modified By cannot be null")
+    @Valid
     private Employee modifiedBy;
 
     @Column(name = "deleted", nullable = false)

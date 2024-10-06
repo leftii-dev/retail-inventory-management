@@ -28,6 +28,10 @@ public class Vendor {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(name = "vendor_code", nullable = false, updatable = false, unique = true)
+    @NotNull
+    private String vendorCode;
+
     @Column(name = "name")
     @Size(min = 2, max = 100, message = "Vendor name must be between 2 and 100 characters")
     private String name;

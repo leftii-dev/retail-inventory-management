@@ -21,8 +21,12 @@ public class Discount {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(name = "discount_code", unique = true, updatable = false)
+    @Size(min = 6, max = 30, message = "Discount code must be between 6 and 30 characters")
+    private String discountCode;
+
     @Column(name = "name")
-    @Size(min = 1, max = 50)
+    @Size(min = 1, max = 50, message = "Name must be between 1 and 50 characters")
     private String name;
 
     @Column(name = "description")

@@ -1,6 +1,7 @@
 package dev.austinbarnes.retailinventorymanagement.location.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -35,6 +36,7 @@ public class LocationHours {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id", referencedColumnName = "id")
+    @Valid
     private Location location;
 
     @Column(name = "deleted")

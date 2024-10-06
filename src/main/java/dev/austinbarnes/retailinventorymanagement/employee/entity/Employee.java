@@ -45,9 +45,9 @@ public class Employee {
     @Past
     private LocalDate dateOfBirth;
 
-    //TODO: Add genereator
-    @Column(name = "employee_code", unique = true)
-    @Size(min = 10, max = 10)
+    @Column(name = "employee_code", unique = true, updatable = false, nullable = false)
+    @Size(min = 10, max = 10, message = "Employee code must be 10 characters")
+    @NotNull
     private String employeeCode;
 
     @Column(name = "is_active", nullable = false)

@@ -2,6 +2,7 @@ package dev.austinbarnes.retailinventorymanagement.product.entity;
 
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -25,9 +26,8 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "category_code", nullable = false)
+    @Column(name = "category_code", nullable = false, updatable = false, unique = true)
     @NotNull
-    @Size(min = 6, max = 6, message = "Category code must be 6 characters")
     private String categoryCode;
 
     @Column(name = "name", nullable = false)
@@ -49,14 +49,17 @@ public class Category {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by_id", referencedColumnName = "id", updatable = false)
+    @Valid
     private Employee createdBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "modified_by_id", referencedColumnName = "id")
+    @Valid
     private Employee modifiedBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "discount_id", referencedColumnName = "id")
+    @Valid
     private Discount discount;
 
     @Column(name = "deleted", nullable = false)

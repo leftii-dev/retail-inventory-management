@@ -1,6 +1,8 @@
 package dev.austinbarnes.retailinventorymanagement.location.entity;
 
+import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -60,10 +62,12 @@ public class LocationDetails {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id", referencedColumnName = "id")
+    @Valid
     private Location location;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_id", referencedColumnName = "id")
+    @Valid
     private Employee manager;
 
     @Column(name = "deleted")

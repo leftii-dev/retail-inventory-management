@@ -27,9 +27,9 @@ public class PurchaseOrder {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    //TODO: Generator code
-    @Column(name = "purchase_order_code", nullable = false)
-    @Size(min = 10, max = 10)
+    @Column(name = "purchase_order_code", nullable = false, unique = true, updatable = false)
+    @Size(min = 10, max = 10, message = "Purchase order code must be 10 characters")
+    @NotNull
     private String purchaseOrderCode;
 
     @Column(name = "date_expected")
@@ -39,6 +39,7 @@ public class PurchaseOrder {
     @Column(name = "total_cost", precision = 12, scale = 2)
     @DecimalMin(value = "0.00", message = "Total cost cannot be negative, double check costs")
     @DecimalMax(value = "9999999999.99", message = "Total cost cannot be over $9999999999.99, double check costs")
+    @Digits(integer = 10, fraction = 2)
     private BigDecimal totalCost;
 
     @Column(name = "created_at", updatable = false)
@@ -50,6 +51,7 @@ public class PurchaseOrder {
     private Instant modifiedAt;
 
     @Column(name = "notes")
+    @Size(max = 3000, message = "Notes cannot exceed 3000 characters")
     private String notes;
 
     @ManyToOne(fetch = FetchType.LAZY)

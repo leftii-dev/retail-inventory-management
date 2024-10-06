@@ -1,7 +1,9 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.entity;
 
+import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import dev.austinbarnes.retailinventorymanagement.product.entity.Product;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -47,18 +49,22 @@ public class TransferItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transfer_id", referencedColumnName = "id")
+    @Valid
     private Transfer transfer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", referencedColumnName = "id")
+    @Valid
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by_id", referencedColumnName = "id")
+    @Valid
     private Employee createdBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "modified_by_id", referencedColumnName = "id")
+    @Valid
     private Employee modifiedBy;
 
     @Column(name = "deleted")

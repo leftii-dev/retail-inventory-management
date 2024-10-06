@@ -21,7 +21,7 @@ public class LocationType {
     private UUID id;
 
     @Column(name = "name")
-    @Size(min = 1, max = 50)
+    @Size(min = 1, max = 50, message = "Name must be between 1 and 50 characters")
     private String name;
 
     @Column(name = "deleted")

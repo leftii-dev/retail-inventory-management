@@ -1,6 +1,9 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.entity;
 
+import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
+import dev.austinbarnes.retailinventorymanagement.location.entity.Location;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,9 +31,9 @@ public class Transfer {
     @Column(name = "date")
     private LocalDate date;
 
-    //TODO: generate utils for codes
-    @Column(name = "transfer_code")
-    @Size(min = 9, max = 9, message = "Transfer code should be auto-generated 9 digit string")
+    @Column(name = "transfer_code", nullable = false, updatable = false, unique = true)
+    @Size(min = 10, max = 10, message = "Transfer code should be auto-generated 10 digit string")
+    @NotNull
     private String transferCode;
 
     @Column(name = "total_cost")
@@ -53,18 +56,22 @@ public class Transfer {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by_id", referencedColumnName = "id")
+    @Valid
     private Employee createdBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "modified_by_id", referencedColumnName = "id")
+    @Valid
     private Employee modifiedBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_to_id", referencedColumnName = "id")
+    @Valid
     private Location locationTo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_from_id", referencedColumnName = "id")
+    @Valid
     private Location locationFrom;
 
     @Column(name = "deleted")
