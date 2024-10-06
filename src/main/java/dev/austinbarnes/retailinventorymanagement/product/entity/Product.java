@@ -108,6 +108,11 @@ public class Product {
     @Valid
     private Brand brand;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "discount_id", referencedColumnName = "id")
+    @Valid
+    Discount discount;
+
     @Column(name = "deleted", nullable = false)
     @NotNull
     private boolean deleted = false;

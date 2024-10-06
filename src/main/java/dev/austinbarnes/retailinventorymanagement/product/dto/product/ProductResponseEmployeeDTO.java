@@ -5,6 +5,28 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Product Response DTO for Employee/Admin panel
+ * Includes other members for business purposes
+ *
+ * @param id
+ * @param sku
+ * @param productCode
+ * @param name
+ * @param description
+ * @param price
+ * @param cost
+ * @param weight
+ * @param dimensions
+ * @param additionalDetails
+ * @param createdAt
+ * @param modifiedAt
+ * @param isActive
+ * @param category
+ * @param employee
+ * @param discount
+ * @param deleted
+ */
 public record ProductResponseEmployeeDTO(
         UUID id,
         String sku,
@@ -21,6 +43,7 @@ public record ProductResponseEmployeeDTO(
         boolean isActive,
         CategoryDTO category,
         EmployeeDTO employee,
+        DiscountDTO discount,
         boolean deleted
 ) {
 }

@@ -6,6 +6,21 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Product Request DTO for creating and updating Products
+ *
+ * @param sku
+ * @param name
+ * @param description
+ * @param price
+ * @param weight
+ * @param dimensions
+ * @param additionalDetails
+ * @param isActive
+ * @param categoryID
+ * @param brandID
+ * @param discountID
+ */
 public record ProductRequestDTO(
         @Size(max = 20, message = "Sku cannot exceed 20 characters") @NotNull String sku,
         @Size(min = 5, max = 100, message = "Name must be between 5 and 100") @NotNull String name,
@@ -16,6 +31,7 @@ public record ProductRequestDTO(
         Map<String, Object> additionalDetails,
         Boolean isActive,
         UUID categoryID,
-        UUID brandID
+        UUID brandID,
+        UUID discountID
         ) {
 }

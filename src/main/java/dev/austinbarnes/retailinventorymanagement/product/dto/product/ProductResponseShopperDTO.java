@@ -7,6 +7,23 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Product Response DTO for Shoppers
+ *
+ * @param id
+ * @param sku
+ * @param productCode
+ * @param name
+ * @param description
+ * @param price
+ * @param weight
+ * @param dimensions
+ * @param additionalDetails
+ * @param isActive
+ * @param category
+ * @param brand
+ * @param discount
+ */
 public record ProductResponseShopperDTO(
         UUID id,
         String sku,
@@ -19,6 +36,7 @@ public record ProductResponseShopperDTO(
         Map<String, Object> additionalDetails,
         boolean isActive,
         CategoryDTO category,
-        BrandDTO brand
+        BrandDTO brand,
+        DiscountDTO discount
 ) {
 }
