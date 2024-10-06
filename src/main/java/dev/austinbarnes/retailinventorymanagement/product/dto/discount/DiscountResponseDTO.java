@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
- * Discount Response DTO for Shoppers
- * Excludes active and deleted values as Shoppers should only receive active/non-deleted items
+ * Discount Response DTO for users
+ * Excludes active and deleted values as users should only receive active/non-deleted items
  *
  * @param id
  * @param discountCode
@@ -13,7 +13,7 @@ import java.util.UUID;
  * @param description
  * @param discountPercentage
  */
-public record DiscountResponseShopperDTO(
+public record DiscountResponseDTO(
         UUID id,
         String discountCode,
         String name,

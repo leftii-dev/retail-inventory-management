@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
- * Discount Response DTO for Employee/Admin panel
+ * Discount Response DTO for Admin panel
  * Includes active and deleted values for business purposes
  *
  * @param id
@@ -15,7 +15,7 @@ import java.util.UUID;
  * @param active
  * @param deleted
  */
-public record DiscountResponseEmployeeDTO(
+public record DiscountResponseDetailDTO(
         UUID id,
         String discountCode,
         String name,
