@@ -23,10 +23,12 @@ public class Discount {
 
     @Column(name = "discount_code", unique = true, updatable = false)
     @Size(min = 6, max = 30, message = "Discount code must be between 6 and 30 characters")
+    @NotNull
     private String discountCode;
 
     @Column(name = "name")
     @Size(min = 1, max = 50, message = "Name must be between 1 and 50 characters")
+    @NotNull
     private String name;
 
     @Column(name = "description")
@@ -37,6 +39,7 @@ public class Discount {
     @DecimalMin(value = "0.00", message = "Discount percentage cannot be negative")
     @DecimalMax(value = "100.00", message = "Discount percentage cannot exceed 100%")
     @Digits(integer = 3, fraction = 2)
+    @NotNull
     private BigDecimal discountPercentage;
 
     @Column(name = "is_active")
