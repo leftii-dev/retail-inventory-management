@@ -1,5 +1,9 @@
 package dev.austinbarnes.retailinventorymanagement.product.dto.product;
 
+import dev.austinbarnes.retailinventorymanagement.product.dto.brand.BrandResponseDTO;
+import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryResponseDTO;
+import dev.austinbarnes.retailinventorymanagement.product.dto.discount.DiscountResponseDTO;
+
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
@@ -21,7 +25,7 @@ public interface ProductResponseDTO {
     BigDecimal weight();
     Map<String, Object> dimensions();
     Map<String, Object> additionalDetails();
-    CategoryDTO category();
-    BrandDTO brand();
-    DiscountDTO discount();
+    CategoryResponseDTO category();
+    BrandResponseDTO brand();
+    DiscountResponseDTO discount();
 }
