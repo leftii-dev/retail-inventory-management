@@ -15,7 +15,7 @@ import java.util.UUID;
  * @param active
  * @param deleted
  */
-public record DiscountResponseDetailDTO(
+public record DiscountResponseAdminDTO(
         UUID id,
         String discountCode,
         String name,
@@ -23,5 +23,5 @@ public record DiscountResponseDetailDTO(
         BigDecimal discountPercentage,
         boolean active,
         boolean deleted
-) {
+) implements DiscountResponseDTO {
 }

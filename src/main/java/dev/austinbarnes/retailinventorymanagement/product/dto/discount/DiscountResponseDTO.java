@@ -4,20 +4,16 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
- * Discount Response DTO for users
- * Excludes active and deleted values as users should only receive active/non-deleted items
+ * DTO interface for Discount
+ * Allows return type safety in controller with different DTO records
  *
- * @param id
- * @param discountCode
- * @param name
- * @param description
- * @param discountPercentage
- */
-public record DiscountResponseDTO(
-        UUID id,
-        String discountCode,
-        String name,
-        String description,
-        BigDecimal discountPercentage
-) {
+ * @author Austin Barnes
+ * @since 2024
+ * */
+public interface DiscountResponseDTO {
+    UUID id();
+    String discountCode();
+    String name();
+    String description();
+    BigDecimal discountPercentage();
 }
