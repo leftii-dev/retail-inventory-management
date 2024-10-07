@@ -2,6 +2,7 @@ package dev.austinbarnes.retailinventorymanagement.product.dto.category;
 
 import java.time.Instant;
 import java.util.UUID;
+import dev.austinbarnes.retailinventorymanagement.product.dto.discount.DiscountResponseDTO;
 
 /**
  * Category Response Detail DTO for use in Admin panel
@@ -15,13 +16,13 @@ import java.util.UUID;
  * @param modifiedAt
  * @param createdByID
  * @param modifiedByID
- * @param discountID
+ * @param discount
  * @param deleted
  *
  * @author Austin Barnes
  * @since 2024
  * */
-public record CategoryResponseDetailDTO(
+public record CategoryResponseAdminDTO(
         UUID id,
         String categoryCode,
         String name,
@@ -30,7 +31,7 @@ public record CategoryResponseDetailDTO(
         Instant modifiedAt,
         UUID createdByID,
         UUID modifiedByID,
-        UUID discountID,
+        DiscountResponseDTO discount,
         boolean deleted
-) {
+) implements CategoryResponseDTO{
 }
