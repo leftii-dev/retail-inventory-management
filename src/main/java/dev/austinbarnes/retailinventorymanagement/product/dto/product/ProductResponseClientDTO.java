@@ -1,13 +1,11 @@
 package dev.austinbarnes.retailinventorymanagement.product.dto.product;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
 
 /**
- * Product Response DTO for Admin panel
- * Includes other members for business purposes
+ * Product Response DTO for users
  *
  * @param id
  * @param sku
@@ -15,35 +13,25 @@ import java.util.UUID;
  * @param name
  * @param description
  * @param price
- * @param cost
  * @param weight
  * @param dimensions
  * @param additionalDetails
- * @param createdAt
- * @param modifiedAt
- * @param isActive
  * @param category
- * @param employee
+ * @param brand
  * @param discount
- * @param deleted
  */
-public record ProductResponseDetailDTO(
+public record ProductResponseClientDTO(
         UUID id,
         String sku,
         String productCode,
         String name,
         String description,
         BigDecimal price,
-        BigDecimal cost,
         BigDecimal weight,
         Map<String, Object> dimensions,
         Map<String, Object> additionalDetails,
-        Instant createdAt,
-        Instant modifiedAt,
-        boolean isActive,
         CategoryDTO category,
-        EmployeeDTO employee,
-        DiscountDTO discount,
-        boolean deleted
-) {
+        BrandDTO brand,
+        DiscountDTO discount
+) implements ProductResponseDTO {
 }

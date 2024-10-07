@@ -5,35 +5,23 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Product Response DTO for users
+ * DTO interface for Products
+ * Allows return type safety in controller with different DTO records
  *
- * @param id
- * @param sku
- * @param productCode
- * @param name
- * @param description
- * @param price
- * @param weight
- * @param dimensions
- * @param additionalDetails
- * @param isActive
- * @param category
- * @param brand
- * @param discount
- */
-public record ProductResponseDTO(
-        UUID id,
-        String sku,
-        String productCode,
-        String name,
-        String description,
-        BigDecimal price,
-        BigDecimal weight,
-        Map<String, Object> dimensions,
-        Map<String, Object> additionalDetails,
-        boolean isActive,
-        CategoryDTO category,
-        BrandDTO brand,
-        DiscountDTO discount
-) {
+ * @author Austin Barnes
+ * @since 2024
+ * */
+public interface ProductResponseDTO {
+    UUID id();
+    String sku();
+    String productCode();
+    String name();
+    String description();
+    BigDecimal price();
+    BigDecimal weight();
+    Map<String, Object> dimensions();
+    Map<String, Object> additionalDetails();
+    CategoryDTO category();
+    BrandDTO brand();
+    DiscountDTO discount();
 }
