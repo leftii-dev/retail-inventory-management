@@ -7,17 +7,17 @@ import java.util.UUID;
  * Includes deleted value
  *
  * @param id
- * @param categoryID
- * @param parentCategoryID
+ * @param category
+ * @param parentCategory
  * @param deleted
  *
  * @author Austin Barnes
  * @since 2024
  * */
-public record CategoryHierarchyResponseDetailDTO(
+public record CategoryHierarchyResponseAdminDTO(
         UUID id,
-        UUID categoryID,
-        UUID parentCategoryID,
+        CategoryResponseDTO category,
+        CategoryResponseDTO parentCategory,
         boolean deleted
-) {
+) implements CategoryHierarchyResponseDTO{
 }
