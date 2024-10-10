@@ -1,4 +1,4 @@
-package dev.austinbarnes.retailinventorymanagement.location.dto;
+package dev.austinbarnes.retailinventorymanagement.location.dto.type;
 
 import jakarta.validation.constraints.Size;
 

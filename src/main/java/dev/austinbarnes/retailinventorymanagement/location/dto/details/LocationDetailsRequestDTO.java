@@ -1,4 +1,4 @@
-package dev.austinbarnes.retailinventorymanagement.location.dto;
+package dev.austinbarnes.retailinventorymanagement.location.dto.details;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;

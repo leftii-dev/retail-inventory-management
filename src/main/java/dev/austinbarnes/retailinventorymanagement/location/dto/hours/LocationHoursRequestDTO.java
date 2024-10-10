@@ -1,4 +1,4 @@
-package dev.austinbarnes.retailinventorymanagement.location.dto;
+package dev.austinbarnes.retailinventorymanagement.location.dto.hours;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
