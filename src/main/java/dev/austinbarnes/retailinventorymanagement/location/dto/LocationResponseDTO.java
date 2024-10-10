@@ -1,6 +1,8 @@
 package dev.austinbarnes.retailinventorymanagement.location.dto;
 
 
+import dev.austinbarnes.retailinventorymanagement.location.dto.type.LocationTypeResponseDTO;
+
 import java.util.UUID;
 
 public interface LocationResponseDTO {
@@ -8,5 +10,5 @@ public interface LocationResponseDTO {
 
     String name();
 
-    LocationTypeDTO locationType();
+    LocationTypeResponseDTO locationType();
 }
