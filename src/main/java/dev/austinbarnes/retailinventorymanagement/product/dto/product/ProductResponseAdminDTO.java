@@ -28,7 +28,8 @@ import java.util.UUID;
  * @param modifiedAt
  * @param isActive
  * @param category
- * @param employee
+ * @param createdBy
+ * @param modifiedBy
  * @param discount
  * @param deleted
  */
@@ -48,8 +49,9 @@ public record ProductResponseAdminDTO(
         boolean isActive,
         CategoryResponseDTO category,
         BrandResponseDTO brand,
-        EmployeeResponseDTO employee,
+        EmployeeResponseDTO createdBy,
+        EmployeeResponseDTO modifiedBy,
         DiscountResponseDTO discount,
         boolean deleted
-) implements ProductResponseDTO{
+) implements ProductResponseDTO {
 }
