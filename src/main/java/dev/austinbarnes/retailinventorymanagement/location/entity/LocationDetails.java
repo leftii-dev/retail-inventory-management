@@ -58,6 +58,7 @@ public class LocationDetails {
     private String email;
 
     @Column(name = "notes")
+    @Size(max = 3000)
     private String notes;
 
     @ManyToOne(fetch = FetchType.LAZY)

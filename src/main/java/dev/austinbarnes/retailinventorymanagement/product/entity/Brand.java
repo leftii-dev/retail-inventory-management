@@ -21,8 +21,9 @@ public class Brand {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "name")
+    @Column(name = "name", unique = true, nullable = false)
     @Size(min = 1, max = 50, message = "Brand name must be between 1 and 50 characters")
+    @NotNull
     private String name;
 
     @Column(name = "description")

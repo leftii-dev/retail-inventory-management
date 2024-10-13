@@ -30,6 +30,7 @@ public class Role {
     private String name;
 
     @Column(name = "description")
+    @Size(max = 3000, message = "Description cannot exceed 3000 characters")
     private String description;
 
     @Column(name = "created_at", updatable = false)

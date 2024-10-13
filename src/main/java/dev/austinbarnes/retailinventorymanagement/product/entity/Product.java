@@ -34,9 +34,9 @@ public class Product {
 
     @Column(name = "sku", nullable = false, unique = true)
     @Size(max = 20, message = "Sku cannot exceed 20 characters")
+    @NotNull
     private String sku;
 
-    //TODO: Generator
     @Column(name = "product_code", nullable = false, updatable = false, unique = true)
     private String productCode;
 
@@ -49,12 +49,22 @@ public class Product {
     @Size(max = 3000, message = "Description cannot exceed 3000 characters")
     private String description;
 
-    @Column(name = "price")
+    @Column(name = "cost", precision = 12, scale = 2)
+    @DecimalMax(value = "9999999999.99", message = "Cost cannot exceed $9,999,999,999.99")
+    @DecimalMin(value = "0.01", message = "Cost cannot be less than $0.01")
+    @Digits(integer = 10, fraction = 2)
+    private BigDecimal cost;
+
+    @Column(name = "price", precision = 12, scale = 2)
     @DecimalMax(value = "9999999999.99", message = "Price cannot exceed $9,999,999,999.99")
+    @DecimalMin(value = "0.01", message = "Price cannot be less than $0.01")
+    @Digits(integer = 10, fraction = 2)
     private BigDecimal price;
 
-    @Column(name = "weight")
+    @Column(name = "weight", precision = 8, scale = 2)
     @DecimalMax(value = "999999.99", message = "Weight cannot exceed 999,999.99")
+    @DecimalMin(value = "0.00", message = "Weight cannot be negative")
+    @Digits(integer = 6, fraction = 2)
     private BigDecimal weight;
 
     @JdbcTypeCode(SqlTypes.JSON)
@@ -76,7 +86,7 @@ public class Product {
 
     @Column(name = "is_active", nullable = false)
     @NotNull
-    private Boolean isActive;
+    private boolean isActive = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
@@ -97,6 +107,11 @@ public class Product {
     @JoinColumn(name = "brand_id", referencedColumnName = "id")
     @Valid
     private Brand brand;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "discount_id", referencedColumnName = "id")
+    @Valid
+    Discount discount;
 
     @Column(name = "deleted", nullable = false)
     @NotNull
