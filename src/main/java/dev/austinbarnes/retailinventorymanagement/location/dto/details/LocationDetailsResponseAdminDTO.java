@@ -1,5 +1,6 @@
 package dev.austinbarnes.retailinventorymanagement.location.dto.details;
 
+import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.LocationResponseDTO;
 
 import java.util.UUID;

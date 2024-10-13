@@ -1,5 +1,6 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder;
 
+import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.product.ProductResponseDTO;
 
 import java.math.BigDecimal;
