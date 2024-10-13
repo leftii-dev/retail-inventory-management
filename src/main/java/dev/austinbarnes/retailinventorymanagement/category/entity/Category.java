@@ -1,5 +1,7 @@
 package dev.austinbarnes.retailinventorymanagement.category.entity;
 
+import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
+import dev.austinbarnes.retailinventorymanagement.product.entity.Discount;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -30,11 +32,11 @@ public class Category {
     private String categoryCode;
 
     @Column(name = "name", length = 50)
-    @Size(min = 5, max = 50)
+    @Size(min = 5, max = 50, message = "Name must be between 5 and 50 characters")
     private String name;
 
     @Column(name = "description")
-    @Size(max = 1500)
+    @Size(max = 1500, message = "Category description cannot exceed 1500 characters")
     private String description;
 
     @Column(name = "created_at")
