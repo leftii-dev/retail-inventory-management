@@ -2,9 +2,8 @@ package dev.austinbarnes.retailinventorymanagement.location.dto.type;
 
 import java.util.UUID;
 
-public record LocationTypeResponseAdminDTO(
+public record LocationTypeResponseBasicDTO(
         UUID id,
-        String name,
-        boolean deleted
+        String name
 ) implements LocationTypeResponseDTO{
 }

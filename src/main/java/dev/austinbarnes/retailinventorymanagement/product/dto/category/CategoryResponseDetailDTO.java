@@ -22,7 +22,7 @@ import dev.austinbarnes.retailinventorymanagement.product.dto.discount.DiscountR
  * @author Austin Barnes
  * @since 2024
  * */
-public record CategoryResponseAdminDTO(
+public record CategoryResponseDetailDTO(
         UUID id,
         String categoryCode,
         String name,

@@ -13,7 +13,7 @@ import java.util.UUID;
  * @param description
  * @param discountPercentage
  */
-public record DiscountResponseClientDTO(
+public record DiscountResponseBasicDTO(
         UUID id,
         String discountCode,
         String name,

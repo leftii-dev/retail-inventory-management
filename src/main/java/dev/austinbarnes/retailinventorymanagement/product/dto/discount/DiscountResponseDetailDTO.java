@@ -15,7 +15,7 @@ import java.util.UUID;
  * @param active
  * @param deleted
  */
-public record DiscountResponseAdminDTO(
+public record DiscountResponseDetailDTO(
         UUID id,
         String discountCode,
         String name,

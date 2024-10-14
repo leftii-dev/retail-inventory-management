@@ -11,7 +11,7 @@ import java.util.UUID;
  * @author Austin Barnes
  * @since 2024
  */
-public record BrandResponseClientDTO(
+public record BrandResponseBasicDTO(
         UUID id,
         String name,
         String description

@@ -4,7 +4,7 @@ import dev.austinbarnes.retailinventorymanagement.location.dto.LocationResponseD
 
 import java.util.UUID;
 
-public record RetailLocationResponseClientDTO(
+public record RetailLocationResponseBasicDTO(
         UUID id,
         LocationResponseDTO location
 ) implements RetailLocationResponseDTO{

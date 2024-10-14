@@ -5,12 +5,11 @@ import dev.austinbarnes.retailinventorymanagement.location.dto.LocationResponseD
 import java.time.LocalTime;
 import java.util.UUID;
 
-public record LocationHoursResponseAdminDTO(
+public record LocationHoursResponseBasicDTO(
         UUID id,
         short dayOfWeek,
         LocalTime openTime,
         LocalTime closeTime,
-        LocationResponseDTO location,
-        boolean deleted
+        LocationResponseDTO location
 ) implements LocationHoursResponseDTO{
 }

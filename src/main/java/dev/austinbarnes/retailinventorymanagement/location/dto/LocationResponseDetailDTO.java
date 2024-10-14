@@ -6,7 +6,7 @@ import dev.austinbarnes.retailinventorymanagement.location.dto.type.LocationType
 import java.time.Instant;
 import java.util.UUID;
 
-public record LocationResponseAdminDTO(
+public record LocationResponseDetailDTO(
     UUID id,
     String name,
     Instant createdAt,

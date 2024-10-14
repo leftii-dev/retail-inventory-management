@@ -16,7 +16,7 @@ import java.util.UUID;
  * @author Austin Barnes
  * @since 2024
  * */
-public record CategoryResponseClientDTO(
+public record CategoryResponseBasicDTO(
         UUID id,
         String categoryCode,
         String name,

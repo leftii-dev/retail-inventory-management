@@ -1,6 +1,5 @@
 package dev.austinbarnes.retailinventorymanagement.product.dto.product;
 
-import dev.austinbarnes.retailinventorymanagement.product.dto.brand.BrandResponseClientDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.brand.BrandResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.discount.DiscountResponseDTO;

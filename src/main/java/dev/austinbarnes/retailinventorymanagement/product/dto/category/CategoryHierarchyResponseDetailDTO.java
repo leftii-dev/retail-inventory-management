@@ -14,7 +14,7 @@ import java.util.UUID;
  * @author Austin Barnes
  * @since 2024
  * */
-public record CategoryHierarchyResponseAdminDTO(
+public record CategoryHierarchyResponseDetailDTO(
         UUID id,
         CategoryResponseDTO category,
         CategoryResponseDTO parentCategory,
