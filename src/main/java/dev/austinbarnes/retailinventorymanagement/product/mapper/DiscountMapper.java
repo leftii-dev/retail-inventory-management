@@ -9,6 +9,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface DiscountMapper {
     Discount toEntity(DiscountRequestDTO discountRequestDTO);
-    DiscountResponseBasicDTO toBasic(Discount discount);
-    DiscountResponseDetailDTO toDetail(Discount discount);
+    DiscountResponseBasicDTO toBasicDTO(Discount discount);
+    DiscountResponseDetailDTO toDetailDTO(Discount discount);
 }

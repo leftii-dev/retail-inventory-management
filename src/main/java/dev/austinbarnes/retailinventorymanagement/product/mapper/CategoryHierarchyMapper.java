@@ -9,6 +9,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface CategoryHierarchyMapper {
     CategoryHierarchy toEntity(CategoryHierarchyRequestDTO categoryHierarchyRequestDTO);
-    CategoryHierarchyResponseBasicDTO toBasic(CategoryHierarchy categoryHierarchy);
-    CategoryHierarchyResponseDetailDTO toDetail(CategoryHierarchy categoryHierarchy);
+    CategoryHierarchyResponseBasicDTO toBasicDTO(CategoryHierarchy categoryHierarchy);
+    CategoryHierarchyResponseDetailDTO toDetailDTO(CategoryHierarchy categoryHierarchy);
 }
