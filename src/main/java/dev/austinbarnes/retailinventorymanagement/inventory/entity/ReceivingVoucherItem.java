@@ -69,7 +69,7 @@ public class ReceivingVoucherItem {
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "receiving_vouvher_id", referencedColumnName = "id")
+    @JoinColumn(name = "receiving_voucher_id", referencedColumnName = "id")
     @Valid
     private ReceivingVoucher receivingVoucher;
 
