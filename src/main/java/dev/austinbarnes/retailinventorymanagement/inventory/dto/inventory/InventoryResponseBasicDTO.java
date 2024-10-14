@@ -5,7 +5,7 @@ import dev.austinbarnes.retailinventorymanagement.product.dto.product.ProductRes
 
 import java.util.UUID;
 
-public record InventoryResponseClientDTO(
+public record InventoryResponseBasicDTO(
         UUID id,
         int quantity,
         ProductResponseDTO product,
