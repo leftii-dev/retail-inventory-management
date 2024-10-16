@@ -3,6 +3,7 @@ package dev.austinbarnes.retailinventorymanagement.location.dto.details;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.LocationResponseDTO;
 
+import java.time.Instant;
 import java.util.UUID;
 
 public record LocationDetailsResponseDetailDTO(
@@ -18,6 +19,10 @@ public record LocationDetailsResponseDetailDTO(
         String notes,
         LocationResponseDTO location,
         EmployeeResponseDTO manager,
+        Instant createdAt,
+        Instant modifiedAt,
+        EmployeeResponseDTO createdBy,
+        EmployeeResponseDTO modifiedBy,
         boolean deleted
 ) implements LocationDetailsResponseDTO{
 }

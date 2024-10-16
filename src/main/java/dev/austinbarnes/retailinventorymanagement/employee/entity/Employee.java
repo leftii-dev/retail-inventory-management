@@ -1,12 +1,16 @@
 package dev.austinbarnes.retailinventorymanagement.employee.entity;
 
+import dev.austinbarnes.retailinventorymanagement.util.CodeGenerator;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -50,6 +54,22 @@ public class Employee {
     @NotNull
     private String employeeCode;
 
+    @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "timestamptz")
+    @CreationTimestamp
+    private Instant createdAt;
+
+    @Column(name = "modified_at", nullable = false, updatable = false, columnDefinition = "timestamptz")
+    @UpdateTimestamp
+    private Instant modifiedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by", nullable = false, updatable = false, referencedColumnName = "id")
+    Employee createdBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "modified_by", nullable = false, updatable = false, referencedColumnName = "id")
+    Employee modifiedBy;
+
     @Column(name = "is_active", nullable = false)
     @NotNull
     private boolean isActive = true;
@@ -57,4 +77,15 @@ public class Employee {
     @Column(name = "deleted", nullable = false)
     @NotNull
     private boolean deleted = false;
+
+    @PrePersist
+    private void onCreate(){
+        this.createdAt = Instant.now();
+        this.modifiedAt = Instant.now();
+    }
+
+    @PreUpdate
+    private void onUpdate(){
+        this.modifiedAt = Instant.now();
+    }
 }
