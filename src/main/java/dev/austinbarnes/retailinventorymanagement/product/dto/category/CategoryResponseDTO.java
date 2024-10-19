@@ -16,5 +16,5 @@ public interface CategoryResponseDTO {
     String categoryCode();
     String name();
     String description();
-    DiscountResponseDTO discount();
+    UUID discountID();
 }

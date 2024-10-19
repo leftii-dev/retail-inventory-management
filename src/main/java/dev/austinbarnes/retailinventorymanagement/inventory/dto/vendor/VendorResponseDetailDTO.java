@@ -15,10 +15,12 @@ public record VendorResponseDetailDTO(
         String phone,
         String email,
         boolean isActive,
-        Instant createdAt,
-        Instant modifiedAt,
-        EmployeeResponseDTO createdBy,
-        EmployeeResponseDTO modifiedBy,
+        Instant createdAtID,
+        Instant modifiedAtID,
+        UUID createdByID,
+        String createdByName,
+        UUID modifiedByID,
+        String modifiedByName,
         boolean deleted
 ) implements VendorResponseDTO{
 }

@@ -1,13 +1,18 @@
 package dev.austinbarnes.retailinventorymanagement.product.entity;
 
+import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -42,6 +47,23 @@ public class Discount {
     @NotNull
     private BigDecimal discountPercentage;
 
+    @Column(name = "created_at", updatable = false, columnDefinition = "timestamptz")
+    @CreationTimestamp
+    private Instant createdAt;
+
+    @Column(name = "modified_at", columnDefinition = "timestamptz")
+    @UpdateTimestamp
+    private Instant modifiedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by", nullable = false, updatable = false, referencedColumnName = "id")
+    Employee createdBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "modified_by_id", referencedColumnName = "id")
+    @Valid
+    private Employee modifiedBy;
+
     @Column(name = "is_active")
     @NotNull
     private boolean active;
@@ -49,4 +71,15 @@ public class Discount {
     @Column(name = "deleted")
     @NotNull
     private boolean deleted;
+
+    @PrePersist
+    private void onCreate(){
+        this.createdAt = Instant.now();
+        this.modifiedAt = Instant.now();
+    }
+
+    @PreUpdate
+    private void onUpdate(){
+        this.modifiedAt = Instant.now();
+    }
 }

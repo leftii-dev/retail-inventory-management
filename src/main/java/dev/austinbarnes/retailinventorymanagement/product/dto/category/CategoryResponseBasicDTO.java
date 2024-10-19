@@ -21,6 +21,6 @@ public record CategoryResponseBasicDTO(
         String categoryCode,
         String name,
         String description,
-        DiscountResponseDTO discount
+        UUID discountID
 ) implements CategoryResponseDTO {
 }

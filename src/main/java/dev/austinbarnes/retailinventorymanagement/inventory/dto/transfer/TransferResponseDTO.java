@@ -9,6 +9,6 @@ public interface TransferResponseDTO {
     UUID id();
     LocalDate date();
     String transferCode();
-    LocationResponseDTO locationTo();
-    LocationResponseDTO locationFrom();
+    UUID locationToID();
+    UUID locationFromID();
 }

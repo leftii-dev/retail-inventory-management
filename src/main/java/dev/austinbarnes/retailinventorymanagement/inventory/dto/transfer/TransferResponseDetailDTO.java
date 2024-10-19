@@ -16,10 +16,12 @@ public record TransferResponseDetailDTO(
         BigDecimal totalQuantity,
         Instant createdAt,
         Instant modifiedAt,
-        EmployeeResponseDTO createdBy,
-        EmployeeResponseDTO modifiedBy,
-        LocationResponseDTO locationTo,
-        LocationResponseDTO locationFrom,
+        UUID createdByID,
+        String createdByName,
+        UUID modifiedByID,
+        String modifiedByName,
+        UUID locationToID,
+        UUID locationFromID,
         boolean deleted
 ) implements TransferResponseDTO{
 }

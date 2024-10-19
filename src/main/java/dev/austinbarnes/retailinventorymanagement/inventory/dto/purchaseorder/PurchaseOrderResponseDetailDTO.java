@@ -18,8 +18,10 @@ public record PurchaseOrderResponseDetailDTO(
         Instant modifiedAt,
         String notes,
         VendorResponseDTO vendor,
-        EmployeeResponseDTO createdBy,
-        EmployeeResponseDTO modifiedBy,
+        UUID createdByID,
+        String createdByName,
+        UUID modifiedByID,
+        String modifiedByName,
         StatusResponseDTO status,
         boolean deleted
 ) implements PurchaseOrderResponseDTO{

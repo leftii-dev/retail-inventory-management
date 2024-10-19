@@ -7,5 +7,5 @@ public interface TransferItemResponseDTO {
     UUID id();
     BigDecimal cost();
     short quantity();
-    TransferResponseDTO transfer();
+    UUID transferID();
 }

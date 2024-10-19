@@ -13,10 +13,12 @@ public record TransferItemResponseDetailDTO(
         short quantity,
         Instant createdAt,
         Instant modifiedAt,
-        TransferResponseDTO transferR,
+        UUID transferID,
         ProductResponseDTO product,
-        EmployeeResponseDTO createdBy,
-        EmployeeResponseDTO modifiedBy,
+        UUID createdByID,
+        String createdByName,
+        UUID modifiedByID,
+        String modifiedByName,
         boolean deleted
-) {
+) implements TransferItemResponseDTO {
 }

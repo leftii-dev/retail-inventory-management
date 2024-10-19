@@ -77,4 +77,15 @@ public class PurchaseOrder {
     @Column(name = "deleted", nullable = false)
     @NotNull
     private boolean deleted = false;
+
+    @PrePersist
+    private void onCreate(){
+        this.createdAt = Instant.now();
+        this.modifiedAt = Instant.now();
+    }
+
+    @PreUpdate
+    private void onUpdate(){
+        this.modifiedAt = Instant.now();
+    }
 }

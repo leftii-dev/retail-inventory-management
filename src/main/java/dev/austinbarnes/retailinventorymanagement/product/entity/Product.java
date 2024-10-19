@@ -1,6 +1,5 @@
 package dev.austinbarnes.retailinventorymanagement.product.entity;
 
-import dev.austinbarnes.retailinventorymanagement.category.entity.Category;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
@@ -10,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
@@ -116,4 +114,16 @@ public class Product {
     @Column(name = "deleted", nullable = false)
     @NotNull
     private boolean deleted = false;
+
+    @PrePersist
+    private void onCreate(){
+        this.createdAt = Instant.now();
+        this.modifiedAt = Instant.now();
+    }
+
+    @PreUpdate
+    private void onUpdate(){
+        this.modifiedAt = Instant.now();
+    }
+
 }
