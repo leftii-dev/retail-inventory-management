@@ -5,18 +5,7 @@ import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.Employee
 import java.time.Instant;
 import java.util.UUID;
 
-/**
- * Category Hierarchy Detail DTO for Admin panel
- * Includes deleted value
- *
- * @param id
- * @param category
- * @param parentCategory
- * @param deleted
- *
- * @author Austin Barnes
- * @since 2024
- * */
+
 public record CategoryHierarchyResponseDetailDTO(
         UUID id,
         UUID categoryID,

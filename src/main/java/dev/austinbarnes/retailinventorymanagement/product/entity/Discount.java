@@ -71,4 +71,15 @@ public class Discount {
     @Column(name = "deleted")
     @NotNull
     private boolean deleted;
+
+    @PrePersist
+    private void onCreate(){
+        this.createdAt = Instant.now();
+        this.modifiedAt = Instant.now();
+    }
+
+    @PreUpdate
+    private void onUpdate(){
+        this.modifiedAt = Instant.now();
+    }
 }
