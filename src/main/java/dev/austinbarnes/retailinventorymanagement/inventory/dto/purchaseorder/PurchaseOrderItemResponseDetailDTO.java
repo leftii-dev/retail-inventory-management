@@ -14,10 +14,12 @@ public record PurchaseOrderItemResponseDetailDTO(
         short quantity,
         Instant createdAt,
         Instant modifiedAt,
-        PurchaseOrderResponseDTO purchaseOrder,
+        UUID purchaseOrderID,
         ProductResponseDTO product,
-        EmployeeResponseDTO createdBy,
-        EmployeeResponseDTO modifiedBy,
+        UUID createdByID,
+        String createdByName,
+        UUID modifiedByID,
+        String modifiedByName,
         boolean deleted
 ) implements PurchaseOrderItemResponseDTO{
 }

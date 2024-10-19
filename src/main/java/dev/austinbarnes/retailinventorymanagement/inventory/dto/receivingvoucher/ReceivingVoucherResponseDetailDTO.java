@@ -28,8 +28,10 @@ public record ReceivingVoucherResponseDetailDTO(
         LocationResponseDTO location,
         VendorResponseDTO vendor,
         StatusResponseDTO status,
-        EmployeeResponseDTO createdBy,
-        EmployeeResponseDTO modifiedBy,
+        UUID createdByID,
+        String createdByName,
+        UUID modifiedByID,
+        String modifiedByName,
         boolean deleted
 ) implements ReceivingVoucherResponseDTO{
 }

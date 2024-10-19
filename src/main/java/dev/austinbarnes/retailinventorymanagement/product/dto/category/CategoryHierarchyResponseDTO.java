@@ -11,6 +11,6 @@ import java.util.UUID;
  * */
 public interface CategoryHierarchyResponseDTO {
     UUID id();
-    CategoryResponseDTO category();
-    CategoryResponseDTO parentCategory();
+    UUID categoryID();
+    UUID parentCategoryID();
 }

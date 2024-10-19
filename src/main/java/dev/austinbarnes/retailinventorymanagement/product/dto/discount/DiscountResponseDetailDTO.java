@@ -1,6 +1,9 @@
 package dev.austinbarnes.retailinventorymanagement.product.dto.discount;
 
+import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeResponseDTO;
+
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.UUID;
 
 /**
@@ -21,6 +24,12 @@ public record DiscountResponseDetailDTO(
         String name,
         String description,
         BigDecimal discountPercentage,
+        Instant createdAt,
+        Instant modifiedAt,
+        UUID createdByID,
+        String createdByName,
+        UUID modifiedByID,
+        String modifiedByName,
         boolean active,
         boolean deleted
 ) implements DiscountResponseDTO {

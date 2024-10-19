@@ -21,8 +21,10 @@ public record LocationDetailsResponseDetailDTO(
         EmployeeResponseDTO manager,
         Instant createdAt,
         Instant modifiedAt,
-        EmployeeResponseDTO createdBy,
-        EmployeeResponseDTO modifiedBy,
+        UUID createdByID,
+        String createdByName,
+        UUID modifiedByID,
+        String modifiedByName,
         boolean deleted
 ) implements LocationDetailsResponseDTO{
 }

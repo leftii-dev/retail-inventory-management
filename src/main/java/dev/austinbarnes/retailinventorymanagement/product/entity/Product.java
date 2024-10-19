@@ -1,6 +1,5 @@
 package dev.austinbarnes.retailinventorymanagement.product.entity;
 
-import dev.austinbarnes.retailinventorymanagement.category.entity.Category;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
@@ -10,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;

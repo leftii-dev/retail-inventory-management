@@ -25,7 +25,10 @@ public interface ProductResponseDTO {
     BigDecimal weight();
     Map<String, Object> dimensions();
     Map<String, Object> additionalDetails();
-    CategoryResponseDTO category();
-    BrandResponseDTO brand();
-    DiscountResponseDTO discount();
+    UUID categoryID();
+    String categoryName();
+    UUID brandID();
+    String brandName();
+    UUID discountID();
+    String discountName();
 }

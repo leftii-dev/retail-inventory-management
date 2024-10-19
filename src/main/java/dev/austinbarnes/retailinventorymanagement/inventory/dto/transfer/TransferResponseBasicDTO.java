@@ -9,7 +9,7 @@ public record TransferResponseBasicDTO(
         UUID id,
         LocalDate date,
         String transferCode,
-        LocationResponseDTO locationTo,
-        LocationResponseDTO locationFrom
+        UUID locationToID,
+        UUID locationFromID
 ) implements TransferResponseDTO{
 }

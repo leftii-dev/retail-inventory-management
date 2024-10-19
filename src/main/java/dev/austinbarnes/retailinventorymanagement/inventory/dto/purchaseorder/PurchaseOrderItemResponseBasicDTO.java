@@ -7,7 +7,7 @@ import java.util.UUID;
 public record PurchaseOrderItemResponseBasicDTO(
         UUID id,
         short quantity,
-        PurchaseOrderResponseDTO purchaseOrder,
+        UUID purchaseOrderID,
         ProductResponseDTO product
 ) implements PurchaseOrderItemResponseDTO{
 }

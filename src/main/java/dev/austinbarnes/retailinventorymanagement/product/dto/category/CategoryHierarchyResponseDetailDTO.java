@@ -1,5 +1,8 @@
 package dev.austinbarnes.retailinventorymanagement.product.dto.category;
 
+import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeResponseDTO;
+
+import java.time.Instant;
 import java.util.UUID;
 
 /**
@@ -16,8 +19,14 @@ import java.util.UUID;
  * */
 public record CategoryHierarchyResponseDetailDTO(
         UUID id,
-        CategoryResponseDTO category,
-        CategoryResponseDTO parentCategory,
+        UUID categoryID,
+        UUID parentCategoryID,
+        Instant createdAt,
+        Instant modifiedAt,
+        UUID createdByID,
+        String createdByName,
+        UUID modifiedByID,
+        String modifiedByName,
         boolean deleted
 ) implements CategoryHierarchyResponseDTO{
 }

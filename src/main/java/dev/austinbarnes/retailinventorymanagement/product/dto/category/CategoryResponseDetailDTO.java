@@ -2,6 +2,8 @@ package dev.austinbarnes.retailinventorymanagement.product.dto.category;
 
 import java.time.Instant;
 import java.util.UUID;
+
+import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.discount.DiscountResponseDTO;
 
 /**
@@ -30,8 +32,10 @@ public record CategoryResponseDetailDTO(
         Instant createdAt,
         Instant modifiedAt,
         UUID createdByID,
+        String createdByName,
         UUID modifiedByID,
-        DiscountResponseDTO discount,
+        String modifiedByName,
+        UUID discountID,
         boolean deleted
 ) implements CategoryResponseDTO{
 }

@@ -1,5 +1,8 @@
 package dev.austinbarnes.retailinventorymanagement.product.dto.brand;
 
+import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeResponseDTO;
+
+import java.time.Instant;
 import java.util.UUID;
 
 /**
@@ -16,6 +19,12 @@ public record BrandResponseDetailDTO(
         UUID id,
         String name,
         String description,
+        Instant createdAt,
+        Instant modifiedAt,
+        UUID createdByID,
+        String createdByName,
+        UUID modifiedByID,
+        String modifiedByName,
         boolean deleted
 ) implements BrandResponseDTO {
 }

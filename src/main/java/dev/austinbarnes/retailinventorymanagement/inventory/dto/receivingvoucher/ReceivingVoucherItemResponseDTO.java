@@ -13,5 +13,5 @@ public interface ReceivingVoucherItemResponseDTO {
     BigDecimal costUnit();
     BigDecimal costLineTotal();
     ProductResponseDTO product();
-    ReceivingVoucherResponseDTO receivingVoucher();
+    UUID receivingVoucherID();
 }
