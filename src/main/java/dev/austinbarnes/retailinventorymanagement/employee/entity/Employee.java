@@ -1,5 +1,6 @@
 package dev.austinbarnes.retailinventorymanagement.employee.entity;
 
+import dev.austinbarnes.retailinventorymanagement.auth.entity.User;
 import dev.austinbarnes.retailinventorymanagement.util.CodeGenerator;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -24,6 +25,9 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL)
+    private User user;
 
     @Column(name = "name_first", nullable = false)
     @NotNull

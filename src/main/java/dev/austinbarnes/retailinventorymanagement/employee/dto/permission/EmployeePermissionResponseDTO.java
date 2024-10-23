@@ -1,11 +1,11 @@
-package dev.austinbarnes.retailinventorymanagement.employee.dto.role;
+package dev.austinbarnes.retailinventorymanagement.employee.dto.permission;
 
 import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeResponseDTO;
 
 import java.util.UUID;
 
-public interface EmployeeRoleResponseDTO {
+public interface EmployeePermissionResponseDTO {
     UUID id();
     EmployeeResponseDTO employee();
-    RoleResponseDTO role();
+    PermissionResponseDTO permission();
 }

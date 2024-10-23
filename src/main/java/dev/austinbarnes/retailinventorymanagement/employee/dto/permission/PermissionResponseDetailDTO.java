@@ -1,11 +1,9 @@
-package dev.austinbarnes.retailinventorymanagement.employee.dto.role;
-
-import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeResponseDTO;
+package dev.austinbarnes.retailinventorymanagement.employee.dto.permission;
 
 import java.time.Instant;
 import java.util.UUID;
 
-public record RoleResponseDetailDTO(
+public record PermissionResponseDetailDTO(
         UUID id,
         String name,
         String description,
@@ -16,5 +14,5 @@ public record RoleResponseDetailDTO(
         UUID modifiedByID,
         String modifiedByName,
         boolean deleted
-) implements RoleResponseDTO {
+) implements PermissionResponseDTO {
 }

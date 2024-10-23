@@ -14,19 +14,19 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "role")
+@Table(name = "permission")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class Role {
+public class Permission {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "name", nullable = false)
     @NotNull
-    @Size(min = 3, max = 60, message = "Name of role must be 3 to 60 characters")
+    @Size(min = 3, max = 60, message = "Name of permission must be 3 to 60 characters")
     private String name;
 
     @Column(name = "description")
