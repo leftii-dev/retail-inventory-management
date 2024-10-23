@@ -2,8 +2,8 @@ package dev.austinbarnes.retailinventorymanagement.mapper;
 
 import dev.austinbarnes.retailinventorymanagement.employee.mapper.EmployeeHierarchyMapper;
 import dev.austinbarnes.retailinventorymanagement.employee.mapper.EmployeeMapper;
-import dev.austinbarnes.retailinventorymanagement.employee.mapper.EmployeeRoleMapper;
-import dev.austinbarnes.retailinventorymanagement.employee.mapper.RoleMapper;
+import dev.austinbarnes.retailinventorymanagement.employee.mapper.EmployeePermissionMapper;
+import dev.austinbarnes.retailinventorymanagement.employee.mapper.PermissionMapper;
 import dev.austinbarnes.retailinventorymanagement.inventory.mapper.*;
 import dev.austinbarnes.retailinventorymanagement.location.mapper.*;
 import dev.austinbarnes.retailinventorymanagement.product.mapper.*;
@@ -13,8 +13,8 @@ import org.mapstruct.Mapper;
 public interface GlobalMapper extends
         EmployeeHierarchyMapper,
         EmployeeMapper,
-        EmployeeRoleMapper,
-        RoleMapper,
+        EmployeePermissionMapper,
+        PermissionMapper,
         InventoryMapper,
         PurchaseOrderItemMapper,
         PurchaseOrderMapper,

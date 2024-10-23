@@ -13,12 +13,12 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "employee_role")
+@Table(name = "employee_permission")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class EmployeeRole {
+public class EmployeePermission {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -28,8 +28,8 @@ public class EmployeeRole {
     private Employee employee;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id", referencedColumnName = "id")
-    private Role role;
+    @JoinColumn(name = "permission_id", referencedColumnName = "id")
+    private Permission permission;
 
     @Column(name = "created_at", updatable = false)
     @CreationTimestamp
