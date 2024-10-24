@@ -1,7 +1,5 @@
 package dev.austinbarnes.retailinventorymanagement.location.dto.type;
 
-import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeResponseDTO;
-
 import java.time.Instant;
 import java.util.UUID;
 

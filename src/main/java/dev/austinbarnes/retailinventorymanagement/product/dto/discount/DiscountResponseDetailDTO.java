@@ -1,7 +1,5 @@
 package dev.austinbarnes.retailinventorymanagement.product.dto.discount;
 
-import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeResponseDTO;
-
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;

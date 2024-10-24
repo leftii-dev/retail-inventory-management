@@ -13,20 +13,20 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-@EnableWebSecurity
 @AllArgsConstructor
+@EnableWebSecurity
 @EnableMethodSecurity
 @EnableRedisHttpSession
 public class SecurityConfig {
     @Bean
-    SecurityFilterChain springSecurityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests( auth -> {
                     auth.requestMatchers("/api/v1/shop/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
-                .oauth2Client(withDefaults())
+                .oauth2Login(withDefaults())
                 .formLogin(withDefaults())
                 .build();
     }

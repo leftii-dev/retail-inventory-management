@@ -2,10 +2,8 @@ package dev.austinbarnes.retailinventorymanagement.inventory.mapper;
 
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemResponseBasicDTO;
-import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.PurchaseOrderItem;
-import dev.austinbarnes.retailinventorymanagement.mapper.GlobalMapper;
 import dev.austinbarnes.retailinventorymanagement.mapper.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.product.mapper.ProductMapper;
 import org.mapstruct.Mapper;

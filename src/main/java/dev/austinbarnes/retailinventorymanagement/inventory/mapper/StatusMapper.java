@@ -2,10 +2,8 @@ package dev.austinbarnes.retailinventorymanagement.inventory.mapper;
 
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.status.StatusRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.status.StatusResponseBasicDTO;
-import dev.austinbarnes.retailinventorymanagement.inventory.dto.status.StatusResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.status.StatusResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Status;
-import dev.austinbarnes.retailinventorymanagement.mapper.GlobalMapper;
 import dev.austinbarnes.retailinventorymanagement.mapper.GlobalMapperConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

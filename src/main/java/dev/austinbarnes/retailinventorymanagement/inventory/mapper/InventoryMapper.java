@@ -2,11 +2,9 @@ package dev.austinbarnes.retailinventorymanagement.inventory.mapper;
 
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.inventory.InventoryRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.inventory.InventoryResponseBasicDTO;
-import dev.austinbarnes.retailinventorymanagement.inventory.dto.inventory.InventoryResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.inventory.InventoryResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Inventory;
 import dev.austinbarnes.retailinventorymanagement.location.mapper.LocationMapper;
-import dev.austinbarnes.retailinventorymanagement.mapper.GlobalMapper;
 import dev.austinbarnes.retailinventorymanagement.mapper.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.product.mapper.ProductMapper;
 import org.mapstruct.Mapper;

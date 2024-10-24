@@ -1,7 +1,5 @@
 package dev.austinbarnes.retailinventorymanagement.product.dto.product;
 
-import dev.austinbarnes.retailinventorymanagement.product.dto.discount.DiscountResponseDTO;
-
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Map;

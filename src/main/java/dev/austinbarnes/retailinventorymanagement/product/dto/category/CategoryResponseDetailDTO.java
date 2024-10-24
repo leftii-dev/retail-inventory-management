@@ -3,9 +3,6 @@ package dev.austinbarnes.retailinventorymanagement.product.dto.category;
 import java.time.Instant;
 import java.util.UUID;
 
-import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeResponseDTO;
-import dev.austinbarnes.retailinventorymanagement.product.dto.discount.DiscountResponseDTO;
-
 /**
  * Category Response Detail DTO for use in Admin panel
  * Includes details not available to outside user
@@ -18,7 +15,6 @@ import dev.austinbarnes.retailinventorymanagement.product.dto.discount.DiscountR
  * @param modifiedAt
  * @param createdByID
  * @param modifiedByID
- * @param discount
  * @param deleted
  *
  * @author Austin Barnes

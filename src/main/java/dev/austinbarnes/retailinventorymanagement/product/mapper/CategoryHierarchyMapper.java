@@ -1,10 +1,8 @@
 package dev.austinbarnes.retailinventorymanagement.product.mapper;
 
-import dev.austinbarnes.retailinventorymanagement.mapper.GlobalMapper;
 import dev.austinbarnes.retailinventorymanagement.mapper.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryHierarchyRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryHierarchyResponseBasicDTO;
-import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryHierarchyResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryHierarchyResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.product.entity.CategoryHierarchy;
 import org.mapstruct.Mapper;

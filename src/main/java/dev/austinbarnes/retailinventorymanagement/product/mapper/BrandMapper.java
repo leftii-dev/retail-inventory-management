@@ -1,10 +1,8 @@
 package dev.austinbarnes.retailinventorymanagement.product.mapper;
 
-import dev.austinbarnes.retailinventorymanagement.mapper.GlobalMapper;
 import dev.austinbarnes.retailinventorymanagement.mapper.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.product.dto.brand.BrandRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.brand.BrandResponseBasicDTO;
-import dev.austinbarnes.retailinventorymanagement.product.dto.brand.BrandResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.brand.BrandResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.product.entity.Brand;
 import org.mapstruct.Mapper;

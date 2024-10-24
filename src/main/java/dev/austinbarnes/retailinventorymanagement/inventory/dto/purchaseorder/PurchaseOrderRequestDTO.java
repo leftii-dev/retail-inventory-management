@@ -1,6 +1,5 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;

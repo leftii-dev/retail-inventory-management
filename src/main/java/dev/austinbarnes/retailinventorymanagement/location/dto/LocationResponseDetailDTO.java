@@ -1,6 +1,5 @@
 package dev.austinbarnes.retailinventorymanagement.location.dto;
 
-import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.type.LocationTypeResponseDTO;
 
 import java.time.Instant;

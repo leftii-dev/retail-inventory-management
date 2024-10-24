@@ -82,10 +82,15 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 		<dependency>
-			<groupId>com.vladmihalcea</groupId>
-			<artifactId>hibernate-types-60</artifactId>
-			<version>2.21.1</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+			<version>3.3.2</version>
 		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>com.vladmihalcea</groupId>-->
+<!--			<artifactId>hibernate-types-60</artifactId>-->
+<!--			<version>2.21.1</version>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>

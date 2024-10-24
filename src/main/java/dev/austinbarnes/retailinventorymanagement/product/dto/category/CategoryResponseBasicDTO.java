@@ -1,7 +1,5 @@
 package dev.austinbarnes.retailinventorymanagement.product.dto.category;
 
-import dev.austinbarnes.retailinventorymanagement.product.dto.discount.DiscountResponseDTO;
-
 import java.util.UUID;
 
 /**
@@ -11,7 +9,7 @@ import java.util.UUID;
  * @param categoryCode
  * @param name
  * @param description
- * @param discount
+
  *
  * @author Austin Barnes
  * @since 2024

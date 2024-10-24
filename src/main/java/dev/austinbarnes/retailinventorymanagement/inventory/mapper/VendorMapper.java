@@ -2,10 +2,8 @@ package dev.austinbarnes.retailinventorymanagement.inventory.mapper;
 
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.vendor.VendorRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.vendor.VendorResponseBasicDTO;
-import dev.austinbarnes.retailinventorymanagement.inventory.dto.vendor.VendorResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.vendor.VendorResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Vendor;
-import dev.austinbarnes.retailinventorymanagement.mapper.GlobalMapper;
 import dev.austinbarnes.retailinventorymanagement.mapper.GlobalMapperConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

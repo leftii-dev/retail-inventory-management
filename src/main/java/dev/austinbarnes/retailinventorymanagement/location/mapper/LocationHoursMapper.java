@@ -2,10 +2,8 @@ package dev.austinbarnes.retailinventorymanagement.location.mapper;
 
 import dev.austinbarnes.retailinventorymanagement.location.dto.hours.LocationHoursRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.hours.LocationHoursResponseBasicDTO;
-import dev.austinbarnes.retailinventorymanagement.location.dto.hours.LocationHoursResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.hours.LocationHoursResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.location.entity.LocationHours;
-import dev.austinbarnes.retailinventorymanagement.mapper.GlobalMapper;
 import dev.austinbarnes.retailinventorymanagement.mapper.GlobalMapperConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

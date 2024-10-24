@@ -1,7 +1,6 @@
 package dev.austinbarnes.retailinventorymanagement.employee.entity;
 
 import dev.austinbarnes.retailinventorymanagement.auth.entity.User;
-import dev.austinbarnes.retailinventorymanagement.util.CodeGenerator;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

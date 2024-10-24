@@ -1,6 +1,5 @@
 package dev.austinbarnes.retailinventorymanagement.location.dto.warehouse;
 
-import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.LocationResponseDTO;
 
 import java.time.Instant;

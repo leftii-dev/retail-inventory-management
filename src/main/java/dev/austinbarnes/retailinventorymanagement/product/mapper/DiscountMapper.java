@@ -1,10 +1,8 @@
 package dev.austinbarnes.retailinventorymanagement.product.mapper;
 
-import dev.austinbarnes.retailinventorymanagement.mapper.GlobalMapper;
 import dev.austinbarnes.retailinventorymanagement.mapper.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.product.dto.discount.DiscountRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.discount.DiscountResponseBasicDTO;
-import dev.austinbarnes.retailinventorymanagement.product.dto.discount.DiscountResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.discount.DiscountResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.product.entity.Discount;
 import org.mapstruct.Mapper;

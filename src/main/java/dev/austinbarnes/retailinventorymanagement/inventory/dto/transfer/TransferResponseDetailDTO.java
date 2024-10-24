@@ -1,8 +1,5 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer;
 
-import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeResponseDTO;
-import dev.austinbarnes.retailinventorymanagement.location.dto.LocationResponseDTO;
-
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;

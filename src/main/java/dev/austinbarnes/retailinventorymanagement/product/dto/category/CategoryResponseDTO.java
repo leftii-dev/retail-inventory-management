@@ -1,7 +1,5 @@
 package dev.austinbarnes.retailinventorymanagement.product.dto.category;
 
-import dev.austinbarnes.retailinventorymanagement.product.dto.discount.DiscountResponseDTO;
-
 import java.util.UUID;
 
 /**

@@ -5,7 +5,6 @@ import dev.austinbarnes.retailinventorymanagement.inventory.dto.status.StatusRes
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.vendor.VendorResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.LocationResponseDTO;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 public interface ReceivingVoucherResponseDTO {

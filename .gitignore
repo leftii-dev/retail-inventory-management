@@ -33,4 +33,5 @@ build/
 
 ### VS Code ###
 .vscode/
-/src/main/resources/schema.sql
+/src/main/resources/olfdschema
+/docker-compose.yml

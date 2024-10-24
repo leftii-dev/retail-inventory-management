@@ -1,7 +1,5 @@
 package dev.austinbarnes.retailinventorymanagement.product.dto.category;
 
-import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeResponseDTO;
-
 import java.time.Instant;
 import java.util.UUID;
 
