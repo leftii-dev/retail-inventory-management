@@ -4,13 +4,16 @@ import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.Employee
 import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
-import dev.austinbarnes.retailinventorymanagement.mapper.GlobalMapperConfig;
+import dev.austinbarnes.retailinventorymanagement.common.GlobalMapperConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 @Mapper(config = GlobalMapperConfig.class)
 public interface EmployeeMapper {
+
+    @Mapping(target = "employeeCode", ignore = true)
+    @Mapping(target = "user", ignore = true)
     Employee toEntity(EmployeeRequestDTO employeeRequestDTO);
 
     @Named("basicEmployee")
