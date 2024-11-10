@@ -4,7 +4,7 @@ import dev.austinbarnes.retailinventorymanagement.location.dto.type.LocationType
 import dev.austinbarnes.retailinventorymanagement.location.dto.type.LocationTypeResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.type.LocationTypeResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.location.entity.LocationType;
-import dev.austinbarnes.retailinventorymanagement.mapper.GlobalMapperConfig;
+import dev.austinbarnes.retailinventorymanagement.common.GlobalMapperConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;

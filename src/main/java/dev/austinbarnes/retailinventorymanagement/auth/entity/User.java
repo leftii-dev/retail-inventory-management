@@ -3,10 +3,8 @@ package dev.austinbarnes.retailinventorymanagement.auth.entity;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -28,6 +26,10 @@ public class User implements Serializable {
     @Email(message = "Invalid email format")
     private String email;
 
+    @Column(name = "name")
+    @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
+    private String name;
+
     @Column(name = "password")
     private String password;
 
@@ -37,9 +39,11 @@ public class User implements Serializable {
     @Column(name = "oauth_provider_id", unique = true)
     private String oauthProviderId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "user")
     private Employee employee;
+
+    @Column(name = "picture_url")
+    private String pictureUrl;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

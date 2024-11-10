@@ -1,5 +1,6 @@
-package dev.austinbarnes.retailinventorymanagement.auth;
+package dev.austinbarnes.retailinventorymanagement.auth.credentiallogin;
 
+import dev.austinbarnes.retailinventorymanagement.auth.CustomUserPrincipal;
 import dev.austinbarnes.retailinventorymanagement.auth.entity.User;
 import dev.austinbarnes.retailinventorymanagement.auth.repo.UserRepository;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
@@ -35,7 +36,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             user = employee.getUser();
         }
 
-        return new CustomUserDetails(user, loginIdentifier);
+        return CustomUserPrincipal.create(user, loginIdentifier);
     }
 
     private boolean isEmail(String input) {

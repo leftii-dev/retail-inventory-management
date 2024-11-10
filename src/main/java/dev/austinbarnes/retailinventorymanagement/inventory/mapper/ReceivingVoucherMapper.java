@@ -5,7 +5,7 @@ import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.ReceivingVoucher;
 import dev.austinbarnes.retailinventorymanagement.location.mapper.LocationMapper;
-import dev.austinbarnes.retailinventorymanagement.mapper.GlobalMapperConfig;
+import dev.austinbarnes.retailinventorymanagement.common.GlobalMapperConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;

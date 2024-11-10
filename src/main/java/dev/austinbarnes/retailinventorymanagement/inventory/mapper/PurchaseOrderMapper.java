@@ -4,7 +4,7 @@ import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.Pu
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.PurchaseOrder;
-import dev.austinbarnes.retailinventorymanagement.mapper.GlobalMapperConfig;
+import dev.austinbarnes.retailinventorymanagement.common.GlobalMapperConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;

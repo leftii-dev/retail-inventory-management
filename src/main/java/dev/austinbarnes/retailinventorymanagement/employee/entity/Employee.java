@@ -25,7 +25,8 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.MERGE, optional = false)
+    @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
     private User user;
 
     @Column(name = "name_first", nullable = false)
@@ -66,12 +67,12 @@ public class Employee {
     private Instant modifiedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by", nullable = false, updatable = false, referencedColumnName = "id")
-    Employee createdBy;
+    @JoinColumn(name = "created_by",  updatable = false, referencedColumnName = "id")
+    private Employee createdBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "modified_by", nullable = false, updatable = false, referencedColumnName = "id")
-    Employee modifiedBy;
+    @JoinColumn(name = "modified_by",  updatable = false, referencedColumnName = "id")
+    private Employee modifiedBy;
 
     @Column(name = "is_active", nullable = false)
     @NotNull

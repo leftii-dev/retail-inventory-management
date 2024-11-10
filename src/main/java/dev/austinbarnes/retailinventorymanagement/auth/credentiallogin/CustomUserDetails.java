@@ -1,5 +1,6 @@
-package dev.austinbarnes.retailinventorymanagement.auth;
+package dev.austinbarnes.retailinventorymanagement.auth.credentiallogin;
 
+import dev.austinbarnes.retailinventorymanagement.auth.CustomUserPrincipal;
 import dev.austinbarnes.retailinventorymanagement.auth.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,6 +17,10 @@ public class CustomUserDetails implements UserDetails {
     public CustomUserDetails(User user, String loginIdentifier) {
         this.user = user;
         this.loginIdentifier = loginIdentifier;
+    }
+
+    public CustomUserPrincipal toCustomUserPrincipal() {
+        return CustomUserPrincipal.create(user, loginIdentifier);
     }
 
     @Override
