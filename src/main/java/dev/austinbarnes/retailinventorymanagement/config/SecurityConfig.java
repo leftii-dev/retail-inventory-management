@@ -57,17 +57,6 @@ public class SecurityConfig {
                 .exceptionHandling(exc -> exc
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 )
-//                .formLogin(form -> { form
-//                        .usernameParameter("email")
-//                        .passwordParameter("password")
-//                        .loginProcessingUrl("/api/v1/auth/user")
-//                        .successHandler((request, response, authentication) -> {
-//                            response.setStatus(HttpStatus.OK.value());
-//                        })
-//                        .failureHandler((request, response, exception) -> {
-//                            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-//                        });
-//                })
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(authorizationEndpointConfig ->
                                 authorizationEndpointConfig.authorizationRequestResolver(customAuthorizationRequestResolver(clientRegistrationRepository)))

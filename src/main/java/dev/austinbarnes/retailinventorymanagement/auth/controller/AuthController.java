@@ -1,5 +1,7 @@
 package dev.austinbarnes.retailinventorymanagement.auth.controller;
 
+import dev.austinbarnes.retailinventorymanagement.auth.dto.EmployeeLoginRequestDto;
+import dev.austinbarnes.retailinventorymanagement.auth.dto.RegistrationRequestDto;
 import dev.austinbarnes.retailinventorymanagement.auth.dto.UserLoginRequestDto;
 import dev.austinbarnes.retailinventorymanagement.auth.dto.UserResponseDto;
 import dev.austinbarnes.retailinventorymanagement.auth.service.AuthService;
@@ -8,12 +10,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.security.Principal;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,17 +34,15 @@ public class AuthController {
         return authService.authenticateUser(loginRequest);
     }
 
-//    @PostMapping("/employee")
-//    public ResponseEntity<ApiResponseDto<UserResponseDto>> employeeLogin(@Valid @RequestBody EmployeeLoginRequestDto loginRequest) {
-//        return authService.authenticateEmployee(loginRequest);
-//    }
+    @PostMapping("/employee")
+    public ResponseEntity<ApiResponseDto<UserResponseDto>> employeeLogin(@Valid @RequestBody EmployeeLoginRequestDto loginRequest) {
+        return authService.authenticateEmployee(loginRequest);
+    }
 
-//    @PostMapping("/register")
-//    public ResponseEntity<?> register(@Valid @RequestBody RegistrationRequest registrationRequest) {
-//        return authService.register(registrationRequest)
-//                .map(user -> ResponseEntity.ok(new ApiResponse(true, "Registration successful. Please check your email for activation link.")))
-//                .orElse(ResponseEntity.badRequest().body(new ApiResponse(false, "Registration failed. Email might be already in use.")));
-//    }
+    @PostMapping("/register")
+    public ResponseEntity<ApiResponseDto<UserResponseDto>> register(@Valid @RequestBody RegistrationRequestDto registrationRequest) {
+        return authService.register(registrationRequest);
+    }
 //
 //    @GetMapping("/activate/{token}")
 //    public ResponseEntity<?> activateAccount(@PathVariable String token) {
@@ -74,5 +76,11 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.FOUND)
                 .location(URI.create("/oauth2/authorization/github"))
                 .build();
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponseDto<Principal>> getMe(HttpServletRequest request){
+        Principal principal = request.getUserPrincipal();
+        return ApiResponseDto.ok(principal);
     }
 }

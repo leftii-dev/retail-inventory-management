@@ -1,5 +1,6 @@
 package dev.austinbarnes.retailinventorymanagement.auth.mapper;
 
+import dev.austinbarnes.retailinventorymanagement.auth.dto.RegistrationRequestDto;
 import dev.austinbarnes.retailinventorymanagement.auth.dto.UserRequestDto;
 import dev.austinbarnes.retailinventorymanagement.auth.dto.UserResponseBasicDto;
 import dev.austinbarnes.retailinventorymanagement.auth.dto.UserResponseDetailDto;
@@ -14,6 +15,8 @@ public interface UserMapper {
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "roles", ignore = true)
     User toEntity(UserRequestDto userRequestDto);
+    
+    User toEntity(RegistrationRequestDto registrationRequestDto);
 
     @Named("basicUser")
     UserResponseBasicDto toBasicDto(User user);
