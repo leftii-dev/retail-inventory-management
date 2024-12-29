@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 @Data
 public class CustomUserPrincipal implements OAuth2User, UserDetails {
+    private final User user;
     private UUID id;
     private String email;
     private String name;
@@ -25,6 +26,7 @@ public class CustomUserPrincipal implements OAuth2User, UserDetails {
     private boolean credentialsNonExpired;
 
     public CustomUserPrincipal(User user, String loginIdentifier) {
+        this.user = user;
         this.id = user.getId();
         this.email = user.getEmail();
         this.name = user.getName();

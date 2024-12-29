@@ -1,6 +1,5 @@
 package dev.austinbarnes.retailinventorymanagement.auth.credentiallogin;
 
-import dev.austinbarnes.retailinventorymanagement.auth.CustomUserPrincipal;
 import dev.austinbarnes.retailinventorymanagement.auth.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,16 +18,13 @@ public class CustomUserDetails implements UserDetails {
         this.loginIdentifier = loginIdentifier;
     }
 
-    public CustomUserPrincipal toCustomUserPrincipal() {
-        return CustomUserPrincipal.create(user, loginIdentifier);
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public String getPassword() {

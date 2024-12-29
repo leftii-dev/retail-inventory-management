@@ -10,17 +10,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.security.Principal;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/auth")
@@ -43,13 +38,11 @@ public class AuthController {
     public ResponseEntity<ApiResponseDto<UserResponseDto>> register(@Valid @RequestBody RegistrationRequestDto registrationRequest) {
         return authService.register(registrationRequest);
     }
-//
-//    @GetMapping("/activate/{token}")
-//    public ResponseEntity<?> activateAccount(@PathVariable String token) {
-//        return authService.activateAccount(token)
-//                .map(user -> ResponseEntity.ok(new ApiResponse(true, "Account activated successfully")))
-//                .orElse(ResponseEntity.badRequest().body(new ApiResponse(false, "Invalid or expired activation token")));
-//    }
+
+    @PostMapping("/activate/{token}")
+    public ResponseEntity<?> activateAccount(@PathVariable String token) {
+        return authService.activate(token);
+    }
 
     // Invalidates session
     @PostMapping("/logout")

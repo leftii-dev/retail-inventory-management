@@ -1,5 +1,6 @@
 package dev.austinbarnes.retailinventorymanagement.config;
 
+import dev.austinbarnes.retailinventorymanagement.auth.credentiallogin.CustomAuthenticationProvider;
 import dev.austinbarnes.retailinventorymanagement.auth.oauth2.CustomAuthorizationRequestResolver;
 import dev.austinbarnes.retailinventorymanagement.auth.oauth2.OAuth2CustomFailureHandler;
 import dev.austinbarnes.retailinventorymanagement.auth.oauth2.OAuth2CustomSuccessHandler;
@@ -11,14 +12,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
@@ -26,6 +24,7 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 import java.util.List;
 
 @Configuration
@@ -38,9 +37,10 @@ public class SecurityConfig {
     private final OAuth2UserService oAuthUserService;
     private final OAuth2CustomSuccessHandler oAuth2CustomSuccessHandler;
     private final OAuth2CustomFailureHandler oAuth2CustomFailureHandler;
+    private final CustomAuthenticationProvider customAuthenticationProvider;
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource, AuthenticationConfiguration authenticationConfiguration, InMemoryClientRegistrationRepository clientRegistrationRepository) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http, InMemoryClientRegistrationRepository clientRegistrationRepository) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
 //                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -54,6 +54,7 @@ public class SecurityConfig {
                                             "/favicon.ico").permitAll()
                         .anyRequest().authenticated()
                 )
+                .authenticationProvider(customAuthenticationProvider)
                 .exceptionHandling(exc -> exc
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 )
@@ -86,11 +87,6 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
     @Bean

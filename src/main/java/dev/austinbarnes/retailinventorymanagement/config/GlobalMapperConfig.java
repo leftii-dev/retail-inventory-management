@@ -1,4 +1,4 @@
-package dev.austinbarnes.retailinventorymanagement.common;
+package dev.austinbarnes.retailinventorymanagement.config;
 
 import org.mapstruct.MapperConfig;
 import org.mapstruct.NullValueCheckStrategy;

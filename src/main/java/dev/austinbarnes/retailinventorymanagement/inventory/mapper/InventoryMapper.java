@@ -5,7 +5,7 @@ import dev.austinbarnes.retailinventorymanagement.inventory.dto.inventory.Invent
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.inventory.InventoryResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Inventory;
 import dev.austinbarnes.retailinventorymanagement.location.mapper.LocationMapper;
-import dev.austinbarnes.retailinventorymanagement.common.GlobalMapperConfig;
+import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.product.mapper.ProductMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
