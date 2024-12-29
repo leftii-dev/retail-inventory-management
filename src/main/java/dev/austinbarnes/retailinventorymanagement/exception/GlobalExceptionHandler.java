@@ -105,4 +105,12 @@ public class GlobalExceptionHandler {
 
         return ApiResponseDto.badRequest("Activation token expired. Check your email for a new activation link");
     }
+
+    // Handle DuplicateEmailRegistrationException (when user tries to create account with email that already exists)
+    @ExceptionHandler(DuplicateEmailRegistrationException.class)
+    public ResponseEntity<ApiResponseDto<Void>> handleDuplicateEmailRegistrationException(DuplicateEmailRegistrationException ex){
+        log.error("Duplicate Email Registration {} - {}", ex.getEmail(), ex.getMessage());
+
+        return ApiResponseDto.badRequest("This email has already been registered. Try logging in.");
+    }
 }
