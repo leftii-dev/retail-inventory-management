@@ -4,7 +4,7 @@ import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.Transfe
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Transfer;
-import dev.austinbarnes.retailinventorymanagement.common.GlobalMapperConfig;
+import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;

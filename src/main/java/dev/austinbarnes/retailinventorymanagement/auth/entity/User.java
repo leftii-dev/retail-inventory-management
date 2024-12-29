@@ -4,9 +4,11 @@ import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
@@ -20,7 +22,7 @@ import java.util.UUID;
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    UUID id;
+    private UUID id;
 
     @Column(name = "email", unique = true)
     @Email(message = "Invalid email format")
@@ -53,7 +55,7 @@ public class User implements Serializable {
     )
     private Set<Role> roles;
 
-    private boolean enabled = true;
+    private boolean enabled = false;
     private boolean accountNonExpired = true;
     private boolean accountNonLocked = true;
     private boolean credentialsNonExpired = true;

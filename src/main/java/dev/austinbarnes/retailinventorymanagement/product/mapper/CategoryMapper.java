@@ -1,6 +1,6 @@
 package dev.austinbarnes.retailinventorymanagement.product.mapper;
 
-import dev.austinbarnes.retailinventorymanagement.common.GlobalMapperConfig;
+import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryResponseDetailDTO;

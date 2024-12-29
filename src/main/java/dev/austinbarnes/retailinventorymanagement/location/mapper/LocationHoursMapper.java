@@ -4,7 +4,7 @@ import dev.austinbarnes.retailinventorymanagement.location.dto.hours.LocationHou
 import dev.austinbarnes.retailinventorymanagement.location.dto.hours.LocationHoursResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.hours.LocationHoursResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.location.entity.LocationHours;
-import dev.austinbarnes.retailinventorymanagement.common.GlobalMapperConfig;
+import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;

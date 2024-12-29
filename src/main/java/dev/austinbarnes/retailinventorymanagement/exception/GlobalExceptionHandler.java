@@ -2,9 +2,9 @@ package dev.austinbarnes.retailinventorymanagement.exception;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
@@ -72,5 +72,37 @@ public class GlobalExceptionHandler {
         log.error("No resource found", ex);
 
         return ApiResponseDto.notFound("No resource found");
+    }
+
+    // Handle ActivationTokenNotFound exception (bad token/expired)
+    @ExceptionHandler(ActivationTokenNotFoundException.class)
+    public ResponseEntity<ApiResponseDto<String>> handleActivationTokenNotFoundException(Exception ex){
+        log.error("Activation Token Not Found", ex);
+
+        return ApiResponseDto.badRequest("Activation token not found. Token may have expired. Try logging in to issue a new token.");
+    }
+
+    // Handle DisabledException when non-activated account attempts login
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<ApiResponseDto<Void>> handleDisabledException(Exception ex){
+        log.error("Account Disabled", ex);
+
+        return ApiResponseDto.badRequest("Account Disabled. Check email for activation link or try again.");
+    }
+
+    // Handle AccountNotActiveException (Happens when activation token is not expired)
+    @ExceptionHandler(AccountNotActiveException.class)
+    public ResponseEntity<ApiResponseDto<Void>> handleAccountNotActiveException(Exception ex){
+        log.error("Account Not Active", ex);
+
+        return ApiResponseDto.badRequest("Account Not Active. Check your email for the activation link and try again.");
+    }
+
+    // Handle AccountActivationTokenExpiredException (Happens when account was not activated and token expired)
+    @ExceptionHandler(AccountActivationTokenExpiredException.class)
+    public ResponseEntity<ApiResponseDto<Void>> handleAccountActivationTokenExpiredException(Exception ex){
+        log.error("Account Activation Token Expired", ex);
+
+        return ApiResponseDto.badRequest("Activation token expired. Check your email for a new activation link");
     }
 }

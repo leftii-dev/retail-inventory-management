@@ -1,14 +1,16 @@
 package dev.austinbarnes.retailinventorymanagement.auth.service;
 
 import dev.austinbarnes.retailinventorymanagement.auth.dto.*;
-import dev.austinbarnes.retailinventorymanagement.auth.entity.Role;
+import dev.austinbarnes.retailinventorymanagement.auth.entity.ActivationToken;
 import dev.austinbarnes.retailinventorymanagement.auth.entity.User;
 import dev.austinbarnes.retailinventorymanagement.auth.mapper.UserMapper;
+import dev.austinbarnes.retailinventorymanagement.auth.repo.ActivationTokenRepository;
 import dev.austinbarnes.retailinventorymanagement.auth.repo.RoleRepository;
 import dev.austinbarnes.retailinventorymanagement.auth.repo.UserRepository;
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import dev.austinbarnes.retailinventorymanagement.employee.repo.EmployeeRepository;
+import dev.austinbarnes.retailinventorymanagement.exception.ActivationTokenNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
@@ -21,14 +23,13 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -36,8 +37,13 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final EmployeeRepository employeeRepository;
+    private final RoleRepository roleRepository;
     private final UserMapper userMapper;
     private final AuthenticationManager authenticationManager;
+    private final ActivationTokenRepository activationTokenRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final ActivationTokenService activationTokenService;
+
 
     @Transactional
     public ResponseEntity<ApiResponseDto<UserResponseDto>> authenticateUser(UserLoginRequestDto loginRequestDto) {
@@ -49,6 +55,7 @@ public class AuthService {
 
         return ApiResponseDto.ok(userResponse);
     }
+
 
     public ResponseEntity<ApiResponseDto<UserResponseDto>> authenticateEmployee(EmployeeLoginRequestDto loginRequestDto) {
         Employee employee = employeeRepository.findByEmployeeCode("EMP-" + loginRequestDto.employeeCode())
@@ -65,8 +72,25 @@ public class AuthService {
     }
 
     public ResponseEntity<ApiResponseDto<UserResponseDto>> register(RegistrationRequestDto registrationRequest){
-        return ApiResponseDto.ok(userMapper.toBasicDto(userRepository.save(userMapper.toEntity(registrationRequest)))
-        );
+            User user = userRepository.save(userMapper.toEntity(registrationRequest, roleRepository, passwordEncoder));
+
+            activationTokenService.activateAndSendEmail(user.getId(), registrationRequest.email());
+            return ApiResponseDto.created(userMapper.toBasicDto(user));
+    }
+
+    public ResponseEntity<ApiResponseDto<UserResponseDto>> activate(String token) {
+        ActivationToken activationToken = activationTokenRepository.findById(UUID.fromString(token))
+                .orElseThrow(() -> new ActivationTokenNotFoundException(token));
+
+        User user = userRepository.findById(activationToken.getUserId())
+                .orElseThrow(() -> new UsernameNotFoundException("User attached to token not found. Try again"));
+
+        user.setEnabled(true);
+        userRepository.save(user);
+
+        activationTokenRepository.delete(activationToken);
+
+        return ApiResponseDto.ok(userMapper.toBasicDto(user));
     }
 
     private void authenticate(String email, String password) {

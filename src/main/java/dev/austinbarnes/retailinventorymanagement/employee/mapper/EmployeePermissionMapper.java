@@ -4,7 +4,7 @@ import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.Employ
 import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.EmployeePermissionResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.EmployeePermissionResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.EmployeePermission;
-import dev.austinbarnes.retailinventorymanagement.common.GlobalMapperConfig;
+import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
