@@ -26,6 +26,8 @@ import java.util.UUID;
  */
 public class EmployeeController {
     private final EmployeeRepository employeeRepository;
+    private final EmployeeService employeeService;
+    private final HierarchyService hierarchyService;
 
     @PostMapping
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
@@ -56,7 +58,7 @@ public class EmployeeController {
 
     @PutMapping("/{employeeID}")
     public ResponseEntity<ApiResponseDto<EmployeeResponseDTO>> updateEmployee(@PathVariable UUID employeeID, @RequestBody @Valid EmployeeRequestDTO request) {
-        log.info("Update employee {} request: {}", employeeID, request);
+        log.info("Update employeeId: {} with request: {}", employeeID, request);
         return employeeService.updateEmployee(employeeID, request);
     }
 
@@ -71,7 +73,7 @@ public class EmployeeController {
             @RequestBody @Valid EmployeeHierarchyRequestDTO request
     ) {
         log.info("Create employee hierarchy request: {}", request);
-        return employeeService.createEmployeeHierarchy(request);
+        return hierarchyService.createEmployeeHierarchy(request);
     }
 
     @PutMapping("/hierarchy")
@@ -79,24 +81,24 @@ public class EmployeeController {
             @RequestBody @Valid EmployeeHierarchyRequestDTO request
     ) {
         log.info("Update employee hierarchy request: {}", request);
-        return employeeService.updateHierarchy(request);
+        return hierarchyService.updateHierarchy(request);
     }
 
     @GetMapping("/hierarchy/{userID}")
     public ResponseEntity<ApiResponseDto<List<EmployeeHierarchyResponseDTO>>> getEmployeeHierarchy(@PathVariable UUID userID) {
         log.info("Get employee hierarchy request: {}", userID);
-        return employeeService.getEmployeeHierarchy(userID);
+        return hierarchyService.getEmployeeHierarchy(userID);
     }
 
     @GetMapping("/hierarchy")
     public ResponseEntity<ApiResponseDto<List<EmployeeHierarchyResponseDTO>>> getEmployeeHierarchyAll() {
         log.info("Get employee hierarchy all");
-        return employeeService.getEmployeeHierarchyAll();
+        return hierarchyService.getEmployeeHierarchyAll();
     }
 
     @DeleteMapping("/hierarchy")
     public ResponseEntity<ApiResponseDto<Void>> deleteEmployeeHierarchyRelationship(@RequestBody @Valid EmployeeHierarchyRequestDTO request) {
-        log.info("Delete employee hierarchy relationship {}", request);
-        return employeeService.deleteEmployeeHierarchyRelationship(request);
+        log.info("Delete hierarchy relationship {}", request);
+        return hierarchyService.deleteEmployeeHierarchyRelationship(request);
     }
 }
