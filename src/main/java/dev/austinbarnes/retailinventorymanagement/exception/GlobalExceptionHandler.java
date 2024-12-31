@@ -107,11 +107,20 @@ public class GlobalExceptionHandler {
         return ApiResponseDto.badRequest("Activation token expired. Check your email for a new activation link");
     }
 
+
     // Handle EntityNotFoundExceptions (Used in .stream().map() methods to build proper response
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ApiResponseDto<String>> handleEntityNotFoundException(Exception ex){
         log.error("Entity Not Found", ex);
 
         return ApiResponseDto.badRequest(ex.getMessage());
+
+    // Handle DuplicateEmailRegistrationException (when user tries to create account with email that already exists)
+    @ExceptionHandler(DuplicateEmailRegistrationException.class)
+    public ResponseEntity<ApiResponseDto<Void>> handleDuplicateEmailRegistrationException(DuplicateEmailRegistrationException ex){
+        log.error("Duplicate Email Registration {} - {}", ex.getEmail(), ex.getMessage());
+
+        return ApiResponseDto.badRequest("This email has already been registered. Try logging in.");
+
     }
 }

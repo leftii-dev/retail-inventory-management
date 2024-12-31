@@ -11,6 +11,7 @@ import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import dev.austinbarnes.retailinventorymanagement.employee.repo.EmployeeRepository;
 import dev.austinbarnes.retailinventorymanagement.exception.ActivationTokenNotFoundException;
+import dev.austinbarnes.retailinventorymanagement.exception.DuplicateEmailRegistrationException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
@@ -72,6 +73,9 @@ public class AuthService {
     }
 
     public ResponseEntity<ApiResponseDto<UserResponseDto>> register(RegistrationRequestDto registrationRequest){
+            if(userRepository.findByEmail(registrationRequest.email()).isPresent()){
+                throw new DuplicateEmailRegistrationException(registrationRequest.email(), "Email already registered.");
+            }
             User user = userRepository.save(userMapper.toEntity(registrationRequest, roleRepository, passwordEncoder));
 
             activationTokenService.activateAndSendEmail(user.getId(), registrationRequest.email());
