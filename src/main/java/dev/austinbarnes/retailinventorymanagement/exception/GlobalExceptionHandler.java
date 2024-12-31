@@ -1,6 +1,7 @@
 package dev.austinbarnes.retailinventorymanagement.exception;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -84,7 +85,7 @@ public class GlobalExceptionHandler {
 
     // Handle DisabledException when non-activated account attempts login
     @ExceptionHandler(DisabledException.class)
-    public ResponseEntity<ApiResponseDto<Void>> handleDisabledException(Exception ex){
+    public ResponseEntity<ApiResponseDto<String>> handleDisabledException(Exception ex){
         log.error("Account Disabled", ex);
 
         return ApiResponseDto.badRequest("Account Disabled. Check email for activation link or try again.");
@@ -92,7 +93,7 @@ public class GlobalExceptionHandler {
 
     // Handle AccountNotActiveException (Happens when activation token is not expired)
     @ExceptionHandler(AccountNotActiveException.class)
-    public ResponseEntity<ApiResponseDto<Void>> handleAccountNotActiveException(Exception ex){
+    public ResponseEntity<ApiResponseDto<String>> handleAccountNotActiveException(Exception ex){
         log.error("Account Not Active", ex);
 
         return ApiResponseDto.badRequest("Account Not Active. Check your email for the activation link and try again.");
@@ -100,9 +101,17 @@ public class GlobalExceptionHandler {
 
     // Handle AccountActivationTokenExpiredException (Happens when account was not activated and token expired)
     @ExceptionHandler(AccountActivationTokenExpiredException.class)
-    public ResponseEntity<ApiResponseDto<Void>> handleAccountActivationTokenExpiredException(Exception ex){
+    public ResponseEntity<ApiResponseDto<String>> handleAccountActivationTokenExpiredException(Exception ex){
         log.error("Account Activation Token Expired", ex);
 
         return ApiResponseDto.badRequest("Activation token expired. Check your email for a new activation link");
+    }
+
+    // Handle EntityNotFoundExceptions (Used in .stream().map() methods to build proper response
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ApiResponseDto<String>> handleEntityNotFoundException(Exception ex){
+        log.error("Entity Not Found", ex);
+
+        return ApiResponseDto.badRequest(ex.getMessage());
     }
 }
