@@ -1,5 +1,6 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.entity;
 
+import dev.austinbarnes.retailinventorymanagement.common.BaseEntity;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
@@ -7,10 +8,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -23,11 +21,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Setter
 @Getter
-public class Vendor {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-
+@ToString(callSuper = true)
+public class Vendor extends BaseEntity {
     @Column(name = "vendor_code", nullable = false, updatable = false, unique = true)
     @NotNull
     private String vendorCode;
@@ -56,41 +51,4 @@ public class Vendor {
     @Email(message = "Invalid email format")
     @Size(min = 5, max = 100, message = "Email must be between 5 and 100 characters")
     private String email;
-
-    @Column(name = "is_active", nullable = false)
-    @NotNull
-    private Boolean isActive = true;
-
-    @Column(name = "created_at", updatable = false, columnDefinition = "timestamptz")
-    @CreationTimestamp
-    private Instant createdAt;
-
-    @Column(name = "modified_at", columnDefinition = "timestamptz")
-    @UpdateTimestamp
-    private Instant modifiedAt;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by_id", referencedColumnName = "id")
-    @Valid
-    private Employee createdBy;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "modified_by_id", referencedColumnName = "id")
-    @Valid
-    private Employee modifiedBy;
-
-    @Column(name = "deleted", nullable = false)
-    @NotNull
-    private boolean deleted = false;
-
-    @PrePersist
-    private void onCreate(){
-        this.createdAt = Instant.now();
-        this.modifiedAt = Instant.now();
-    }
-
-    @PreUpdate
-    private void onUpdate(){
-        this.modifiedAt = Instant.now();
-    }
 }

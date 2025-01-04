@@ -15,6 +15,6 @@ public record LocationResponseDetailDTO(
     String createdByName,
     UUID modifiedByID,
     String modifiedByName,
-    boolean deleted
+    boolean active
 ) implements LocationResponseDTO{
 }

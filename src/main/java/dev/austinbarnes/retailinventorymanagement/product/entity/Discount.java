@@ -1,13 +1,11 @@
 package dev.austinbarnes.retailinventorymanagement.product.entity;
 
+import dev.austinbarnes.retailinventorymanagement.common.BaseEntity;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -21,11 +19,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Discount {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-
+@ToString(callSuper = true)
+public class Discount extends BaseEntity {
     @Column(name = "discount_code", unique = true, updatable = false)
     @Size(min = 6, max = 30, message = "Discount code must be between 6 and 30 characters")
     @NotNull
@@ -46,40 +41,4 @@ public class Discount {
     @Digits(integer = 3, fraction = 2)
     @NotNull
     private BigDecimal discountPercentage;
-
-    @Column(name = "created_at", updatable = false, columnDefinition = "timestamptz")
-    @CreationTimestamp
-    private Instant createdAt;
-
-    @Column(name = "modified_at", columnDefinition = "timestamptz")
-    @UpdateTimestamp
-    private Instant modifiedAt;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by", nullable = false, updatable = false, referencedColumnName = "id")
-    Employee createdBy;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "modified_by_id", referencedColumnName = "id")
-    @Valid
-    private Employee modifiedBy;
-
-    @Column(name = "is_active")
-    @NotNull
-    private boolean active;
-
-    @Column(name = "deleted")
-    @NotNull
-    private boolean deleted;
-
-    @PrePersist
-    private void onCreate(){
-        this.createdAt = Instant.now();
-        this.modifiedAt = Instant.now();
-    }
-
-    @PreUpdate
-    private void onUpdate(){
-        this.modifiedAt = Instant.now();
-    }
 }

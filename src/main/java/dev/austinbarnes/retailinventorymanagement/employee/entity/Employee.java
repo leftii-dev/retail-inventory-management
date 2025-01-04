@@ -1,12 +1,10 @@
 package dev.austinbarnes.retailinventorymanagement.employee.entity;
 
 import dev.austinbarnes.retailinventorymanagement.auth.entity.User;
+import dev.austinbarnes.retailinventorymanagement.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -20,10 +18,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Employee {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+@ToString(callSuper = true, exclude = {"user", "phone", "email", "dateOfBirth"})
+public class Employee extends BaseEntity {
 
     @OneToOne(cascade = CascadeType.MERGE, optional = false)
     @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
@@ -58,38 +54,7 @@ public class Employee {
     @NotNull
     private String employeeCode;
 
-    @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "timestamptz")
-    @CreationTimestamp
-    private Instant createdAt;
-
-    @Column(name = "modified_at", nullable = false, updatable = false, columnDefinition = "timestamptz")
-    @UpdateTimestamp
-    private Instant modifiedAt;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by",  updatable = false, referencedColumnName = "id")
-    private Employee createdBy;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "modified_by",  updatable = false, referencedColumnName = "id")
-    private Employee modifiedBy;
-
-    @Column(name = "is_active", nullable = false)
+    @Column(name = "is_current_employee", nullable = false)
     @NotNull
-    private boolean isActive = true;
-
-    @Column(name = "deleted", nullable = false)
-    @NotNull
-    private boolean deleted = false;
-
-    @PrePersist
-    private void onCreate(){
-        this.createdAt = Instant.now();
-        this.modifiedAt = Instant.now();
-    }
-
-    @PreUpdate
-    private void onUpdate(){
-        this.modifiedAt = Instant.now();
-    }
+    private boolean isCurrentEmployee = true;
 }

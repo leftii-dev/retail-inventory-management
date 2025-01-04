@@ -22,6 +22,6 @@ public record PurchaseOrderResponseDetailDTO(
         UUID modifiedByID,
         String modifiedByName,
         StatusResponseDTO status,
-        boolean deleted
+        boolean active
 ) implements PurchaseOrderResponseDTO{
 }

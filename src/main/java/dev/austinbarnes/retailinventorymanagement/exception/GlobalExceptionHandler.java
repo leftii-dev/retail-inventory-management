@@ -110,10 +110,11 @@ public class GlobalExceptionHandler {
 
     // Handle EntityNotFoundExceptions (Used in .stream().map() methods to build proper response
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ApiResponseDto<String>> handleEntityNotFoundException(Exception ex){
+    public ResponseEntity<ApiResponseDto<String>> handleEntityNotFoundException(Exception ex) {
         log.error("Entity Not Found", ex);
 
         return ApiResponseDto.badRequest(ex.getMessage());
+    }
 
     // Handle DuplicateEmailRegistrationException (when user tries to create account with email that already exists)
     @ExceptionHandler(DuplicateEmailRegistrationException.class)

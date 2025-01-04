@@ -1,12 +1,10 @@
 package dev.austinbarnes.retailinventorymanagement.auth.entity;
 
+import dev.austinbarnes.retailinventorymanagement.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -17,10 +15,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Role implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+@ToString(callSuper = true)
+public class Role extends BaseEntity {
 
     @Column(name = "name", nullable = false)
     @NotNull(message = "Role name cannot be null")

@@ -1,17 +1,12 @@
 package dev.austinbarnes.retailinventorymanagement.auth.entity;
 
+import dev.austinbarnes.retailinventorymanagement.common.BaseEntity;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.io.Serializable;
+import lombok.*;
 import java.util.Set;
-import java.util.UUID;
 
 @Entity
 @Table(name = "app_user")
@@ -19,10 +14,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class User implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+@ToString(exclude = {"password", "oauthProvider", "oauthProviderId", "employee", "roles"}, callSuper = true)
+public class User extends BaseEntity {
 
     @Column(name = "email", unique = true)
     @Email(message = "Invalid email format")

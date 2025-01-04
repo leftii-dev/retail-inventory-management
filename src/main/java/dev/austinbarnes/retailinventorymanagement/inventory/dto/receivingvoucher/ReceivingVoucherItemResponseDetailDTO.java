@@ -21,6 +21,6 @@ public record ReceivingVoucherItemResponseDetailDTO(
         String createdByName,
         UUID modifiedByID,
         String modifiedByName,
-        boolean deleted
+        boolean active
 ) implements ReceivingVoucherItemResponseDTO{
 }

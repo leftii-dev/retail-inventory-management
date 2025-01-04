@@ -15,6 +15,6 @@ public record WarehouseLocationResponseDetailDTO(
         String createdByName,
         UUID modifiedByID,
         String modifiedByName,
-        boolean deleted
+        boolean active
 ) implements WarehouseLocationResponseDTO {
 }

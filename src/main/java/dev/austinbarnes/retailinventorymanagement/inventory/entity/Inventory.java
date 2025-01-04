@@ -1,5 +1,6 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.entity;
 
+import dev.austinbarnes.retailinventorymanagement.common.BaseEntity;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import dev.austinbarnes.retailinventorymanagement.location.entity.Location;
 import dev.austinbarnes.retailinventorymanagement.product.entity.Product;
@@ -23,10 +24,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Setter
 @Getter
-public class Inventory {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+public class Inventory extends BaseEntity {
 
     @Column(name = "quantity")
     @Min(value = 0, message = "Quantity cannot be negative")
@@ -41,34 +39,4 @@ public class Inventory {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location", referencedColumnName = "id")
     private Location location;
-
-    @Column(name = "created_at")
-    @CreationTimestamp
-    private Instant createdAt;
-
-    @Column(name = "modified_at")
-    @UpdateTimestamp
-    private Instant modifiedAt;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by_id", referencedColumnName = "id")
-    private Employee createdBy;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "modified_by_id", referencedColumnName = "id")
-    private Employee modifiedBy;
-
-    @Column(name = "deleted")
-    private boolean deleted = false;
-
-    @PrePersist
-    private void onCreate() {
-        this.createdAt = Instant.now();
-        this.modifiedAt = Instant.now();
-    }
-
-    @PreUpdate
-    private void onUpdate() {
-        this.modifiedAt = Instant.now();
-    }
 }

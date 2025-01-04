@@ -19,6 +19,6 @@ public record TransferResponseDetailDTO(
         String modifiedByName,
         UUID locationToID,
         UUID locationFromID,
-        boolean deleted
+        boolean active
 ) implements TransferResponseDTO{
 }

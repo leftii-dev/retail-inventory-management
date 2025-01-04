@@ -18,6 +18,6 @@ public record TransferItemResponseDetailDTO(
         String createdByName,
         UUID modifiedByID,
         String modifiedByName,
-        boolean deleted
+        boolean active
 ) implements TransferItemResponseDTO {
 }

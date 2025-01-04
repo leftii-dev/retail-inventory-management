@@ -1,14 +1,12 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.entity;
 
+import dev.austinbarnes.retailinventorymanagement.common.BaseEntity;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import dev.austinbarnes.retailinventorymanagement.product.entity.Product;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -22,11 +20,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ReceivingVoucherItem {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-
+@ToString(exclude = {"receivingVoucher", "product"}, callSuper = true)
+public class ReceivingVoucherItem extends BaseEntity {
     @Column(name = "quantity", nullable = false)
     @Min(value = 1, message = "Quantity must be a positive number")
     @Max(value = 10_000, message = "Quantity cannot exceed 10,000, if you need more, add a separate line item for the excess")
@@ -55,14 +50,6 @@ public class ReceivingVoucherItem {
     @Digits(integer = 10, fraction = 2)
     private BigDecimal costLineTotal;
 
-    @Column(name = "modified_at", columnDefinition = "timestamptz")
-    @UpdateTimestamp
-    private Instant modifiedAt;
-
-    @Column(name = "created_at", updatable = false, columnDefinition = "timestamptz")
-    @CreationTimestamp
-    private Instant createdAt;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     @Valid
@@ -72,29 +59,4 @@ public class ReceivingVoucherItem {
     @JoinColumn(name = "receiving_voucher_id", referencedColumnName = "id")
     @Valid
     private ReceivingVoucher receivingVoucher;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by_id", referencedColumnName = "id")
-    @Valid
-    private Employee createdBy;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "modified_by_id", referencedColumnName = "id")
-    @Valid
-    private Employee modifiedBy;
-
-    @Column(name = "deleted", nullable = false)
-    @NotNull
-    private boolean deleted = false;
-
-    @PrePersist
-    private void onCreate(){
-        this.createdAt = Instant.now();
-        this.modifiedAt = Instant.now();
-    }
-
-    @PreUpdate
-    private void onUpdate(){
-        this.modifiedAt = Instant.now();
-    }
 }

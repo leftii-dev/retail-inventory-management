@@ -32,6 +32,6 @@ public record CategoryResponseDetailDTO(
         UUID modifiedByID,
         String modifiedByName,
         UUID discountID,
-        boolean deleted
+        boolean active
 ) implements CategoryResponseDTO{
 }
