@@ -1,10 +1,8 @@
 package dev.austinbarnes.retailinventorymanagement.entitycode.entity;
 
+import dev.austinbarnes.retailinventorymanagement.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -14,11 +12,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CodeEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-
+@ToString(callSuper = true)
+public class CodeEntity extends BaseEntity {
     @Column(name = "name", unique = true)
     private String name;
 

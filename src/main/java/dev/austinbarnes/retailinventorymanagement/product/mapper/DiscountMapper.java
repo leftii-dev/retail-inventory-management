@@ -16,10 +16,6 @@ public interface DiscountMapper {
     @Named("basicDiscount")
     DiscountResponseBasicDTO toBasicDTO(Discount discount);
 
-    @Mapping(target = "createdByID", source = "createdBy.id")
-    @Mapping(target = "createdByName", expression = "java(discount.getCreatedBy().getNameLast() + \", \" + discount.getCreatedBy().getNameFirst())")
-    @Mapping(target = "modifiedByID", source = "modifiedBy.id")
-    @Mapping(target = "modifiedByName", expression = "java(discount.getModifiedBy().getNameLast() + \", \" + discount.getModifiedBy().getNameFirst())")
     @Named("detailDiscount")
     DiscountResponseDetailDTO toDetailDTO(Discount discount);
 }

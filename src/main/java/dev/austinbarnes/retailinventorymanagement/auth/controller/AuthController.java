@@ -40,7 +40,7 @@ public class AuthController {
     }
 
     @PostMapping("/activate/{token}")
-    public ResponseEntity<?> activateAccount(@PathVariable String token) {
+    public ResponseEntity<ApiResponseDto<UserResponseDto>> activateAccount(@PathVariable String token) {
         return authService.activate(token);
     }
 

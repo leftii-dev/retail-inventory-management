@@ -25,10 +25,6 @@ public interface ReceivingVoucherMapper {
     @Mapping(target = "location", qualifiedByName = "detailLocation")
     @Mapping(target = "vendor", qualifiedByName = "detailVendor")
     @Mapping(target = "status", qualifiedByName = "detailStatus")
-    @Mapping(target = "createdByID", source = "createdBy.id")
-    @Mapping(target = "createdByName", expression = "java(receivingVoucher.getCreatedBy().getNameLast() + \", \" + receivingVoucher.getCreatedBy().getNameFirst())")
-    @Mapping(target = "modifiedByID", source = "modifiedBy.id")
-    @Mapping(target = "modifiedByName", expression = "java(receivingVoucher.getModifiedBy().getNameLast() + \", \" + receivingVoucher.getModifiedBy().getNameFirst())")
     @Named("detailReceivingVoucher")
     ReceivingVoucherResponseDetailDTO toDetailDTO(ReceivingVoucher receivingVoucher);
 }

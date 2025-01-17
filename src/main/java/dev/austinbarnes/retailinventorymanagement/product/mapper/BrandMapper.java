@@ -16,10 +16,6 @@ public interface BrandMapper {
     @Named("basicBrand")
     BrandResponseBasicDTO toBasicDTO(Brand brand);
 
-    @Mapping(target = "createdByID", source = "createdBy.id")
-    @Mapping(target = "createdByName", expression = "java(brand.getCreatedBy().getNameLast() + \", \" + brand.getCreatedBy().getNameFirst())")
-    @Mapping(target = "modifiedByID", source = "modifiedBy.id")
-    @Mapping(target = "modifiedByName", expression = "java(brand.getModifiedBy().getNameLast() + \", \" + brand.getModifiedBy().getNameFirst())")
     @Named("detailBrand")
     BrandResponseDetailDTO toDetailDTO(Brand brand);
 }

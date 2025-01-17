@@ -1,18 +1,13 @@
 package dev.austinbarnes.retailinventorymanagement.employee.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.austinbarnes.retailinventorymanagement.auth.entity.User;
+import dev.austinbarnes.retailinventorymanagement.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.*;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Entity
 @Table(name = "employee")
@@ -20,13 +15,12 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Employee {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+@ToString(callSuper = true, exclude = {"user", "phone", "email", "dateOfBirth"})
+public class Employee extends BaseEntity {
 
     @OneToOne(cascade = CascadeType.MERGE, optional = false)
     @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
+    @JsonIgnore
     private User user;
 
     @Column(name = "name_first", nullable = false)
@@ -43,7 +37,7 @@ public class Employee {
     @Pattern(regexp = "\\d{10}", message = "Phone must be 10 digits, no spaces or hyphens")
     private String phone;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     @NotNull
     @Size(min = 5, max = 100, message = "Email address must be between 5 and 100 characters")
     @Email(message = "Invalid email address format")
@@ -58,38 +52,7 @@ public class Employee {
     @NotNull
     private String employeeCode;
 
-    @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "timestamptz")
-    @CreationTimestamp
-    private Instant createdAt;
-
-    @Column(name = "modified_at", nullable = false, updatable = false, columnDefinition = "timestamptz")
-    @UpdateTimestamp
-    private Instant modifiedAt;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by",  updatable = false, referencedColumnName = "id")
-    private Employee createdBy;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "modified_by",  updatable = false, referencedColumnName = "id")
-    private Employee modifiedBy;
-
-    @Column(name = "is_active", nullable = false)
+    @Column(name = "is_current_employee", nullable = false)
     @NotNull
-    private boolean isActive = true;
-
-    @Column(name = "deleted", nullable = false)
-    @NotNull
-    private boolean deleted = false;
-
-    @PrePersist
-    private void onCreate(){
-        this.createdAt = Instant.now();
-        this.modifiedAt = Instant.now();
-    }
-
-    @PreUpdate
-    private void onUpdate(){
-        this.modifiedAt = Instant.now();
-    }
+    private boolean isCurrentEmployee = true;
 }

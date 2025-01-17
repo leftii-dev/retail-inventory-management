@@ -20,10 +20,6 @@ public interface InventoryMapper {
     @Named("basicInventory")
     InventoryResponseBasicDTO toBasicDTO(Inventory inventory);
 
-    @Mapping(target = "createdByID", source = "createdBy.id")
-    @Mapping(target = "createdByName", expression = "java(inventory.getCreatedBy().getNameLast() + \", \" + inventory.getCreatedBy().getNameFirst())")
-    @Mapping(target = "modifiedByID", source = "modifiedBy.id")
-    @Mapping(target = "modifiedByName", expression = "java(inventory.getModifiedBy().getNameLast() + \", \" + inventory.getModifiedBy().getNameFirst())")
     @Mapping(target = "product", qualifiedByName = "detailProduct")
     @Mapping(target = "location", qualifiedByName = "detailLocation")
     @Named("detailInventory")

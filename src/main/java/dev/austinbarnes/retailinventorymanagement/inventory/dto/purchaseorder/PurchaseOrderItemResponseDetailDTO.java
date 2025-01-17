@@ -15,10 +15,8 @@ public record PurchaseOrderItemResponseDetailDTO(
         Instant modifiedAt,
         UUID purchaseOrderID,
         ProductResponseDTO product,
-        UUID createdByID,
-        String createdByName,
-        UUID modifiedByID,
-        String modifiedByName,
-        boolean deleted
+        UUID createdBy,
+        UUID modifiedBy,
+        boolean active
 ) implements PurchaseOrderItemResponseDTO{
 }

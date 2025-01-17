@@ -1,5 +1,6 @@
 package dev.austinbarnes.retailinventorymanagement.auth.entity;
 
+import dev.austinbarnes.retailinventorymanagement.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -14,25 +15,17 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ActivationToken {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+@ToString(callSuper = true)
+public class ActivationToken extends BaseEntity {
 
     @Column(nullable = false, updatable = false, name = "user_id")
     private UUID userId;
-
-    @Column(name = "created_at")
-    @CreationTimestamp
-    private Instant createdAt;
 
     @Column(name = "expire_at")
     private Instant expireAt;
 
     @PrePersist
-    private void setTimestamps(){
-        Instant now = Instant.now();
-        this.createdAt = now;
-        this.expireAt = now.plus(24, ChronoUnit.HOURS);
+    private void setExpiration(){
+        this.expireAt = Instant.now().plus(24, ChronoUnit.HOURS);
     }
 }

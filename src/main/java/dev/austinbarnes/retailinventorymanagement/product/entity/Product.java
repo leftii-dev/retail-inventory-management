@@ -1,13 +1,11 @@
 package dev.austinbarnes.retailinventorymanagement.product.entity;
 
+import dev.austinbarnes.retailinventorymanagement.common.BaseEntity;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -24,12 +22,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "product")
-public class Product {
-    @Id
-    @NotNull
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-
+@ToString(callSuper = true, exclude = {"category", "brand", "discount"})
+public class Product extends BaseEntity {
     @Column(name = "sku", nullable = false, unique = true)
     @Size(max = 20, message = "Sku cannot exceed 20 characters")
     @NotNull
@@ -74,32 +68,10 @@ public class Product {
     @Column(name = "additional_details", columnDefinition = "jsonb")
     private Map<String, Object> additionalDetails;
 
-    @Column(name = "created_at", updatable = false, columnDefinition = "timestamptz")
-    @CreationTimestamp
-    private Instant createdAt;
-
-    @Column(name = "modified_at", columnDefinition = "timestamptz")
-    @UpdateTimestamp
-    private Instant modifiedAt;
-
-    @Column(name = "is_active", nullable = false)
-    @NotNull
-    private boolean isActive = true;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     @Valid
     private Category category;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by_id", referencedColumnName = "id", updatable = false)
-    @Valid
-    private Employee createdBy;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "modified_by_id", referencedColumnName = "id")
-    @Valid
-    private Employee modifiedBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id", referencedColumnName = "id")
@@ -110,20 +82,4 @@ public class Product {
     @JoinColumn(name = "discount_id", referencedColumnName = "id")
     @Valid
     Discount discount;
-
-    @Column(name = "deleted", nullable = false)
-    @NotNull
-    private boolean deleted = false;
-
-    @PrePersist
-    private void onCreate(){
-        this.createdAt = Instant.now();
-        this.modifiedAt = Instant.now();
-    }
-
-    @PreUpdate
-    private void onUpdate(){
-        this.modifiedAt = Instant.now();
-    }
-
 }

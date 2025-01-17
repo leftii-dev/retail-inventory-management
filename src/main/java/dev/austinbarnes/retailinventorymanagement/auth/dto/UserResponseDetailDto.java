@@ -15,6 +15,7 @@ public record UserResponseDetailDto(
         boolean enabled,
         boolean accountNonExpired,
         boolean accountNonLocked,
-        boolean credentialsNonExpired
+        boolean credentialsNonExpired,
+        boolean active
 ) implements UserResponseDto{
 }

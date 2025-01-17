@@ -18,10 +18,6 @@ public interface PurchaseOrderMapper {
     @Named("basicPurchaseOrder")
     PurchaseOrderResponseBasicDTO toBasicDTO(PurchaseOrder purchaseOrder);
 
-    @Mapping(target = "createdByID", source = "createdBy.id")
-    @Mapping(target = "createdByName", expression = "java(purchaseOrder.getCreatedBy().getNameLast() + \", \" + purchaseOrder.getCreatedBy().getNameFirst())")
-    @Mapping(target = "modifiedByID", source = "modifiedBy.id")
-    @Mapping(target = "modifiedByName", expression = "java(purchaseOrder.getModifiedBy().getNameLast() + \", \" + purchaseOrder.getModifiedBy().getNameFirst())")
     @Mapping(target = "vendor", qualifiedByName = "detailVendor")
     @Mapping(target = "status", qualifiedByName = "detailStatus")
     @Named("detailPurchaseOrder")

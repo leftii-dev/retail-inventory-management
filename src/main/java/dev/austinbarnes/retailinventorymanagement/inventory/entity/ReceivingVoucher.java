@@ -1,5 +1,6 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.entity;
 
+import dev.austinbarnes.retailinventorymanagement.common.BaseEntity;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import dev.austinbarnes.retailinventorymanagement.location.entity.Location;
 import jakarta.persistence.*;
@@ -23,11 +24,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ReceivingVoucher {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-
+public class ReceivingVoucher extends BaseEntity {
     @Column(name = "receiving_voucher_code", updatable = false, nullable = false, unique = true)
     @Size(min = 10, max = 10, message = "Receiving voucher code must be 10 characters")
     @NotNull
@@ -71,14 +68,6 @@ public class ReceivingVoucher {
     @FutureOrPresent(message = "Payment net date cannot be in the past")
     private LocalDate paymentNetDate;
 
-    @Column(name = "created_at", updatable = false, columnDefinition = "timestamptz")
-    @CreationTimestamp
-    private Instant createdAt;
-
-    @Column(name = "modified_at", columnDefinition = "timestamptz")
-    @UpdateTimestamp
-    private Instant modifiedAt;
-
     @Column(name = "notes")
     @Size(max = 3000, message = "Notes cannot exceed 3000 characters")
     private String notes;
@@ -105,31 +94,4 @@ public class ReceivingVoucher {
     @NotNull(message = "Status must be set")
     @Valid
     private Status status;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by_id", referencedColumnName = "id", updatable = false)
-    @NotNull(message = "Created By cannot be null")
-    @Valid
-    private Employee createdBy;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "modified_by_id", referencedColumnName = "id")
-    @NotNull(message = "Modified By cannot be null")
-    @Valid
-    private Employee modifiedBy;
-
-    @Column(name = "deleted", nullable = false)
-    @NotNull
-    private boolean deleted = false;
-
-    @PrePersist
-    private void onCreate(){
-        this.createdAt = Instant.now();
-        this.modifiedAt = Instant.now();
-    }
-
-    @PreUpdate
-    private void onUpdate(){
-        this.modifiedAt = Instant.now();
-    }
 }

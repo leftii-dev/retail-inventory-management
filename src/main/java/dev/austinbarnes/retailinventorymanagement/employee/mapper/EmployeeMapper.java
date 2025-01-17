@@ -19,10 +19,6 @@ public interface EmployeeMapper {
     @Named("basicEmployee")
     EmployeeResponseBasicDTO toBasicDTO(Employee employee);
 
-    @Mapping(target = "createdByID", source = "createdBy.id")
-    @Mapping(target = "createdByName", expression = "java(employee.getCreatedBy().getNameLast() + \", \" + employee.getCreatedBy().getNameFirst())")
-    @Mapping(target = "modifiedByID", source = "modifiedBy.id")
-    @Mapping(target = "modifiedByName", expression = "java(employee.getModifiedBy().getNameLast() + \", \" + employee.getModifiedBy().getNameFirst())")
     @Named("detailEmployee")
     EmployeeResponseDetailDTO toDetailDTO(Employee employee);
 }

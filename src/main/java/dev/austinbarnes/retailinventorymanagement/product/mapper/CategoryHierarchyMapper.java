@@ -20,10 +20,6 @@ public interface CategoryHierarchyMapper {
 
     @Mapping(target = "categoryID", source = "category.id")
     @Mapping(target = "parentCategoryID", source = "parentCategory.id")
-    @Mapping(target = "createdByID", source = "createdBy.id")
-    @Mapping(target = "createdByName", expression = "java(categoryHierarchy.getCreatedBy().getNameLast() + \", \" + categoryHierarchy.getCreatedBy().getNameFirst())")
-    @Mapping(target = "modifiedByID", source = "modifiedBy.id")
-    @Mapping(target = "modifiedByName", expression = "java(categoryHierarchy.getModifiedBy().getNameLast() + \", \" + categoryHierarchy.getModifiedBy().getNameFirst())")
     @Named("detailCategoryHierarchy")
     CategoryHierarchyResponseDetailDTO toDetailDTO(CategoryHierarchy categoryHierarchy);
 }

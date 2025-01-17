@@ -12,6 +12,7 @@ import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import dev.austinbarnes.retailinventorymanagement.employee.repo.EmployeeRepository;
 import dev.austinbarnes.retailinventorymanagement.exception.ActivationTokenNotFoundException;
 import dev.austinbarnes.retailinventorymanagement.exception.DuplicateEmailRegistrationException;
+import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
@@ -44,6 +45,7 @@ public class AuthService {
     private final ActivationTokenRepository activationTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final ActivationTokenService activationTokenService;
+    private final EntityManager entityManager;
 
 
     @Transactional
@@ -82,6 +84,7 @@ public class AuthService {
             return ApiResponseDto.created(userMapper.toBasicDto(user));
     }
 
+    @Transactional
     public ResponseEntity<ApiResponseDto<UserResponseDto>> activate(String token) {
         ActivationToken activationToken = activationTokenRepository.findById(UUID.fromString(token))
                 .orElseThrow(() -> new ActivationTokenNotFoundException(token));
@@ -92,7 +95,7 @@ public class AuthService {
         user.setEnabled(true);
         userRepository.save(user);
 
-        activationTokenRepository.delete(activationToken);
+//        activationTokenRepository.delete(activationToken);
 
         return ApiResponseDto.ok(userMapper.toBasicDto(user));
     }

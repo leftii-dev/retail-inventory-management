@@ -16,10 +16,6 @@ public interface PermissionMapper {
     @Named("basicPermission")
     PermissionResponseBasicDTO toBasicDTO(Permission permission);
 
-    @Mapping(target = "createdByID", source = "createdBy.id")
-    @Mapping(target = "createdByName", expression = "java(permission.getCreatedBy().getNameLast() + \", \" + permission.getCreatedBy().getNameFirst())")
-    @Mapping(target = "modifiedByID", source = "modifiedBy.id")
-    @Mapping(target = "modifiedByName", expression = "java(permission.getModifiedBy().getNameLast() + \", \" + permission.getModifiedBy().getNameFirst())")
     @Named("detailPermission")
     PermissionResponseDetailDTO toDetailDTO(Permission permission);
 }

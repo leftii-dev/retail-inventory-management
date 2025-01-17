@@ -11,10 +11,8 @@ public record WarehouseLocationResponseDetailDTO(
         LocationResponseDTO location,
         Instant createdAt,
         Instant modifiedAt,
-        UUID createdByID,
-        String createdByName,
-        UUID modifiedByID,
-        String modifiedByName,
-        boolean deleted
+        UUID createdBy,
+        UUID modifiedBy,
+        boolean active
 ) implements WarehouseLocationResponseDTO {
 }

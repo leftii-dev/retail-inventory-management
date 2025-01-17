@@ -14,11 +14,9 @@ public record EmployeeResponseDetailDTO(
         String employeeCode,
         Instant createdAt,
         Instant modifiedAt,
-        UUID createdByID,
-        String createdByName,
-        UUID modifiedByID,
-        String modifiedByName,
-        boolean isActive,
-        boolean deleted
+        UUID createdBy,
+        UUID modifiedBy,
+        boolean isCurrentEmployee,
+        boolean active
 ) implements EmployeeResponseDTO{
 }

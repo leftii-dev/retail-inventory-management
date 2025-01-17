@@ -16,10 +16,6 @@ public interface VendorMapper {
     @Named("basicVendor")
     VendorResponseBasicDTO toBasicDTO(Vendor vendor);
 
-    @Mapping(target = "createdByID", source = "createdBy.id")
-    @Mapping(target = "createdByName", expression = "java(vendor.getCreatedBy().getNameLast() + \", \" + vendor.getCreatedBy().getNameFirst())")
-    @Mapping(target = "modifiedByID", source = "modifiedBy.id")
-    @Mapping(target = "modifiedByName", expression = "java(vendor.getModifiedBy().getNameLast() + \", \" + vendor.getModifiedBy().getNameFirst())")
     @Named("detailVendor")
     VendorResponseDetailDTO toDetailDTO(Vendor vendor);
 }

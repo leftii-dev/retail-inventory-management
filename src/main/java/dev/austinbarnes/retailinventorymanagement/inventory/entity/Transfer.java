@@ -1,14 +1,12 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.entity;
 
+import dev.austinbarnes.retailinventorymanagement.common.BaseEntity;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import dev.austinbarnes.retailinventorymanagement.location.entity.Location;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -23,11 +21,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Transfer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-
+@ToString(callSuper = true, exclude = {"locationFrom", "locationTo"})
+public class Transfer extends BaseEntity {
     @Column(name = "date")
     private LocalDate date;
 
@@ -46,24 +41,6 @@ public class Transfer {
     @Max(value = 10000, message = "Total quantity exceeds limit, double check entered quantities")
     private int totalQuantity;
 
-    @Column(name = "created_at", updatable = false, columnDefinition = "timestamptz")
-    @CreationTimestamp
-    private Instant createdAt;
-
-    @Column(name = "modified_at", columnDefinition = "timestamptz")
-    @UpdateTimestamp
-    private Instant modifiedAt;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by_id", referencedColumnName = "id")
-    @Valid
-    private Employee createdBy;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "modified_by_id", referencedColumnName = "id")
-    @Valid
-    private Employee modifiedBy;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_to_id", referencedColumnName = "id")
     @Valid
@@ -73,18 +50,4 @@ public class Transfer {
     @JoinColumn(name = "location_from_id", referencedColumnName = "id")
     @Valid
     private Location locationFrom;
-
-    @Column(name = "deleted")
-    private boolean deleted = false;
-
-    @PrePersist
-    private void onCreate(){
-        this.createdAt = Instant.now();
-        this.modifiedAt = Instant.now();
-    }
-
-    @PreUpdate
-    private void onUpdate(){
-        this.modifiedAt = Instant.now();
-    }
 }

@@ -11,10 +11,8 @@ public record EmployeePermissionResponseDetailDTO(
         PermissionResponseDTO permission,
         Instant createdAt,
         Instant modifiedAt,
-        UUID createdByID,
-        String createdByName,
-        UUID modifiedByID,
-        String modifiedByName,
+        UUID createdBy,
+        UUID modifiedBy,
         boolean deleted
 ) implements EmployeePermissionResponseDTO {
 }

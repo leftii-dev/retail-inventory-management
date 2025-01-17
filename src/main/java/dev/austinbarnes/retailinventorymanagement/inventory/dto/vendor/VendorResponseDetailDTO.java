@@ -15,10 +15,8 @@ public record VendorResponseDetailDTO(
         boolean isActive,
         Instant createdAtID,
         Instant modifiedAtID,
-        UUID createdByID,
-        String createdByName,
-        UUID modifiedByID,
-        String modifiedByName,
-        boolean deleted
+        UUID createdBy,
+        UUID modifiedBy,
+        boolean active
 ) implements VendorResponseDTO{
 }

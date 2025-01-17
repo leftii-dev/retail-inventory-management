@@ -18,17 +18,14 @@ public record ProductResponseDetailDTO(
         Map<String, Object> additionalDetails,
         Instant createdAt,
         Instant modifiedAt,
-        boolean isActive,
         UUID categoryID,
         String categoryName,
         UUID brandID,
         String brandName,
-        UUID createdByID,
-        String createdByName,
-        UUID modifiedByID,
-        String modifiedByName,
+        UUID createdBy,
+        UUID modifiedBy,
         UUID discountID,
         String discountName,
-        boolean deleted
+        boolean active
 ) implements ProductResponseDTO {
 }

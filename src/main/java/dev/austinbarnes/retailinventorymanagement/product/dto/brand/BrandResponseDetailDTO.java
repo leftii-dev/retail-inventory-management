@@ -9,7 +9,6 @@ import java.util.UUID;
  * @param id
  * @param name
  * @param description
- * @param deleted
  * @author Austin Barnes
  * @since 2024
  */
@@ -19,10 +18,8 @@ public record BrandResponseDetailDTO(
         String description,
         Instant createdAt,
         Instant modifiedAt,
-        UUID createdByID,
-        String createdByName,
-        UUID modifiedByID,
-        String modifiedByName,
-        boolean deleted
+        UUID createdBy,
+        UUID modifiedBy,
+        boolean active
 ) implements BrandResponseDTO {
 }
