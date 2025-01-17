@@ -16,10 +16,6 @@ public interface StatusMapper {
     @Named("basicStatus")
     StatusResponseBasicDTO toBasicDTO(Status status);
 
-    @Mapping(target = "createdByID", source = "createdBy.id")
-    @Mapping(target = "createdByName", expression = "java(status.getCreatedBy().getNameLast() + \", \" + status.getCreatedBy().getNameFirst())")
-    @Mapping(target = "modifiedByID", source = "modifiedBy.id")
-    @Mapping(target = "modifiedByName", expression = "java(status.getModifiedBy().getNameLast() + \", \" + status.getModifiedBy().getNameFirst())")
     @Named("detailStatus")
     StatusResponseDetailDTO toDetailDTO(Status status);
 }

@@ -21,10 +21,6 @@ public interface LocationDetailsMapper {
 
     @Mapping(target = "manager", qualifiedByName = "detailEmployee")
     @Mapping(target = "location", qualifiedByName = "detailLocation")
-    @Mapping(target = "createdByID", source = "createdBy.id")
-    @Mapping(target = "createdByName", expression = "java(locationDetails.getCreatedBy().getNameLast() + \", \" + locationDetails.getCreatedBy().getNameFirst())")
-    @Mapping(target = "modifiedByID", source = "modifiedBy.id")
-    @Mapping(target = "modifiedByName", expression = "java(locationDetails.getModifiedBy().getNameLast() + \", \" + locationDetails.getModifiedBy().getNameFirst())")
     @Named("detailLocationDetails")
     LocationDetailsResponseDetailDTO toDetailDTO(LocationDetails locationDetails);
 }

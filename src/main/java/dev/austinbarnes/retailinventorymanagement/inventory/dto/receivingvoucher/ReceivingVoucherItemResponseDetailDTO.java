@@ -17,10 +17,8 @@ public record ReceivingVoucherItemResponseDetailDTO(
         Instant modifiedAt,
         ProductResponseDTO product,
         UUID receivingVoucherID,
-        UUID createdByID,
-        String createdByName,
-        UUID modifiedByID,
-        String modifiedByName,
+        UUID createdBy,
+        UUID modifiedBy,
         boolean active
 ) implements ReceivingVoucherItemResponseDTO{
 }

@@ -19,14 +19,14 @@ import java.util.UUID;
 
 
 
-@RestController("/employees")
+@RestController
+@RequestMapping("api/v1/employees")
 @Slf4j
 @RequiredArgsConstructor
 /*
  * Controller for Employee Entity as well as EmployeeHierarchy
  */
 public class EmployeeController {
-    private final EmployeeRepository employeeRepository;
     private final EmployeeService employeeService;
     private final EmployeeHierarchyService hierarchyService;
 

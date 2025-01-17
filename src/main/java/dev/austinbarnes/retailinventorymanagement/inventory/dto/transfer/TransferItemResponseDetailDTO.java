@@ -14,10 +14,8 @@ public record TransferItemResponseDetailDTO(
         Instant modifiedAt,
         UUID transferID,
         ProductResponseDTO product,
-        UUID createdByID,
-        String createdByName,
-        UUID modifiedByID,
-        String modifiedByName,
+        UUID createdBy,
+        UUID modifiedBy,
         boolean active
 ) implements TransferItemResponseDTO {
 }

@@ -18,7 +18,7 @@ import java.util.UUID;
 @ToString(callSuper = true)
 public class Role extends BaseEntity {
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     @NotNull(message = "Role name cannot be null")
     @NotEmpty(message = "Role name cannot be empty")
     private String name;

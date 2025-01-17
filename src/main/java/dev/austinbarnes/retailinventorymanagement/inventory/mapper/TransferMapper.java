@@ -24,10 +24,6 @@ public interface TransferMapper {
 
     @Mapping(target = "locationToID", source = "locationTo.id")
     @Mapping(target = "locationFromID", source = "locationFrom.id")
-    @Mapping(target = "createdByID", source = "createdBy.id")
-    @Mapping(target = "createdByName", expression = "java(transfer.getCreatedBy().getNameLast() + \", \" + transfer.getCreatedBy().getNameFirst())")
-    @Mapping(target = "modifiedByID", source = "modifiedBy.id")
-    @Mapping(target = "modifiedByName", expression = "java(transfer.getModifiedBy().getNameLast() + \", \" + transfer.getModifiedBy().getNameFirst())")
     @Named("detailTransfer")
     TransferResponseDetailDTO toDetailDTO(Transfer transfer);
 }

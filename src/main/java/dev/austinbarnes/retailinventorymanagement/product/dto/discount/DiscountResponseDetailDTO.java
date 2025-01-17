@@ -12,10 +12,8 @@ public record DiscountResponseDetailDTO(
         BigDecimal discountPercentage,
         Instant createdAt,
         Instant modifiedAt,
-        UUID createdByID,
-        String createdByName,
-        UUID modifiedByID,
-        String modifiedByName,
+        UUID createdBy,
+        UUID modifiedBy,
         boolean active
 ) implements DiscountResponseDTO {
 }

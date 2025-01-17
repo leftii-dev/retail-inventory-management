@@ -17,10 +17,6 @@ public interface LocationHoursMapper {
     @Named("basicLocationHours")
     LocationHoursResponseBasicDTO toBasicDTO(LocationHours locationHours);
 
-    @Mapping(target = "createdByID", source = "createdBy.id")
-    @Mapping(target = "createdByName", expression = "java(locationHours.getCreatedBy().getNameLast() + \", \" + locationHours.getCreatedBy().getNameFirst())")
-    @Mapping(target = "modifiedByID", source = "modifiedBy.id")
-    @Mapping(target = "modifiedByName", expression = "java(locationHours.getModifiedBy().getNameLast() + \", \" + locationHours.getModifiedBy().getNameFirst())")
     @Mapping(target = "location", qualifiedByName = "detailLocation")
     @Named("detailLocationHours")
     LocationHoursResponseDetailDTO toDetailDTO(LocationHours locationHours);

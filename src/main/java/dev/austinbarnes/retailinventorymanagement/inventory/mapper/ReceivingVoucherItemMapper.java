@@ -19,10 +19,6 @@ public interface ReceivingVoucherItemMapper {
     @Named("basicReceivingVoucherItem")
     ReceivingVoucherItemResponseBasicDTO toBasicDTO(ReceivingVoucherItem receivingVoucherItem);
 
-    @Mapping(target = "createdByID", source = "createdBy.id")
-    @Mapping(target = "createdByName", expression = "java(receivingVoucherItem.getCreatedBy().getNameLast() + \", \" + receivingVoucherItem.getCreatedBy().getNameFirst())")
-    @Mapping(target = "modifiedByID", source = "modifiedBy.id")
-    @Mapping(target = "modifiedByName", expression = "java(receivingVoucherItem.getModifiedBy().getNameLast() + \", \" + receivingVoucherItem.getModifiedBy().getNameFirst())")
     @Mapping(target = "product", qualifiedByName = "detailProduct")
     @Mapping(target = "receivingVoucherID", source = "receivingVoucher.id")
     @Named("detailReceivingVoucherItem")

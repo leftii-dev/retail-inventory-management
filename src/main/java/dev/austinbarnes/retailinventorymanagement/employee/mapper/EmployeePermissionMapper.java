@@ -18,10 +18,6 @@ public interface EmployeePermissionMapper {
     @Mapping(target = "permission", qualifiedByName = "basicPermission")
     EmployeePermissionResponseBasicDTO toBasicDTO(EmployeePermission employeePermission);
 
-    @Mapping(target = "createdByID", source = "createdBy.id")
-    @Mapping(target = "createdByName", expression = "java(employeePermission.getCreatedBy().getNameLast() + \", \" + employeePermission.getCreatedBy().getNameFirst())")
-    @Mapping(target = "modifiedByID", source = "modifiedBy.id")
-    @Mapping(target = "modifiedByName", expression = "java(employeePermission.getModifiedBy().getNameLast() + \", \" + employeePermission.getModifiedBy().getNameFirst())")
     @Named("detailEmployeePermission")
     @Mapping(target = "employee", qualifiedByName = "detailEmployee")
     @Mapping(target = "permission", qualifiedByName = "detailPermission")

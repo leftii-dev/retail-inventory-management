@@ -18,10 +18,6 @@ public interface WarehouseLocationMapper {
     WarehouseLocationResponseBasicDTO toBasicDTO(WarehouseLocation warehouseLocation);
 
     @Mapping(target = "location", qualifiedByName = "detailLocation")
-    @Mapping(target = "createdByID", source = "createdBy.id")
-    @Mapping(target = "createdByName", expression = "java(warehouseLocation.getCreatedBy().getNameLast() + \", \" + warehouseLocation.getCreatedBy().getNameFirst())")
-    @Mapping(target = "modifiedByID", source = "modifiedBy.id")
-    @Mapping(target = "modifiedByName", expression = "java(warehouseLocation.getModifiedBy().getNameLast() + \", \" + warehouseLocation.getModifiedBy().getNameFirst())")
     @Named("detailWarehouseLocation")
     WarehouseLocationResponseDetailDTO toDetailDTO(WarehouseLocation warehouseLocation);
 }

@@ -1,16 +1,13 @@
 package dev.austinbarnes.retailinventorymanagement.employee.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.austinbarnes.retailinventorymanagement.auth.entity.User;
 import dev.austinbarnes.retailinventorymanagement.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Entity
 @Table(name = "employee")
@@ -23,6 +20,7 @@ public class Employee extends BaseEntity {
 
     @OneToOne(cascade = CascadeType.MERGE, optional = false)
     @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
+    @JsonIgnore
     private User user;
 
     @Column(name = "name_first", nullable = false)
@@ -39,7 +37,7 @@ public class Employee extends BaseEntity {
     @Pattern(regexp = "\\d{10}", message = "Phone must be 10 digits, no spaces or hyphens")
     private String phone;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     @NotNull
     @Size(min = 5, max = 100, message = "Email address must be between 5 and 100 characters")
     @Email(message = "Invalid email address format")

@@ -13,10 +13,8 @@ public record TransferResponseDetailDTO(
         BigDecimal totalQuantity,
         Instant createdAt,
         Instant modifiedAt,
-        UUID createdByID,
-        String createdByName,
-        UUID modifiedByID,
-        String modifiedByName,
+        UUID createdBy,
+        UUID modifiedBy,
         UUID locationToID,
         UUID locationFromID,
         boolean active

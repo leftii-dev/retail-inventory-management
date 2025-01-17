@@ -7,6 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
@@ -15,7 +17,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@ToString(exclude = {"createdBy", "modifiedBy"})
+@ToString
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity implements Serializable {
@@ -26,19 +28,17 @@ public abstract class BaseEntity implements Serializable {
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false, nullable = false)
-    private Instant createdAt;
+    private Instant createdAt = Instant.now();
 
     @UpdateTimestamp
     @Column(name = "modified_at", nullable = false)
-    private Instant modifiedAt;
+    private Instant modifiedAt = Instant.now();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by_id", referencedColumnName = "id")
-    private Employee createdBy;
+    @CreatedBy
+    private UUID createdBy;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "modified_by_id", referencedColumnName = "id")
-    private Employee modifiedBy;
+    @LastModifiedBy
+    private UUID modifiedBy;
 
     @Column(name = "active", nullable = false)
     private boolean active = true;

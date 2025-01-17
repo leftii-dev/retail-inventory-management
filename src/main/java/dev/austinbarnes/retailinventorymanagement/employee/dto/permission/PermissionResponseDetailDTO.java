@@ -9,10 +9,8 @@ public record PermissionResponseDetailDTO(
         String description,
         Instant createdAt,
         Instant modifiedAt,
-        UUID createdByID,
-        String createdByName,
-        UUID modifiedByID,
-        String modifiedByName,
+        UUID createdBy,
+        UUID modifiedBy,
         boolean deleted
 ) implements PermissionResponseDTO {
 }

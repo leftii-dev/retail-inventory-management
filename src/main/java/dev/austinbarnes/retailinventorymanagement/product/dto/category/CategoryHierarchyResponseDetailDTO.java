@@ -10,10 +10,8 @@ public record CategoryHierarchyResponseDetailDTO(
         UUID parentCategoryID,
         Instant createdAt,
         Instant modifiedAt,
-        UUID createdByID,
-        String createdByName,
-        UUID modifiedByID,
-        String modifiedByName,
+        UUID createdBy,
+        UUID modifiedBy,
         boolean active
 ) implements CategoryHierarchyResponseDTO{
 }

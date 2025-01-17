@@ -18,10 +18,6 @@ public interface LocationMapper {
     LocationResponseBasicDTO toBasicDTO(Location location);
 
     @Mapping(target =  "locationType", qualifiedByName = "detailLocationType")
-    @Mapping(target = "createdByID", source = "createdBy.id")
-    @Mapping(target = "createdByName", expression = "java(location.getCreatedBy().getNameLast() + \", \" + location.getCreatedBy().getNameFirst())")
-    @Mapping(target = "modifiedByID", source = "modifiedBy.id")
-    @Mapping(target = "modifiedByName", expression = "java(location.getModifiedBy().getNameLast() + \", \" + location.getModifiedBy().getNameFirst())")
     @Named("detailLocation")
     LocationResponseDetailDTO toDetailDTO(Location location);
 }

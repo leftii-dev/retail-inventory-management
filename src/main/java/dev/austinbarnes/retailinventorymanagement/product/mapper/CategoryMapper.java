@@ -18,10 +18,6 @@ public interface CategoryMapper {
     CategoryResponseBasicDTO toBasicDTO(Category category);
 
     @Mapping(target = "discountID", source = "discount.id")
-    @Mapping(target = "createdByID", source = "createdBy.id")
-    @Mapping(target = "createdByName", expression = "java(category.getCreatedBy().getNameLast() + \", \" + category.getCreatedBy().getNameFirst())")
-    @Mapping(target = "modifiedByID", source = "modifiedBy.id")
-    @Mapping(target = "modifiedByName", expression = "java(category.getModifiedBy().getNameLast() + \", \" + category.getModifiedBy().getNameFirst())")
     @Named("detailCategory")
     CategoryResponseDetailDTO toDetailDTO(Category category);
 }

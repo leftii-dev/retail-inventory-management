@@ -13,9 +13,8 @@ import java.util.UUID;
  * @param description
  * @param createdAt
  * @param modifiedAt
- * @param createdByID
- * @param modifiedByID
- * @param deleted
+ * @param createdBy
+ * @param modifiedBy
  *
  * @author Austin Barnes
  * @since 2024
@@ -27,10 +26,8 @@ public record CategoryResponseDetailDTO(
         String description,
         Instant createdAt,
         Instant modifiedAt,
-        UUID createdByID,
-        String createdByName,
-        UUID modifiedByID,
-        String modifiedByName,
+        UUID createdBy,
+        UUID modifiedBy,
         UUID discountID,
         boolean active
 ) implements CategoryResponseDTO{

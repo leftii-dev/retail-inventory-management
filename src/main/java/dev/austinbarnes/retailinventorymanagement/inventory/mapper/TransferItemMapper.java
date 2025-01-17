@@ -21,10 +21,6 @@ public interface TransferItemMapper {
 
     @Mapping(target = "transferID", source = "transfer.id")
     @Mapping(target = "product", qualifiedByName = "detailProduct")
-    @Mapping(target = "createdByID", source = "createdBy.id")
-    @Mapping(target = "createdByName", expression = "java(transferItem.getCreatedBy().getNameLast() + \", \" + transferItem.getCreatedBy().getNameFirst())")
-    @Mapping(target = "modifiedByID", source = "modifiedBy.id")
-    @Mapping(target = "modifiedByName", expression = "java(transferItem.getModifiedBy().getNameLast() + \", \" + transferItem.getModifiedBy().getNameFirst())")
     @Named("detailTransferItem")
     TransferItemResponseDetailDTO toDetailDTO(TransferItem transferItem);
 }
