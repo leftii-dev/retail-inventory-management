@@ -24,18 +24,15 @@ public class EmployeeHierarchyService {
     private final EmployeeRepository employeeRepository;
     private final EmployeeHierarchyMapper mapper;
 
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     public ResponseEntity<ApiResponseDto<EmployeeHierarchyResponseDTO>> createEmployeeHierarchy(
             EmployeeHierarchyRequestDTO employeeHierarchyRequestDTO
     ) {
-        return ApiResponseDto.created(isManager()
-                ?
-                mapper.toDetailDTO(employeeHierarchyRepository.save(mapper.toEntity(employeeHierarchyRequestDTO)))
-                :
-                mapper.toBasicDTO(employeeHierarchyRepository.save(mapper.toEntity(employeeHierarchyRequestDTO))));
+        return ApiResponseDto.created(mapper.toDetailDTO(employeeHierarchyRepository.save(mapper.toEntity(employeeHierarchyRequestDTO))));
     }
 
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
-    public ResponseEntity<ApiResponseDto<EmployeeHierarchyResponseDTO>> updateHierarchy(EmployeeHierarchyRequestDTO request){
+    public ResponseEntity<ApiResponseDto<EmployeeHierarchyResponseDTO>> updateHierarchy(EmployeeHierarchyRequestDTO request) {
         EmployeeHierarchy original = employeeHierarchyRepository.findByEmployeeId(request.employeeID())
                 .orElseThrow(() -> new EntityNotFoundException("Manager relationship for user ID: %s not found".formatted(request.employeeID())));
 
@@ -45,23 +42,26 @@ public class EmployeeHierarchyService {
         return ApiResponseDto.ok(mapper.toDetailDTO(employeeHierarchyRepository.save(original)));
     }
 
+    @PreAuthorize("hasAnyRole('MANAGER', 'EMPLOYEE', 'ADMIN')")
     public ResponseEntity<ApiResponseDto<EmployeeHierarchyResponseDTO>> getEmployeeHierarchy(UUID employeeID) {
         return ApiResponseDto.ok(employeeHierarchyRepository.findByEmployeeId(employeeID)
                 .map(hierarchy -> isManager()
-                        ? (EmployeeHierarchyResponseDTO) mapper.toDetailDTO(hierarchy)
+                        ? mapper.toDetailDTO(hierarchy)
                         : (EmployeeHierarchyResponseDTO) mapper.toBasicDTO(hierarchy))
                 .orElseThrow(() -> new EntityNotFoundException("No Manager Relationship found for employee: %s".formatted(employeeID))));
     }
 
-    public ResponseEntity<ApiResponseDto<List<EmployeeHierarchyResponseDTO>>> getEmployeeHierarchyAll(){
+    @PreAuthorize("hasAnyRole('MANAGER', 'EMPLOYEE', 'ADMIN')")
+    public ResponseEntity<ApiResponseDto<List<EmployeeHierarchyResponseDTO>>> getEmployeeHierarchyAll() {
         return ApiResponseDto.ok(employeeHierarchyRepository.findAll().stream()
                 .map(hierarchy -> isManager()
-                        ? (EmployeeHierarchyResponseDTO) mapper.toDetailDTO(hierarchy)
+                        ? mapper.toDetailDTO(hierarchy)
                         : (EmployeeHierarchyResponseDTO) mapper.toBasicDTO(hierarchy))
                 .toList());
     }
 
-    public ResponseEntity<ApiResponseDto<Void>> deleteEmployeeHierarchyRelationship(UUID employeeID){
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    public ResponseEntity<ApiResponseDto<Void>> deleteEmployeeHierarchyRelationship(UUID employeeID) {
         employeeHierarchyRepository.deleteById(employeeID);
         return ApiResponseDto.noContent();
     }
