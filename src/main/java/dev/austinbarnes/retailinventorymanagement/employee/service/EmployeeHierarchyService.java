@@ -19,11 +19,21 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+/*
+  EmployeeHierarchyService handles operations related to employee hierarchy management.
+  It provides methods to create, update, retrieve, and delete employee hierarchy relationships.
+ */
 public class EmployeeHierarchyService {
     private final EmployeeHierarchyRepository employeeHierarchyRepository;
     private final EmployeeRepository employeeRepository;
     private final EmployeeHierarchyMapper mapper;
 
+    /**
+     * Creates a new employee hierarchy relationship.
+     *
+     * @param employeeHierarchyRequestDTO The request DTO containing employee hierarchy details.
+     * @return ResponseEntity with the created employee hierarchy details.
+     */
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     public ResponseEntity<ApiResponseDto<EmployeeHierarchyResponseDTO>> createEmployeeHierarchy(
             EmployeeHierarchyRequestDTO employeeHierarchyRequestDTO
@@ -31,6 +41,12 @@ public class EmployeeHierarchyService {
         return ApiResponseDto.created(mapper.toDetailDTO(employeeHierarchyRepository.save(mapper.toEntity(employeeHierarchyRequestDTO))));
     }
 
+    /**
+     * Updates an existing employee hierarchy relationship.
+     *
+     * @param request The request DTO containing updated employee hierarchy details.
+     * @return ResponseEntity with the updated employee hierarchy details.
+     */
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     public ResponseEntity<ApiResponseDto<EmployeeHierarchyResponseDTO>> updateHierarchy(EmployeeHierarchyRequestDTO request) {
         EmployeeHierarchy original = employeeHierarchyRepository.findByEmployeeId(request.employeeID())
@@ -42,6 +58,12 @@ public class EmployeeHierarchyService {
         return ApiResponseDto.ok(mapper.toDetailDTO(employeeHierarchyRepository.save(original)));
     }
 
+    /**
+     * Retrieves the employee hierarchy for a specific employee.
+     *
+     * @param employeeID The ID of the employee.
+     * @return ResponseEntity with the employee hierarchy details.
+     */
     @PreAuthorize("hasAnyRole('MANAGER', 'EMPLOYEE', 'ADMIN')")
     public ResponseEntity<ApiResponseDto<EmployeeHierarchyResponseDTO>> getEmployeeHierarchy(UUID employeeID) {
         return ApiResponseDto.ok(employeeHierarchyRepository.findByEmployeeId(employeeID)
@@ -51,6 +73,11 @@ public class EmployeeHierarchyService {
                 .orElseThrow(() -> new EntityNotFoundException("No Manager Relationship found for employee: %s".formatted(employeeID))));
     }
 
+    /**
+     * Retrieves all employee hierarchies.
+     *
+     * @return ResponseEntity with a list of all employee hierarchies.
+     */
     @PreAuthorize("hasAnyRole('MANAGER', 'EMPLOYEE', 'ADMIN')")
     public ResponseEntity<ApiResponseDto<List<EmployeeHierarchyResponseDTO>>> getEmployeeHierarchyAll() {
         return ApiResponseDto.ok(employeeHierarchyRepository.findAll().stream()
@@ -60,12 +87,23 @@ public class EmployeeHierarchyService {
                 .toList());
     }
 
+    /**
+     * Deletes an employee hierarchy relationship by ID.
+     *
+     * @param relationshipId The ID of the employee hierarchy relationship to delete.
+     * @return ResponseEntity with no content.
+     */
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
-    public ResponseEntity<ApiResponseDto<Void>> deleteEmployeeHierarchyRelationship(UUID employeeID) {
-        employeeHierarchyRepository.deleteById(employeeID);
+    public ResponseEntity<ApiResponseDto<Void>> deleteEmployeeHierarchyRelationship(UUID relationshipId) {
+        employeeHierarchyRepository.deleteById(relationshipId);
         return ApiResponseDto.noContent();
     }
 
+    /**
+     * Checks if the current user has manager or admin role.
+     *
+     * @return true if the user is a manager or admin, false otherwise.
+     */
     private boolean isManager() {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(
                 authority -> authority.getAuthority().equals("ROLE_MANAGER") || authority.getAuthority().equals("ROLE_ADMIN")
