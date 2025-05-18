@@ -11,6 +11,13 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.Instant;
 import java.util.UUID;
 
+/**
+ * Permission is an entity class that represents a permission in the system.
+ * It contains fields for the name and description of the permission.
+ * <p>
+ * The class extends BaseEntity, which provides common fields such as id, createdAt, modifiedAt,
+ * createdBy, modifiedBy, and active.
+ */
 @Entity
 @Table(name = "permission")
 @AllArgsConstructor

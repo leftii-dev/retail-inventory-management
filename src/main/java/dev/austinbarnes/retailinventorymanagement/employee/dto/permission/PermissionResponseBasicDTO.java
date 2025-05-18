@@ -7,9 +7,6 @@ import java.util.UUID;
  * employee permissions.
  * <p>
  * It contains the IDs of the employee and the role.
- *
- * @param employeeID The ID of the employee.
- * @param roleID     The ID of the role.
  */
 public record PermissionResponseBasicDTO(
     UUID id,

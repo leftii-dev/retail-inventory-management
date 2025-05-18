@@ -9,6 +9,15 @@ import lombok.*;
 
 import java.time.LocalDate;
 
+/**
+ * Employee is an entity class that represents an employee in the system.
+ * It contains fields for the employee's first name, last name, phone number, email address,
+ * date of birth, employee code, and whether they are a current employee.
+ * <p>
+ * The class also includes validation annotations to ensure that the data meets certain criteria.
+ * It extends the BaseEntity class, which provides common fields such as id, createdAt, modifiedAt,
+ * createdBy, modifiedBy, and active status.
+ */
 @Entity
 @Table(name = "employee")
 @AllArgsConstructor
