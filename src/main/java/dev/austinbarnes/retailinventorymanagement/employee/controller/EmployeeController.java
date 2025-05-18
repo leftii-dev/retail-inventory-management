@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-
+/**
+ * EmployeeController handles all employee-related operations.
+ * <p>
+ * Provides endpoints to create, update, delete, and retrieve employees.
+ */
 @RestController
 @RequestMapping("api/v1/employees")
 @Slf4j
 @RequiredArgsConstructor
-/*
-  EmployeeController handles all employee-related operations.
-  It provides endpoints to create, update, delete, and retrieve employee information.
- */
 public class EmployeeController {
     private final EmployeeService employeeService;
 

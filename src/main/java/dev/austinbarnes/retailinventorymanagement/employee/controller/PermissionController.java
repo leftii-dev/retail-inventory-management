@@ -13,6 +13,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * PermissionController handles all permission-related operations.
+ * <p>
+ * It provides endpoints to create, update, delete, and retrieve permissions.
+ */
 @RestController
 @RequestMapping("api/v1/permissions")
 @Slf4j
@@ -26,18 +31,36 @@ public class PermissionController {
         return permissionService.createPermission(request);
     }
 
+    /**
+     * Retrieves a permission by its ID.
+     *
+     * @param permissionId The ID of the permission to retrieve.
+     * @return ResponseEntity with the permission details.
+     */
     @GetMapping("/{permissionId}")
     public ResponseEntity<ApiResponseDto<PermissionResponseDTO>> getPermissionById(@PathVariable UUID permissionId) {
         log.info("Get permission by ID: {}", permissionId);
         return permissionService.getPermissionById(permissionId);
     }
 
+    /**
+     * Retrieves all permissions.
+     *
+     * @return ResponseEntity with a list of all permissions.
+     */
     @GetMapping("/")
     public ResponseEntity<ApiResponseDto<List<PermissionResponseDTO>>> getAllPermissions() {
         log.info("Get all permissions");
         return permissionService.getAllPermissions();
     }
 
+    /**
+     * Updates an existing permission.
+     *
+     * @param permissionId The ID of the permission to update.
+     * @param request      The DTO containing the updated details of the permission.
+     * @return ResponseEntity with the updated permission details.
+     */
     @PutMapping("/{permissionId}")
     public ResponseEntity<ApiResponseDto<PermissionResponseDTO>> updatePermission(
             @PathVariable UUID permissionId,
@@ -46,6 +69,12 @@ public class PermissionController {
         return permissionService.updatePermission(permissionId, request);
     }
 
+    /**
+     * Deletes a permission by its ID.
+     *
+     * @param permissionId The ID of the permission to delete.
+     * @return ResponseEntity indicating the result of the deletion.
+     */
     @DeleteMapping("/{permissionId}")
     public ResponseEntity<ApiResponseDto<Void>> deletePermission(@PathVariable UUID permissionId) {
         log.info("Delete permission with ID: {}", permissionId);
