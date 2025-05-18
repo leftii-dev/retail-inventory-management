@@ -6,6 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
+/**
+ * LocationHoursRepository is a Spring Data JPA repository interface for managing LocationHours entities.
+ * It extends JpaRepository to provide CRUD operations and query methods for LocationHours.
+ * The repository is annotated with @Repository to indicate that it is a Spring Data repository.
+ */
 @Repository
 public interface LocationHoursRepository extends JpaRepository<LocationHours, UUID> {
 }

@@ -6,6 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
+/**
+ * LocationDetailsRepository is a Spring Data JPA repository interface for managing LocationDetails entities.
+ * It extends JpaRepository to provide CRUD operations and query methods for LocationDetails.
+ * The repository is annotated with @Repository to indicate that it is a Spring Data repository.
+ */
 @Repository
 public interface LocationDetailsRepository extends JpaRepository<LocationDetails, UUID> {
 }
