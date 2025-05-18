@@ -17,12 +17,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * EmployeeHierarchyService handles all operations related to employee hierarchy.
+ * <p>
+ * It provides methods to create, update, retrieve, and delete employee hierarchy relationships.
+ */
 @Service
 @RequiredArgsConstructor
-/*
-  EmployeeHierarchyService handles operations related to employee hierarchy management.
-  It provides methods to create, update, retrieve, and delete employee hierarchy relationships.
- */
 public class EmployeeHierarchyService {
     private final EmployeeHierarchyRepository employeeHierarchyRepository;
     private final EmployeeRepository employeeRepository;

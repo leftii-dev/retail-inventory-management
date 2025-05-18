@@ -15,16 +15,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * PermissionService handles all operations related to permission management.
+ * <p>
+ * It provides methods to create, update, retrieve, and delete permissions.
+ */
 @Service
 @RequiredArgsConstructor
 @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
-/**
- * Service class for managing permissions.
- * <p>
- * This class provides methods to create, update, retrieve, and delete permissions.
- * It uses the {@link PermissionRepository} to interact with the database and
- * {@link PermissionMapper} to map between DTOs and entity objects.
- */
 public class PermissionService {
 
     private final PermissionRepository permissionRepository;
