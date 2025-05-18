@@ -6,6 +6,11 @@ import jakarta.validation.constraints.Size;
 
 import java.util.UUID;
 
+/**
+ * LocationDetailsRequestDTO is a data transfer object that represents the details of a location.
+ * It includes fields for address, city, state, zip code, phone, fax, email, notes, location ID,
+ * and manager ID. The fields are validated with constraints to ensure proper formatting and length.
+ */
 public record LocationDetailsRequestDTO(
         @Size(max = 60, message = "Address Line must be 60 characters or less") String addressLine1,
         @Size(max = 60, message = "Address Line must be 60 characters or less") String addressLine2,
