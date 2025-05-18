@@ -1,8 +1,6 @@
 package dev.austinbarnes.retailinventorymanagement.employee.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
-import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.EmployeePermissionRequestDTO;
-import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.EmployeePermissionResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.PermissionRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.PermissionResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Permission;
@@ -14,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -40,6 +39,15 @@ public class PermissionService {
                 .orElseThrow(() -> new EntityNotFoundException("Permission not found with id: %s".formatted(permissionId))));
     }
 
-    //GetAll
-    //Delete
+    public ResponseEntity<ApiResponseDto<List<PermissionResponseDTO>>> getAllPermissions() {
+        return ApiResponseDto.ok(permissionRepository.findAll()
+                .stream()
+                .map(permission -> (PermissionResponseDTO) mapper.toDetailDTO(permission))
+                .toList());
+    }
+
+    public ResponseEntity<ApiResponseDto<Void>> deletePermission(UUID permissionId) {
+        permissionRepository.deleteById(permissionId);
+        return ApiResponseDto.noContent();
+    }
 }
