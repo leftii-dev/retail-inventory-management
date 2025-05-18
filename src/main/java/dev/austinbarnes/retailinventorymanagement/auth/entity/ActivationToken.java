@@ -9,6 +9,11 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
+/**
+ * ActivationToken represents a token used for user activation.
+ * It contains the user ID and expiration time of the token.
+ * The expiration time is set to 24 hours from the time of creation.
+ */
 @Entity
 @Table(name = "activation_token")
 @AllArgsConstructor
