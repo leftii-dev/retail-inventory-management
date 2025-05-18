@@ -12,6 +12,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+/**
+ * EmailService is a Spring service that provides methods for sending emails.
+ * It uses JavaMailSender to send emails asynchronously.
+ * The service can send activation emails and general emails with HTML content.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -23,6 +28,12 @@ public class EmailService {
     @Value("${app.base.url}")
     private String baseUrl;
 
+    /**
+     * Sends an activation email to the specified recipient with a unique token.
+     *
+     * @param to   the recipient's email address
+     * @param token the unique token for account activation
+     */
     @Async
     public void sendActivationEmail(String to, UUID token){
         try {
@@ -59,6 +70,13 @@ public class EmailService {
         }
     }
 
+    /**
+     * Sends an email with the specified subject and HTML content to the specified recipient.
+     *
+     * @param to          the recipient's email address
+     * @param subject     the subject of the email
+     * @param htmlContent the HTML content of the email
+     */
     @Async
     public void sendEmail(String to, String subject, String htmlContent){
         try {
