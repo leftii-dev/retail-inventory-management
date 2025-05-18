@@ -18,6 +18,14 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.Instant;
 import java.util.UUID;
 
+/**
+ * Inventory is an entity class representing the inventory of products in a retail management system.
+ * <p>
+ * It contains fields for quantity, product, and location, along with timestamps for creation and modification.
+ * <p>
+ * The class uses JPA annotations to map the entity to a database table and includes validation annotations
+ * to ensure that the quantity is within a specified range.
+ */
 @Entity
 @Table(name = "inventory")
 @AllArgsConstructor

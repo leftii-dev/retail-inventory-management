@@ -13,6 +13,14 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.Instant;
 import java.util.UUID;
 
+/**
+ * Status is an entity class representing the status of a purchase order or receiving voucher in a retail management system.
+ * <p>
+ * It contains fields for the name and description of the status.
+ * <p>
+ * The class uses JPA annotations to map the entity to a database table and includes validation annotations
+ * to ensure that the name and description are within specified lengths.
+ */
 @Entity
 @Table(name = "status")
 @AllArgsConstructor

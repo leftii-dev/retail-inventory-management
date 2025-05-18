@@ -14,6 +14,15 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
+/**
+ * ReceivingVoucherItem is an entity class representing an item in a receiving voucher in a retail management system.
+ * <p>
+ * It contains fields for quantity, discount percentage, discount reason, cost per unit, total cost for the line item,
+ * and references to the product and receiving voucher associated with the item.
+ * <p>
+ * The class uses JPA annotations to map the entity to a database table and includes validation annotations
+ * to ensure that the cost and quantity are within specified ranges.
+ */
 @Entity
 @Table(name = "receiving_voucher_item")
 @AllArgsConstructor

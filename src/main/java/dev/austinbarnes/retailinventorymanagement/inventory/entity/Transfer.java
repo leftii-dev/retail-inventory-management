@@ -15,6 +15,15 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
+/**
+ * Transfer is an entity class representing a transfer of products between locations in a retail management system.
+ * <p>
+ * It contains fields for the date of transfer, transfer code, total cost, total quantity, and references to the
+ * source and destination locations.
+ * <p>
+ * The class uses JPA annotations to map the entity to a database table and includes validation annotations
+ * to ensure that the fields are within specified ranges and constraints.
+ */
 @Entity
 @Table(name = "transfer")
 @AllArgsConstructor

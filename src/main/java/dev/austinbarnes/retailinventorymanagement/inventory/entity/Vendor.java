@@ -15,6 +15,14 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.Instant;
 import java.util.UUID;
 
+/**
+ * Vendor is an entity class representing a vendor in a retail management system.
+ * <p>
+ * It contains fields for the vendor code, name, address, contact information, and email.
+ * <p>
+ * The class uses JPA annotations to map the entity to a database table and includes validation annotations
+ * to ensure that the fields are within specified ranges and constraints.
+ */
 @Entity
 @Table(name = "vendor")
 @AllArgsConstructor
