@@ -4,14 +4,15 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
- * Discount Response DTO for users
- * Excludes active and deleted values as users should only receive active/non-deleted items
+ * DiscountResponseBasicDTO is a data transfer object that represents the response for a discount.
+ * It includes fields for the unique identifier of the discount, its code, name, description, and discount percentage.
+ * This DTO is used to transfer data between layers of the application.
  *
- * @param id
- * @param discountCode
- * @param name
- * @param description
- * @param discountPercentage
+ * @param id                the unique identifier of the discount
+ * @param discountCode      the unique code of the discount
+ * @param name              the name of the discount
+ * @param description       the description of the discount
+ * @param discountPercentage the percentage of the discount
  */
 public record DiscountResponseBasicDTO(
         UUID id,

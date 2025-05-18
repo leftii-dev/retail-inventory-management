@@ -3,13 +3,13 @@ package dev.austinbarnes.retailinventorymanagement.product.dto.category;
 import java.util.UUID;
 
 /**
- * Category Hierarchy Request DTO for creating and updating Category Hierarchy entries
- * @param categoryID
- * @param parentCategoryID
+ * CategoryHierarchyRequestDTO is a data transfer object that represents the request for a category hierarchy.
+ * It includes fields for the unique identifier of the category and the parent category.
+ * This DTO is used to transfer data between layers of the application.
  *
- * @author Austin Barnes
- * @since 2024
- * */
+ * @param categoryID      the unique identifier of the category
+ * @param parentCategoryID the unique identifier of the parent category
+ */
 public record CategoryHierarchyRequestDTO(
         UUID categoryID,
         UUID parentCategoryID

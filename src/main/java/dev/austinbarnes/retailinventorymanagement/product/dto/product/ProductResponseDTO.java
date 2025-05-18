@@ -5,12 +5,11 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * DTO interface for Products
- * Allows return type safety in controller with different DTO records
- *
- * @author Austin Barnes
- * @since 2024
- * */
+ * ProductResponseDTO is a data transfer object that represents the response for a product.
+ * It includes fields for the unique identifier of the product, its SKU, product code, name, description,
+ * price, weight, dimensions, additional details, category ID and name, brand ID and name, and discount ID and name.
+ * This DTO is used to transfer data between layers of the application.
+ */
 public interface ProductResponseDTO {
     UUID id();
     String sku();
