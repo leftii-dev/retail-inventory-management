@@ -1,18 +1,16 @@
 package dev.austinbarnes.retailinventorymanagement.location.entity;
 
 import dev.austinbarnes.retailinventorymanagement.common.BaseEntity;
-import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.Instant;
-import java.util.UUID;
-
+/**
+ * Location is an entity class that represents a location in the retail inventory management system.
+ * It includes fields for the name, location type, and timestamps for creation and updates.
+ * The class is annotated with JPA annotations to map it to a database table.
+ */
 @Entity
 @Table(name = "location")
 @AllArgsConstructor
