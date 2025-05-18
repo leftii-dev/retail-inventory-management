@@ -13,16 +13,40 @@ import org.mapstruct.Named;
 import org.mapstruct.ObjectFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+/**
+ * UserMapper is an interface for mapping between User entities and their DTO representations.
+ * It provides methods to convert UserRequestDto and RegistrationRequestDto to User entities,
+ * as well as methods to convert User entities to UserResponseBasicDto and UserResponseDetailDto.
+ */
 @Mapper(config = GlobalMapperConfig.class, uses = {RoleMapper.class})
 public interface UserMapper {
+    /**
+     * Converts a UserRequestDto to a User entity.
+     *
+     * @param userRequestDto the UserRequestDto to convert
+     * @return the converted User entity
+     */
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "roles", ignore = true)
     User toEntity(UserRequestDto userRequestDto);
 
+    /**
+     * Converts a User entity to a UserResponseBasicDto.
+     *
+     * @return the converted UserResponseBasicDto
+     */
     @Mapping(target = "roles", ignore = true)
     @Mapping(target = "password", expression = "java(passwordEncoder.encode(registrationRequestDto.password()))")
     User toEntityWithoutRoles(RegistrationRequestDto registrationRequestDto, PasswordEncoder passwordEncoder);
 
+    /**
+     * Converts a RegistrationRequestDto to a User entity.
+     *
+     * @param registrationRequestDto the RegistrationRequestDto to convert
+     * @param roleRepository         the RoleRepository to use for role conversion
+     * @param passwordEncoder        the PasswordEncoder to use for password encoding
+     * @return the converted User entity
+     */
     @Mapping(target = "roles", source = ".", qualifiedByName = "toRoleSet")
     default User toEntity(RegistrationRequestDto registrationRequestDto, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         User user = toEntityWithoutRoles(registrationRequestDto, passwordEncoder);
@@ -31,9 +55,21 @@ public interface UserMapper {
         return user;
     }
 
+    /**
+     * Converts a User entity to a UserResponseBasicDto.
+     *
+     * @param user the User entity to convert
+     * @return the converted UserResponseBasicDto
+     */
     @Named("basicUser")
     UserResponseBasicDto toBasicDto(User user);
 
+    /**
+     * Converts a User entity to a UserResponseDetailDto.
+     *
+     * @param user the User entity to convert
+     * @return the converted UserResponseDetailDto
+     */
     @Named("detailUser")
     @Mapping(target = "employeeId", source = "employee.id")
     UserResponseDetailDto toDetailDto(User user);
