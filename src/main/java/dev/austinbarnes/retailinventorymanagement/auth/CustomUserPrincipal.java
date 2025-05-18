@@ -10,6 +10,11 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * CustomUserPrincipal implements OAuth2User and UserDetails interfaces.
+ * It represents the authenticated user in the application.
+ * It contains user details such as username, password, roles, and attributes.
+ */
 @Data
 public class CustomUserPrincipal implements OAuth2User, UserDetails {
     private final User user;
@@ -25,6 +30,12 @@ public class CustomUserPrincipal implements OAuth2User, UserDetails {
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
 
+    /**
+     * Constructor to create CustomUserPrincipal object.
+     *
+     * @param user            the user entity
+     * @param loginIdentifier the login identifier (username or email)
+     */
     public CustomUserPrincipal(User user, String loginIdentifier) {
         this.user = user;
         this.id = user.getId();
@@ -39,14 +50,27 @@ public class CustomUserPrincipal implements OAuth2User, UserDetails {
         this.credentialsNonExpired = user.isCredentialsNonExpired();
     }
 
-    // Factory method for OAuth2 auth
+    /**
+     * Factory method for OAuth2 authentication.
+     *
+     * @param user            the user entity
+     * @param attributes      the attributes from OAuth2 provider
+     * @param loginIdentifier the login identifier (username or email)
+     * @return CustomUserPrincipal object
+     */
     public static CustomUserPrincipal create(User user, Map<String, Object> attributes, String loginIdentifier) {
         CustomUserPrincipal userPrincipal = new CustomUserPrincipal(user, loginIdentifier);
         userPrincipal.setAttributes(attributes);
         return userPrincipal;
     }
 
-    // Factory method for username/password auth
+    /**
+     * Factory method for credential login.
+     *
+     * @param user            the user entity
+     * @param loginIdentifier the login identifier (username or email)
+     * @return CustomUserPrincipal object
+     */
     public static CustomUserPrincipal create(User user, String loginIdentifier) {
         return new CustomUserPrincipal(user, loginIdentifier);
     }
