@@ -15,6 +15,10 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * ActivationTokenService is a service class that handles the creation and management of activation tokens.
+ * It provides methods to create new activation tokens, send activation emails, and clear expired tokens.
+ */
 @Service
 @RequiredArgsConstructor
 @EnableJpaRepositories
@@ -23,6 +27,10 @@ public class ActivationTokenService {
     private final ActivationTokenRepository activationTokenRepository;
     private final EmailService mailer;
 
+    /**
+     * Clears expired activation tokens from the database.
+     * This method is scheduled to run every 30 minutes
+     */
     @Transactional
     @Scheduled(cron = "0 */30 * * * *")
     public void clearExpiredActivationTokens() {
@@ -30,6 +38,14 @@ public class ActivationTokenService {
         activationTokenRepository.deleteAll(expiredTokens);
     }
 
+    /**
+     * Creates a new activation token for the specified user and sends an activation email.
+     * This method is marked as REQUIRES_NEW to ensure that it runs in a separate transaction.
+     *
+     * @param userId the ID of the user
+     * @param userEmail the email address of the user
+     * @return the newly created activation token
+     */
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public ActivationToken activateAndSendEmail(UUID userId, String userEmail) {
         log.info("Beginning create new activation token for user {}", userId);
