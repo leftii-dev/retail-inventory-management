@@ -128,8 +128,8 @@ public class AuthService {
     /**
      * Authenticates a user with the provided email and password.
      *
-     * @param email
-     * @param password
+     * @param email the user's email
+     * @param password the user's password
      */
     private void authenticate(String email, String password) {
         // Authenticate user
