@@ -5,6 +5,13 @@ import dev.austinbarnes.retailinventorymanagement.product.dto.product.ProductRes
 
 import java.util.UUID;
 
+/**
+ * InventoryResponseBasicDTO is a Data Transfer Object (DTO) used for transferring basic inventory data.
+ * <p>
+ * It contains fields for inventory ID, quantity, product details, and location details.
+ * <p>
+ * This DTO is used to represent the inventory data in a simplified format.
+ */
 public interface InventoryResponseDTO {
     UUID id();
     int quantity();
