@@ -8,11 +8,22 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+/**
+ * CustomUserDetails implements UserDetails interface to provide user
+ * authentication and authorization information.
+ * It contains user details such as username, password, and roles.
+ */
 public class CustomUserDetails implements UserDetails {
 
     private final User user;
     private final String loginIdentifier;
 
+    /**
+     * Constructor to create CustomUserDetails object.
+     *
+     * @param user the user entity
+     * @param loginIdentifier the login identifier (username or email)
+     */
     public CustomUserDetails(User user, String loginIdentifier) {
         this.user = user;
         this.loginIdentifier = loginIdentifier;
@@ -26,31 +37,61 @@ public class CustomUserDetails implements UserDetails {
     }
 
 
+    /**
+     * Returns the user entity.
+     *
+     * @return the user entity
+     */
     @Override
     public String getPassword() {
         return user.getPassword();
     }
 
+    /**
+     * Returns the login identifier (username or email).
+     *
+     * @return the login identifier
+     */
     @Override
     public String getUsername() {
         return loginIdentifier;
     }
 
+    /**
+     * Returns the expiration status of user entity.
+     *
+     * @return the expiration status of user entity
+     */
     @Override
     public boolean isAccountNonExpired() {
         return user.isAccountNonExpired();
     }
 
+    /**
+     * Returns the locked status of user entity.
+     *
+     * @return the locked status of user entity
+     */
     @Override
     public boolean isAccountNonLocked() {
         return user.isAccountNonLocked();
     }
 
+    /**
+     * Returns the credentials expiration status of user entity.
+     *
+     * @return the credentials expiration status of user entity
+     */
     @Override
     public boolean isCredentialsNonExpired() {
         return user.isCredentialsNonExpired();
     }
 
+    /**
+     * Returns the enabled status of user entity.
+     *
+     * @return the enabled status of user entity
+     */
     @Override
     public boolean isEnabled() {
         return user.isEnabled();
