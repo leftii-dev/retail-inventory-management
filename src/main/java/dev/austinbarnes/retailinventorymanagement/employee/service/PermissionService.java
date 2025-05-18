@@ -29,13 +29,17 @@ public class PermissionService {
 
     public ResponseEntity<ApiResponseDto<PermissionResponseDTO>> updatePermission(UUID permissionId, PermissionRequestDTO request) {
         Permission targetPermission = permissionRepository.findById(permissionId)
-                .orElseThrow(() -> new EntityNotFoundException("Permission not found wit id: %s".formatted(permissionId)));
+                .orElseThrow(() -> new EntityNotFoundException("Permission not found with id: %s".formatted(permissionId)));
         targetPermission.setName(request.name());
         targetPermission.setDescription(request.description());
         return ApiResponseDto.ok(mapper.toDetailDTO(permissionRepository.save(targetPermission)));
     }
 
-    //GetByID
+    public ResponseEntity<ApiResponseDto<PermissionResponseDTO>> getPermissionById(UUID permissionId) {
+        return ApiResponseDto.ok(permissionRepository.findById(permissionId).map(mapper::toDetailDTO)
+                .orElseThrow(() -> new EntityNotFoundException("Permission not found with id: %s".formatted(permissionId))));
+    }
+
     //GetAll
     //Delete
 }

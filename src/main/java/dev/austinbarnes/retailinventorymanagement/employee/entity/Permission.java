@@ -19,7 +19,7 @@ import java.util.UUID;
 @Setter
 @ToString(callSuper = true, exclude = {"description"})
 public class Permission extends BaseEntity {
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     @NotNull
     @Size(min = 3, max = 60, message = "Name of permission must be 3 to 60 characters")
     private String name;
