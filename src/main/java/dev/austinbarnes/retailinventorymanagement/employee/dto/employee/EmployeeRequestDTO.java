@@ -5,6 +5,20 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.UUID;
 
+/**
+ * EmployeeRequestDTO is a Data Transfer Object (DTO) used for creating or updating employee
+ * information.
+ * <p>
+ * It contains the first name, last name, phone number, email address, date of birth, and user ID of
+ * the employee.
+ *
+ * @param nameFirst   The first name of the employee.
+ * @param nameLast    The last name of the employee.
+ * @param phone       The phone number of the employee.
+ * @param email       The email address of the employee.
+ * @param dateOfBirth The date of birth of the employee.
+ * @param userId      The ID of the user associated with the employee.
+ */
 public record EmployeeRequestDTO(
         @Size(min = 1, max = 50, message = "First name must be between 1 and 50 characters")
         String nameFirst,
