@@ -5,6 +5,14 @@ import dev.austinbarnes.retailinventorymanagement.product.dto.product.ProductRes
 import java.math.BigDecimal;
 import java.util.UUID;
 
+/**
+ * ReceivingVoucherItemResponseBasicDTO is a Data Transfer Object (DTO) used for transferring basic receiving voucher item data.
+ * <p>
+ * It contains fields for receiving voucher item ID, quantity, discount percentage, discount reason, cost unit, cost line total,
+ * product details, and receiving voucher ID.
+ * <p>
+ * This DTO is used to represent the receiving voucher item data in a simplified format.
+ */
 public interface ReceivingVoucherItemResponseDTO {
     UUID id();
     short quantity();
