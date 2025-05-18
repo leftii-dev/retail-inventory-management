@@ -5,6 +5,10 @@ import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
+/**
+ * UserRequestDto represents the data transfer object for user requests.
+ * It contains fields for email, name, password, picture URL, roles, and account status.
+ */
 public record UserRequestDto(
     @Email(message = "Invalid email format") String email,
     @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters") String name,
