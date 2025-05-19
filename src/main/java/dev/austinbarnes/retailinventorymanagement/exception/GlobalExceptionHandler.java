@@ -187,6 +187,29 @@ public class GlobalExceptionHandler {
         log.error("Duplicate Email Registration {} - {}", ex.getEmail(), ex.getMessage());
 
         return ApiResponseDto.badRequest("This email has already been registered. Try logging in.");
+    }
 
+    /**
+     * Handles exceptions thrown when a data integrity violation occurs.
+     *
+     * @param ex the DataIntegrityViolationException
+     * @return a ResponseEntity with a bad request response
+     */
+    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponseDto<Void>> handleDataIntegrityViolationException(org.springframework.dao.DataIntegrityViolationException ex) {
+        log.error("Data integrity violation", ex);
+        return ApiResponseDto.badRequest("Operation failed due to data integrity violation.");
+    }
+
+    /**
+     * Handles exceptions thrown when a transaction system error occurs.
+     *
+     * @param ex the TransactionSystemException
+     * @return a ResponseEntity with an internal server error response
+     */
+    @ExceptionHandler(org.springframework.transaction.TransactionSystemException.class)
+    public ResponseEntity<ApiResponseDto<Void>> handleTransactionSystemException(org.springframework.transaction.TransactionSystemException ex) {
+        log.error("Transaction system exception", ex);
+        return ApiResponseDto.internalError("A transaction error occurred. Please try again.");
     }
 }
