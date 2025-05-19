@@ -1,18 +1,18 @@
 package dev.austinbarnes.retailinventorymanagement.product.entity;
 
 import dev.austinbarnes.retailinventorymanagement.common.BaseEntity;
-import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
-import jakarta.persistence.*;
-import jakarta.validation.Valid;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.Instant;
-import java.util.UUID;
-
+/**
+ * Brand is an entity class that represents a brand in the retail inventory management system.
+ * It includes fields for the unique identifier, name, description, and timestamps for creation and update.
+ * This class is used to map to the "brand" table in the database.
+ */
 @Entity
 @Table(name = "brand")
 @AllArgsConstructor
