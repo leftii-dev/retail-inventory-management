@@ -15,8 +15,22 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Map;
 
+/**
+ * OAuth2CustomSuccessHandler is a custom implementation of AuthenticationSuccessHandler.
+ * It handles successful authentication for OAuth2 login process.
+ * It retrieves user information from the OAuth2 provider and stores it in the session.
+ */
 @Component
 public class OAuth2CustomSuccessHandler implements AuthenticationSuccessHandler {
+    /**
+     * Handles successful authentication for OAuth2 login.
+     *
+     * @param request the HTTP request
+     * @param response the HTTP response
+     * @param authentication the authentication object containing user details
+     * @throws IOException if an I/O error occurs
+     * @throws ServletException if a servlet error occurs
+     */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,

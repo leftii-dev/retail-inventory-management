@@ -11,6 +11,11 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * AuditorAwareImpl is a Spring component that provides the current auditor's ID for auditing purposes.
+ * It implements the AuditorAware interface and returns the ID of the currently authenticated user,
+ * or a system employee ID if no user is authenticated.
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -19,6 +24,12 @@ public class AuditorAwareImpl implements AuditorAware<UUID> {
     @Value("${system.employee.id}")
     private UUID systemEmployeeId;
 
+    /**
+     * Returns the ID of the current auditor.
+     * If no user is authenticated, it returns the system employee ID.
+     *
+     * @return an Optional containing the current auditor's ID
+     */
     @Override
     public Optional<UUID> getCurrentAuditor() {
         UUID employeeId = getAuthenticatedUser();
@@ -29,7 +40,12 @@ public class AuditorAwareImpl implements AuditorAware<UUID> {
                 Optional.of(systemEmployeeId);
     }
 
-
+    /**
+     * Retrieves the ID of the currently authenticated user.
+     * If no user is authenticated, it returns null.
+     *
+     * @return the ID of the currently authenticated user, or null if no user is authenticated
+     */
     private UUID getAuthenticatedUser() {
         var context = SecurityContextHolder.getContext();
         if(context == null || context.getAuthentication() == null) return null;

@@ -6,6 +6,10 @@ import jakarta.validation.constraints.Size;
 
 import java.util.Set;
 
+/**
+ * RegistrationRequestDto represents the data transfer object for user registration requests.
+ * It contains the email, name, password, and roles fields with validation constraints.
+ */
 public record RegistrationRequestDto(
         @NotNull
         @Email(message = "Invalid email format")

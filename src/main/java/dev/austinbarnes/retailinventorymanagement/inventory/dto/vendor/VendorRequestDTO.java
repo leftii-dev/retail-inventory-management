@@ -4,6 +4,12 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+/**
+ * VendorRequestDTO is a Data Transfer Object (DTO) used for creating or updating
+ * vendor information.
+ * <p>
+ * It contains fields for the vendor name, address, contact name, phone number, and email.
+ */
 public record VendorRequestDTO(
         @Size(min = 2, max = 100, message = "Vendor name must be between 2 and 100 characters")
         String name,

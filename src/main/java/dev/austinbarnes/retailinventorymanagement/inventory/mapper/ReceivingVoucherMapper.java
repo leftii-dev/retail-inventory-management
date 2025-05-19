@@ -10,10 +10,30 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+/**
+ * ReceivingVoucherMapper is an interface that defines the mapping between ReceivingVoucher entity and its DTOs.
+ * <p>
+ * It uses MapStruct to generate the implementation of the mapping methods.
+ * <p>
+ * The interface includes methods to convert ReceivingVoucherRequestDTO to ReceivingVoucher entity and
+ * to convert ReceivingVoucher entity to different types of ReceivingVoucherResponseDTOs.
+ */
 @Mapper(config = GlobalMapperConfig.class, uses = {PurchaseOrderMapper.class, LocationMapper.class, VendorMapper.class, StatusMapper.class})
 public interface ReceivingVoucherMapper {
+    /**
+     * Converts ReceivingVoucherRequestDTO to ReceivingVoucher entity.
+     *
+     * @param voucherRequestDTO the ReceivingVoucherRequestDTO to convert
+     * @return the converted ReceivingVoucher entity
+     */
     ReceivingVoucher toEntity(ReceivingVoucherRequestDTO voucherRequestDTO);
 
+    /**
+     * Converts ReceivingVoucher entity to ReceivingVoucherResponseBasicDTO.
+     *
+     * @param receivingVoucher the ReceivingVoucher entity to convert
+     * @return the converted ReceivingVoucherResponseBasicDTO
+     */
     @Mapping(target = "purchaseOrder", qualifiedByName = "basicPurchaseOrder")
     @Mapping(target = "location", qualifiedByName = "basicLocation")
     @Mapping(target = "vendor", qualifiedByName = "basicVendor")
@@ -21,6 +41,12 @@ public interface ReceivingVoucherMapper {
     @Named("basicReceivingVoucher")
     ReceivingVoucherResponseBasicDTO toBasicDTO(ReceivingVoucher receivingVoucher);
 
+    /**
+     * Converts ReceivingVoucher entity to ReceivingVoucherResponseDetailDTO.
+     *
+     * @param receivingVoucher the ReceivingVoucher entity to convert
+     * @return the converted ReceivingVoucherResponseDetailDTO
+     */
     @Mapping(target = "purchaseOrder", qualifiedByName = "detailPurchaseOrder")
     @Mapping(target = "location", qualifiedByName = "detailLocation")
     @Mapping(target = "vendor", qualifiedByName = "detailVendor")

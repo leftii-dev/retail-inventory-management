@@ -11,6 +11,11 @@ import org.springframework.session.web.http.DefaultCookieSerializer;
 
 import java.net.URI;
 
+/**
+ * SessionConfig is a Spring configuration class that sets up Redis-based HTTP sessions.
+ * It configures the session timeout, cookie settings, and Redis connection factory.
+ * The session timeout is set to 3600 seconds (1 hour).
+ */
 @Configuration
 @EnableRedisHttpSession(maxInactiveIntervalInSeconds = 3600)
 public class SessionConfig {
@@ -23,6 +28,13 @@ public class SessionConfig {
         return new LettuceConnectionFactory();
     }
 
+    /**
+     * Configures the cookie serializer for session management.
+     * It sets the cookie name, path, SameSite attribute, secure flag, and max age.
+     * If the frontend URL is different from the backend, it sets the domain name for the cookie.
+     *
+     * @return a configured CookieSerializer instance
+     */
     @Bean
     public CookieSerializer cookieSerializer() {
         DefaultCookieSerializer serializer = new DefaultCookieSerializer();
@@ -46,6 +58,13 @@ public class SessionConfig {
         return serializer;
     }
 
+    /**
+     * Extracts the domain name from the given URL.
+     * If the URL is invalid, it returns an empty string.
+     *
+     * @param url the URL to extract the domain from
+     * @return the extracted domain name, or an empty string if the URL is invalid
+     */
     private String extractDomain(String url) {
         try {
             return URI.create(url).getHost();

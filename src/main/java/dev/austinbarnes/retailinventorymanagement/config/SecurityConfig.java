@@ -27,6 +27,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+/**
+ * SecurityConfig is a Spring configuration class that sets up the security filter chain for the application.
+ * It configures authentication, authorization, CORS, and session management.
+ * It also defines beans for custom OAuth2 user service and custom success/failure handlers.
+ */
 @Configuration
 @AllArgsConstructor
 @EnableWebSecurity
@@ -39,6 +44,15 @@ public class SecurityConfig {
     private final OAuth2CustomFailureHandler oAuth2CustomFailureHandler;
     private final CustomAuthenticationProvider customAuthenticationProvider;
 
+    /**
+     * Configures the security filter chain for the application.
+     * It sets up authentication, authorization, CORS, and session management.
+     *
+     * @param http the HttpSecurity object to configure
+     * @param clientRegistrationRepository the ClientRegistrationRepository for OAuth2
+     * @return a configured SecurityFilterChain instance
+     * @throws Exception if an error occurs during configuration
+     */
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, InMemoryClientRegistrationRepository clientRegistrationRepository) throws Exception {
         return http
@@ -76,6 +90,12 @@ public class SecurityConfig {
 
     }
 
+    /**
+     * Configures CORS settings for the application.
+     * It allows requests from specific origins and sets allowed methods and headers.
+     *
+     * @return a configured CorsConfigurationSource instance
+     */
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -89,12 +109,27 @@ public class SecurityConfig {
         return source;
     }
 
+    /**
+     * Configures the AuthenticationManager for the application.
+     * It uses the shared AuthenticationManagerBuilder from the HttpSecurity object.
+     *
+     * @param http the HttpSecurity object to configure
+     * @return a configured AuthenticationManager instance
+     * @throws Exception if an error occurs during configuration
+     */
     @Bean
     public AuthenticationManager authManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder auth = http.getSharedObject(AuthenticationManagerBuilder.class);
         return auth.build();
     }
 
+    /**
+     * Creates a new CustomAuthorizationRequestResolver instance.
+     * This resolver is used to customize the authorization request for OAuth2 login.
+     *
+     * @param clientRegistrationRepository the ClientRegistrationRepository for OAuth2
+     * @return a new CustomAuthorizationRequestResolver instance
+     */
     @Bean
     public CustomAuthorizationRequestResolver customAuthorizationRequestResolver(ClientRegistrationRepository clientRegistrationRepository){
         return new CustomAuthorizationRequestResolver(clientRegistrationRepository);

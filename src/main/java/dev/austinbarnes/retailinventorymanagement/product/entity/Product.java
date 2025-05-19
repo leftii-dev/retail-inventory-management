@@ -1,21 +1,22 @@
 package dev.austinbarnes.retailinventorymanagement.product.entity;
 
 import dev.austinbarnes.retailinventorymanagement.common.BaseEntity;
-import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.Map;
-import java.util.UUID;
 
+/**
+ * Product is an entity class that represents a product in the retail inventory management system.
+ * It includes fields for the unique identifier, SKU, product code, name, description, cost, price, weight,
+ * dimensions, additional details, and relationships with category, brand, and discount.
+ * This class is used to map to the "product" table in the database.
+ */
 @Entity
 @Getter
 @Setter

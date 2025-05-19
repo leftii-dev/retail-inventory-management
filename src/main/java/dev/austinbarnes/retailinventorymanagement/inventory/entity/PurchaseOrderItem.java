@@ -14,6 +14,15 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
+/**
+ * PurchaseOrderItem is an entity class representing an item in a purchase order in a retail management system.
+ * <p>
+ * It contains fields for cost per unit, total cost for the line item, quantity, and references to the purchase order
+ * and product associated with the item.
+ * <p>
+ * The class uses JPA annotations to map the entity to a database table and includes validation annotations
+ * to ensure that the cost and quantity are within specified ranges.
+ */
 @Entity
 @Table(name = "purchase_order_item")
 @AllArgsConstructor

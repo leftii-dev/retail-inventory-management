@@ -3,6 +3,10 @@ package dev.austinbarnes.retailinventorymanagement.auth.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+/**
+ * EmployeeLoginRequestDto represents the data transfer object for employee login requests.
+ * It contains the employee code and password fields with validation constraints.
+ */
 public record EmployeeLoginRequestDto(
         @Size(min = 6, max = 6, message = "Employee code should be 6-digits (only include numbers)")
         @NotBlank(message = "Employee code is required")

@@ -9,10 +9,28 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+/**
+ * ProductMapper is an interface that defines the mapping between the Product entity and its corresponding DTOs.
+ * It uses MapStruct to generate the implementation at compile time.
+ * The mappings include converting a ProductRequestDTO to a Product entity and converting a Product entity to
+ * both a basic and detailed ProductResponseDTO.
+ */
 @Mapper(config = GlobalMapperConfig.class)
 public interface ProductMapper {
+    /**
+     * Converts a ProductRequestDTO to a Product entity.
+     *
+     * @param productRequestDTO the ProductRequestDTO to convert
+     * @return the converted Product entity
+     */
     Product toEntity(ProductRequestDTO productRequestDTO);
 
+    /**
+     * Converts a Product entity to a ProductResponseBasicDTO.
+     *
+     * @param product the Product entity to convert
+     * @return the converted ProductResponseBasicDTO
+     */
     @Mapping(target = "categoryID", source = "category.id")
     @Mapping(target = "categoryName", source = "category.name")
     @Mapping(target = "brandID", source = "brand.id")
@@ -22,6 +40,12 @@ public interface ProductMapper {
     @Named("basicProduct")
     ProductResponseBasicDTO toBasicDTO(Product product);
 
+    /**
+     * Converts a Product entity to a ProductResponseDetailDTO.
+     *
+     * @param product the Product entity to convert
+     * @return the converted ProductResponseDetailDTO
+     */
     @Mapping(target = "categoryID", source = "category.id")
     @Mapping(target = "categoryName", source = "category.name")
     @Mapping(target = "brandID", source = "brand.id")

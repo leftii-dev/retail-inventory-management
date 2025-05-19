@@ -9,6 +9,11 @@ import lombok.*;
 import java.io.Serializable;
 import java.util.UUID;
 
+/**
+ * Role represents a user role in the system.
+ * It contains the role name and inherits from BaseEntity.
+ * The role name must be unique and cannot be null or empty.
+ */
 @Entity
 @Table(name = "role")
 @AllArgsConstructor

@@ -15,6 +15,11 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.UUID;
 
+/**
+ * BaseEntity is an abstract class that serves as a base for all entities in the application.
+ * It contains common fields such as id, createdAt, modifiedAt, createdBy, modifiedBy, and active.
+ * It also provides methods for soft deletion and equality/hashCode based on the id field.
+ */
 @Getter
 @Setter
 @ToString

@@ -8,12 +8,12 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.Instant;
-import java.util.UUID;
-
+/**
+ * LocationDetails is an entity class that represents the details of a location in the retail inventory management system.
+ * It includes fields for address, contact information, and notes.
+ * The class is annotated with JPA annotations to map it to a database table.
+ */
 @Entity
 @Table(name = "location_details")
 @AllArgsConstructor

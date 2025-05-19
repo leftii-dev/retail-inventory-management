@@ -15,6 +15,12 @@ import org.springframework.security.core.userdetails.UserDetailsChecker;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+
+/**
+ * CustomAuthenticationProvider extends DaoAuthenticationProvider to provide
+ * custom authentication logic, including pre-authentication checks for user
+ * account status and activation.
+ */
 @Component
 public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
 
@@ -33,6 +39,18 @@ public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
     }
 
     private class CustomPreAuthenticationChecks implements UserDetailsChecker {
+
+        /**
+         * Checks the user details before authentication.
+         * This includes checking if the account is enabled, locked, expired,
+         * and if the credentials are expired.
+         *
+         * @param userDetails the user details to check
+         * @throws AccountNotActiveException if the account is not activated
+         * @throws LockedException if the account is locked
+         * @throws AccountExpiredException if the account has expired
+         * @throws CredentialsExpiredException if the credentials have expired
+         */
         @Override
         public void check(UserDetails userDetails) {
             User user = ((CustomUserPrincipal) userDetails).getUser();

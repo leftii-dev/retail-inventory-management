@@ -18,6 +18,15 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
+/**
+ * ReceivingVoucher is an entity class representing a receiving voucher in a retail management system.
+ * <p>
+ * It contains fields for receiving voucher code, freight cost, fee cost, total cost, discount details,
+ * payment dates, notes, and references to purchase order, location, vendor, and status.
+ * <p>
+ * The class uses JPA annotations to map the entity to a database table and includes validation annotations
+ * to ensure that the fields are within specified ranges and constraints.
+ */
 @Entity
 @Table(name = "receiving_voucher")
 @AllArgsConstructor

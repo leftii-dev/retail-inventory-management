@@ -10,6 +10,11 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/**
+ * OAuth2CustomFailureHandler is a custom implementation of AuthenticationFailureHandler.
+ * It handles authentication failures during OAuth2 login process.
+ * It logs the error details and redirects the user to a custom error page.
+ */
 @Component
 @Slf4j
 public class OAuth2CustomFailureHandler implements AuthenticationFailureHandler {

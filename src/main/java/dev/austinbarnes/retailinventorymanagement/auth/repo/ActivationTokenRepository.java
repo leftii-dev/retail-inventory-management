@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * ActivationTokenRepository is a Spring Data JPA repository for managing ActivationToken entities.
+ * It provides methods to find an activation token by user ID and to find all expired tokens.
+ */
 @Repository
 public interface ActivationTokenRepository extends JpaRepository<ActivationToken, UUID> {
     Optional<ActivationToken> findByUserId(UUID id);

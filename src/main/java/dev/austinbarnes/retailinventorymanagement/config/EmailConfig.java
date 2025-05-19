@@ -8,6 +8,11 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
+/**
+ * EmailConfig is a Spring configuration class that sets up the JavaMailSender bean.
+ * It reads email configuration properties from the application properties file.
+ * The JavaMailSender bean is used to send emails in the application.
+ */
 @Configuration
 public class EmailConfig {
 
@@ -20,6 +25,12 @@ public class EmailConfig {
     @Value("${spring.mail.password}")
     private String password;
 
+    /**
+     * Creates a JavaMailSender bean with the specified configuration properties.
+     * The JavaMailSender bean is used to send emails in the application.
+     *
+     * @return a configured JavaMailSender instance
+     */
     @Bean
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();

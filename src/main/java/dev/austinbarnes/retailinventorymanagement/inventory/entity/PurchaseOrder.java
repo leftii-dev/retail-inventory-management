@@ -14,6 +14,14 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
+/**
+ * PurchaseOrder is an entity class representing a purchase order in a retail management system.
+ * <p>
+ * It contains fields for purchase order code, expected date, total cost, notes, vendor details, and status details.
+ * <p>
+ * The class uses JPA annotations to map the entity to a database table and includes validation annotations
+ * to ensure that the purchase order code is of the correct length and that the total cost is within a specified range.
+ */
 @Entity
 @Table(name = "purchase_order")
 @AllArgsConstructor

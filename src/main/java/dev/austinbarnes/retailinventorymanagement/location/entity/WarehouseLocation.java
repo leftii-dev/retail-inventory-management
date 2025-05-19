@@ -1,17 +1,16 @@
 package dev.austinbarnes.retailinventorymanagement.location.entity;
 
 import dev.austinbarnes.retailinventorymanagement.common.BaseEntity;
-import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.Instant;
-import java.util.UUID;
-
+/**
+ * RetailLocation is an entity class that represents a retail location in the retail inventory management system.
+ * It includes fields for the retail location code and a reference to the location.
+ * The class is annotated with JPA annotations to map it to a database table.
+ */
 @Entity
 @Table(name = "warehouse")
 @AllArgsConstructor

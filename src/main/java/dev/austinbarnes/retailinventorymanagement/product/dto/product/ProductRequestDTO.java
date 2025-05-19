@@ -7,19 +7,22 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Product Request DTO for creating and updating Products
+ * ProductRequestDTO is a data transfer object that represents the request for a product.
+ * It includes fields for the SKU, name, description, price, weight, dimensions, additional details,
+ * active status, category ID, brand ID, and discount ID.
+ * This DTO is used to transfer data between layers of the application.
  *
- * @param sku
- * @param name
- * @param description
- * @param price
- * @param weight
- * @param dimensions
- * @param additionalDetails
- * @param isActive
- * @param categoryID
- * @param brandID
- * @param discountID
+ * @param sku             the stock keeping unit of the product
+ * @param name            the name of the product
+ * @param description     the description of the product
+ * @param price           the price of the product
+ * @param weight          the weight of the product
+ * @param dimensions      the dimensions of the product
+ * @param additionalDetails additional details about the product
+ * @param isActive        whether the product is active or not
+ * @param categoryID      the unique identifier of the category
+ * @param brandID         the unique identifier of the brand
+ * @param discountID      the unique identifier of the discount
  */
 public record ProductRequestDTO(
         @Size(max = 20, message = "Sku cannot exceed 20 characters") @NotNull String sku,

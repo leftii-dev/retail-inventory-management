@@ -15,6 +15,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Map;
 
+/**
+ * SessionDebugFilter is a custom filter that logs session information and authorization requests.
+ * It extends OncePerRequestFilter to ensure it is executed once per request.
+ * This filter is useful for debugging purposes to inspect session attributes.
+ */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Slf4j
@@ -23,6 +28,16 @@ public class SessionDebugFilter extends OncePerRequestFilter {
     public static final String DEFAULT_AUTHORIZATION_REQUEST_ATTR_NAME =
             "org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizationRequestRepository.AUTHORIZATION_REQUEST";
 
+    /**
+     * This method is called for each request to log session information and authorization requests.
+     * It retrieves the current session and logs its ID and attributes.
+     *
+     * @param request the HttpServletRequest object
+     * @param response the HttpServletResponse object
+     * @param filterChain the FilterChain object
+     * @throws ServletException if an error occurs during filtering
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,

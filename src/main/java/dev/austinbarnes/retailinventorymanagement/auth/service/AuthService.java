@@ -33,6 +33,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.UUID;
 
+/**
+ * AuthService handles authentication and registration logic for users and employees.
+ * It provides methods for user login, employee login, registration, and account activation.
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -48,6 +52,12 @@ public class AuthService {
     private final EntityManager entityManager;
 
 
+    /**
+     * Authenticates a user with the provided login credentials.
+     *
+     * @param loginRequestDto the login request containing user credentials
+     * @return a response entity containing the authentication result
+     */
     @Transactional
     public ResponseEntity<ApiResponseDto<UserResponseDto>> authenticateUser(UserLoginRequestDto loginRequestDto) {
         UserResponseBasicDto userResponse = userRepository.findByEmail(loginRequestDto.email())
@@ -59,7 +69,12 @@ public class AuthService {
         return ApiResponseDto.ok(userResponse);
     }
 
-
+    /**
+     * Authenticates an employee with the provided login credentials.
+     *
+     * @param loginRequestDto the login request containing employee credentials
+     * @return a response entity containing the authentication result
+     */
     public ResponseEntity<ApiResponseDto<UserResponseDto>> authenticateEmployee(EmployeeLoginRequestDto loginRequestDto) {
         Employee employee = employeeRepository.findByEmployeeCode("EMP-" + loginRequestDto.employeeCode())
                 .orElseThrow(() -> new UsernameNotFoundException("Employee not found"));
@@ -74,6 +89,12 @@ public class AuthService {
         return ApiResponseDto.ok(userResponse);
     }
 
+    /**
+     * Registers a new user with the provided registration details.
+     *
+     * @param registrationRequest the registration request containing user details
+     * @return a response entity containing the registration result
+     */
     public ResponseEntity<ApiResponseDto<UserResponseDto>> register(RegistrationRequestDto registrationRequest){
             if(userRepository.findByEmail(registrationRequest.email()).isPresent()){
                 throw new DuplicateEmailRegistrationException(registrationRequest.email(), "Email already registered.");
@@ -84,6 +105,12 @@ public class AuthService {
             return ApiResponseDto.created(userMapper.toBasicDto(user));
     }
 
+    /**
+     * Activates a user account using the provided activation token.
+     *
+     * @param token the activation token
+     * @return a response entity containing the activation result
+     */
     @Transactional
     public ResponseEntity<ApiResponseDto<UserResponseDto>> activate(String token) {
         ActivationToken activationToken = activationTokenRepository.findById(UUID.fromString(token))
@@ -95,11 +122,15 @@ public class AuthService {
         user.setEnabled(true);
         userRepository.save(user);
 
-//        activationTokenRepository.delete(activationToken);
-
         return ApiResponseDto.ok(userMapper.toBasicDto(user));
     }
 
+    /**
+     * Authenticates a user with the provided email and password.
+     *
+     * @param email the user's email
+     * @param password the user's password
+     */
     private void authenticate(String email, String password) {
         // Authenticate user
         Authentication auth = authenticationManager.authenticate(
@@ -116,7 +147,4 @@ public class AuthService {
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext);
     }
 
-    private boolean isEmployeeUser(User user) {
-        return user.getEmployee() != null;
-    }
 }

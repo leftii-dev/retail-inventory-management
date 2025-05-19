@@ -13,14 +13,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * EmployeeHierarchyController handles all employee hierarchy-related operations.
+ * <p>
+ * Provides endpoints to create, update, delete, and retrieve employee hierarchies.
+ */
 @RestController
 @RequestMapping("api/v1/employee-manager")
 @RequiredArgsConstructor
 @Slf4j
-/*
-  EmployeeHierarchyController handles all employee hierarchy-related operations.
-  It provides endpoints to create, update, retrieve, and delete employee hierarchy relationships.
- */
 public class EmployeeHierarchyController {
     private final EmployeeHierarchyService hierarchyService;
 

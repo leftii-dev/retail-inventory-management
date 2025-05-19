@@ -4,12 +4,10 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
- * DTO interface for Discount
- * Allows return type safety in controller with different DTO records
- *
- * @author Austin Barnes
- * @since 2024
- * */
+ * DiscountResponseBasicDTO is a data transfer object that represents the response for a discount.
+ * It includes fields for the unique identifier of the discount, its code, name, description, and discount percentage.
+ * This DTO is used to transfer data between layers of the application.
+ */
 public interface DiscountResponseDTO {
     UUID id();
     String discountCode();

@@ -9,13 +9,39 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+/**
+ * StatusMapper is an interface that defines the mapping between Status entity and its DTOs.
+ * <p>
+ * It uses MapStruct to generate the implementation of the mapping methods.
+ * <p>
+ * The interface includes methods to convert StatusRequestDTO to Status entity and
+ * to convert Status entity to different types of StatusResponseDTOs.
+ */
 @Mapper(config = GlobalMapperConfig.class)
 public interface StatusMapper {
+    /**
+     * Converts StatusRequestDTO to Status entity.
+     *
+     * @param statusRequestDTO the StatusRequestDTO to convert
+     * @return the converted Status entity
+     */
     Status toEntity(StatusRequestDTO statusRequestDTO);
 
+    /**
+     * Converts Status entity to StatusResponseBasicDTO.
+     *
+     * @param status the Status entity to convert
+     * @return the converted StatusResponseBasicDTO
+     */
     @Named("basicStatus")
     StatusResponseBasicDTO toBasicDTO(Status status);
 
+    /**
+     * Converts Status entity to StatusResponseDetailDTO.
+     *
+     * @param status the Status entity to convert
+     * @return the converted StatusResponseDetailDTO
+     */
     @Named("detailStatus")
     StatusResponseDetailDTO toDetailDTO(Status status);
 }

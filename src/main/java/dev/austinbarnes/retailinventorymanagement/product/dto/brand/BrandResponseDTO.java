@@ -3,11 +3,9 @@ package dev.austinbarnes.retailinventorymanagement.product.dto.brand;
 import java.util.UUID;
 
 /**
- * DTO interface for Products
- * Allows return type safety in controller with different DTO records
- *
- * @author Austin Barnes
- * @since 2024
+ * BrandResponseBasicDTO is a data transfer object that represents the basic response for a brand.
+ * It includes fields for the unique identifier, name, and description of the brand.
+ * This DTO is used to transfer data between layers of the application.
  */
 public interface BrandResponseDTO {
     UUID id();

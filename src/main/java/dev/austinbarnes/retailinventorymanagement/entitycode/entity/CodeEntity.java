@@ -6,6 +6,13 @@ import lombok.*;
 
 import java.util.UUID;
 
+/**
+ * CodeEntity is a JPA entity representing a code in the database.
+ * <p>
+ * It contains fields for the code name and the code itself.
+ * <p>
+ * The class extends BaseEntity, which provides common fields like ID and timestamps.
+ */
 @Entity
 @Table(name = "code")
 @AllArgsConstructor

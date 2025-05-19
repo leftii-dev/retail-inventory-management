@@ -1,18 +1,19 @@
 package dev.austinbarnes.retailinventorymanagement.product.entity;
 
 import dev.austinbarnes.retailinventorymanagement.common.BaseEntity;
-import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
-import jakarta.persistence.*;
-import jakarta.validation.Valid;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.UUID;
 
+/**
+ * Discount is an entity class that represents a discount in the retail inventory management system.
+ * It includes fields for the unique identifier, discount code, name, description, and discount percentage.
+ * This class is used to map to the "discount" table in the database.
+ */
 @Entity
 @Table(name = "discount")
 @AllArgsConstructor

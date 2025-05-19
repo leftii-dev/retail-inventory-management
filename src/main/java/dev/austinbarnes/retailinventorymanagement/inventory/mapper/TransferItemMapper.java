@@ -10,15 +10,41 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+/**
+ * TransferItemMapper is an interface that defines the mapping between TransferItem entity and its DTOs.
+ * <p>
+ * It uses MapStruct to generate the implementation of the mapping methods.
+ * <p>
+ * The interface includes methods to convert TransferItemRequestDTO to TransferItem entity and
+ * to convert TransferItem entity to different types of TransferItemResponseDTOs.
+ */
 @Mapper(config = GlobalMapperConfig.class, uses = {ProductMapper.class})
 public interface TransferItemMapper {
+    /**
+     * Converts TransferItemRequestDTO to TransferItem entity.
+     *
+     * @param transferItemRequestDTO the TransferItemRequestDTO to convert
+     * @return the converted TransferItem entity
+     */
     TransferItem toEntity(TransferItemRequestDTO transferItemRequestDTO);
 
+    /**
+     * Converts TransferItem entity to TransferItemResponseBasicDTO.
+     *
+     * @param transferItem the TransferItem entity to convert
+     * @return the converted TransferItemResponseBasicDTO
+     */
     @Mapping(target = "transferID", source = "transfer.id")
     @Mapping(target = "product", qualifiedByName = "basicProduct")
     @Named("basicTransferItem")
     TransferItemResponseBasicDTO toBasicDTO(TransferItem transferItem);
 
+    /**
+     * Converts TransferItem entity to TransferItemResponseDetailDTO.
+     *
+     * @param transferItem the TransferItem entity to convert
+     * @return the converted TransferItemResponseDetailDTO
+     */
     @Mapping(target = "transferID", source = "transfer.id")
     @Mapping(target = "product", qualifiedByName = "detailProduct")
     @Named("detailTransferItem")

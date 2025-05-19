@@ -9,6 +9,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
+/**
+ * TransferRequestDTO is a Data Transfer Object (DTO) used for creating or updating
+ * transfer requests.
+ * <p>
+ * It contains fields for the date, total cost, total quantity, location to, and location from.
+ */
 public record TransferRequestDTO (
         LocalDate date,
         @DecimalMax(value = "9999999999.99", message = "Total cost exceeds limit, double check entered costs")

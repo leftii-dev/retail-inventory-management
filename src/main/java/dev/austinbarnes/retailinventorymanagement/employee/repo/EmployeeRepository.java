@@ -8,6 +8,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * EmployeeRepository is a Spring Data JPA repository interface for managing
+ * Employee entities.
+ * <p>
+ * It provides methods to perform CRUD operations and custom queries on the employee data.
+ */
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
     Optional<Employee> findByEmployeeCode(String employeeCode);
