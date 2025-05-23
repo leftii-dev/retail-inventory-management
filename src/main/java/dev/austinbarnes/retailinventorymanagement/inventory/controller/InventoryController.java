@@ -5,6 +5,7 @@ import dev.austinbarnes.retailinventorymanagement.inventory.dto.inventory.Invent
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.inventory.InventoryRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.inventory.InventoryResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.service.InventoryService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class InventoryController {
      * @return ResponseEntity with the created inventory details.
      */
     @PostMapping
-    public ResponseEntity<ApiResponseDto<InventoryResponseDTO>> createInventory(InventoryRequestDTO request) {
+    public ResponseEntity<ApiResponseDto<InventoryResponseDTO>> createInventory(@RequestBody @Valid InventoryRequestDTO request) {
         log.info("Create inventory request: {}", request);
         return service.createInventory(request);
     }
@@ -39,7 +40,7 @@ public class InventoryController {
      * @return ResponseEntity with the updated inventory details.
      */
     @PutMapping
-    public ResponseEntity<ApiResponseDto<InventoryResponseDTO>> updateInventory(InventoryQtyChangeRequestDTO request) {
+    public ResponseEntity<ApiResponseDto<InventoryResponseDTO>> updateInventory(@RequestBody @Valid InventoryQtyChangeRequestDTO request) {
         log.info("Update inventory request: {}", request);
         return service.updateInventory(request);
     }
