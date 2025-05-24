@@ -1,12 +1,13 @@
 package dev.austinbarnes.retailinventorymanagement.employee.mapper;
 
+import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.EmployeePermissionRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.EmployeePermissionResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.EmployeePermissionResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.EmployeePermission;
-import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 /**
@@ -45,4 +46,12 @@ public interface EmployeePermissionMapper {
     @Mapping(target = "employee", qualifiedByName = "detailEmployee")
     @Mapping(target = "permission", qualifiedByName = "detailPermission")
     EmployeePermissionResponseDetailDTO toDetailDTO(EmployeePermission employeePermission);
+
+    /**
+     * Updates an existing EmployeePermission entity with the values from the EmployeePermissionRequestDTO.
+     *
+     * @param employeePermissionRequestDTO the EmployeePermissionRequestDTO containing the new values
+     * @param employeePermission           the EmployeePermission entity to update
+     */
+    void updateEntityFromRequest(EmployeePermissionRequestDTO employeePermissionRequestDTO, @MappingTarget EmployeePermission employeePermission);
 }

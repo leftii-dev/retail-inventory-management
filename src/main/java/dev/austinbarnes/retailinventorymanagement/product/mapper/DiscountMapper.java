@@ -6,6 +6,7 @@ import dev.austinbarnes.retailinventorymanagement.product.dto.discount.DiscountR
 import dev.austinbarnes.retailinventorymanagement.product.dto.discount.DiscountResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.product.entity.Discount;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 /**
@@ -41,4 +42,12 @@ public interface DiscountMapper {
      */
     @Named("detailDiscount")
     DiscountResponseDetailDTO toDetailDTO(Discount discount);
+
+    /**
+     * Updates an existing Discount entity with the values from the DiscountRequestDTO.
+     *
+     * @param discountRequestDTO the DiscountRequestDTO containing the new values
+     * @param discount           the Discount entity to update
+     */
+    void updateEntityFromRequest(DiscountRequestDTO discountRequestDTO, @MappingTarget Discount discount);
 }

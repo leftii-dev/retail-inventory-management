@@ -1,13 +1,14 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.mapper;
 
+import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.PurchaseOrderItem;
-import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.product.mapper.ProductMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 /**
@@ -49,4 +50,12 @@ public interface PurchaseOrderItemMapper {
     @Mapping(target = "product", qualifiedByName = "detailProduct")
     @Named("detailPurchaseOrderItem")
     PurchaseOrderItemResponseDetailDTO toDetailDTO(PurchaseOrderItem purchaseOrderItem);
+
+    /**
+     * Updates an existing PurchaseOrderItem entity with the values from the PurchaseOrderItemRequestDTO.
+     *
+     * @param purchaseOrderItemRequestDTO the PurchaseOrderItemRequestDTO containing the new values
+     * @param purchaseOrderItem           the PurchaseOrderItem entity to update
+     */
+    void updateEntityFromRequest(PurchaseOrderItemRequestDTO purchaseOrderItemRequestDTO, @MappingTarget PurchaseOrderItem purchaseOrderItem);
 }

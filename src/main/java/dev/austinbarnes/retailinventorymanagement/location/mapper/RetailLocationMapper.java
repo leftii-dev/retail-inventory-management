@@ -7,6 +7,7 @@ import dev.austinbarnes.retailinventorymanagement.location.dto.retail.RetailLoca
 import dev.austinbarnes.retailinventorymanagement.location.entity.RetailLocation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 /**
@@ -46,4 +47,12 @@ public interface RetailLocationMapper {
     @Mapping(target = "location", qualifiedByName = "detailLocation")
     @Named("detailRetailLocation")
     RetailLocationResponseDetailDTO toDetailDTO(RetailLocation retailLocation);
+
+    /**
+     * Updates an existing RetailLocation entity with the values from the RetailLocationRequestDTO.
+     *
+     * @param retailLocationRequestDTO the RetailLocationRequestDTO containing the new values
+     * @param retailLocation           the RetailLocation entity to update
+     */
+    void updateEntityFromRequest(RetailLocationRequestDTO retailLocationRequestDTO, @MappingTarget RetailLocation retailLocation);
 }

@@ -1,12 +1,13 @@
 package dev.austinbarnes.retailinventorymanagement.employee.mapper;
 
+import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeHierarchyRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeHierarchyResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeHierarchyResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.EmployeeHierarchy;
-import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 /**
@@ -45,4 +46,12 @@ public interface EmployeeHierarchyMapper {
     @Mapping(target = "manager", qualifiedByName = "detailEmployee")
     @Named("detailEmployeeHierarchy")
     EmployeeHierarchyResponseDetailDTO toDetailDTO(EmployeeHierarchy employeeHierarchy);
+
+    /**
+     * Updates an existing EmployeeHierarchy entity with the values from the EmployeeHierarchyRequestDTO.
+     *
+     * @param employeeHierarchyRequestDTO the EmployeeHierarchyRequestDTO containing the new values
+     * @param employeeHierarchy           the EmployeeHierarchy entity to update
+     */
+    void updateEntityFromRequest(EmployeeHierarchyRequestDTO employeeHierarchyRequestDTO, @MappingTarget EmployeeHierarchy employeeHierarchy);
 }

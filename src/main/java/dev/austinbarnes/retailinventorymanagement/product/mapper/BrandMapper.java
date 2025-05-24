@@ -6,6 +6,7 @@ import dev.austinbarnes.retailinventorymanagement.product.dto.brand.BrandRespons
 import dev.austinbarnes.retailinventorymanagement.product.dto.brand.BrandResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.product.entity.Brand;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 /**
@@ -41,4 +42,12 @@ public interface BrandMapper {
      */
     @Named("detailBrand")
     BrandResponseDetailDTO toDetailDTO(Brand brand);
+
+    /**
+     * Updates an existing Brand entity with the values from the BrandRequestDTO.
+     *
+     * @param brandRequestDTO the BrandRequestDTO containing the new values
+     * @param brand           the Brand entity to update
+     */
+    void updateEntityFromRequest(BrandRequestDTO brandRequestDTO, @MappingTarget Brand brand);
 }
