@@ -8,6 +8,8 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Employee is an entity class that represents an employee in the system.
@@ -64,4 +66,7 @@ public class Employee extends BaseEntity {
     @Column(name = "is_current_employee", nullable = false)
     @NotNull
     private boolean isCurrentEmployee = true;
+
+    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<EmployeePermission> employeePermissions = new HashSet<>();
 }

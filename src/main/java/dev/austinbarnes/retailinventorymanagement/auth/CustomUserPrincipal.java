@@ -7,8 +7,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * CustomUserPrincipal implements OAuth2User and UserDetails interfaces.
@@ -43,7 +47,16 @@ public class CustomUserPrincipal implements OAuth2User, UserDetails {
         this.name = user.getName();
         this.password = user.getPassword();
         this.loginIdentifier = loginIdentifier;
-        this.authorities = user.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName())).collect(Collectors.toList());
+        if(user.getEmployee() != null) {
+            this.authorities = Stream.concat(
+                    // Map User roles to authorities (e.g., ROLE_ADMIN, ROLE_EMPLOYEE)
+                    user.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName())),
+                    // Map Employee permissions to authorities (e.g., READ_PRODUCTS, WRITE_INVENTORY)
+                    user.getEmployee().getEmployeePermissions().stream()
+                            .map(empPerm -> new SimpleGrantedAuthority(empPerm.getPermission().getName())))
+            .collect(Collectors.toSet());
+        }
+
         this.enabled = user.isEnabled();
         this.accountNonExpired = user.isAccountNonExpired();
         this.accountNonLocked = user.isAccountNonLocked();

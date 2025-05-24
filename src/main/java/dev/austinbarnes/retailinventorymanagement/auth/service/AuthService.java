@@ -12,7 +12,6 @@ import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import dev.austinbarnes.retailinventorymanagement.employee.repo.EmployeeRepository;
 import dev.austinbarnes.retailinventorymanagement.exception.ActivationTokenNotFoundException;
 import dev.austinbarnes.retailinventorymanagement.exception.DuplicateEmailRegistrationException;
-import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
@@ -49,7 +48,6 @@ public class AuthService {
     private final ActivationTokenRepository activationTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final ActivationTokenService activationTokenService;
-    private final EntityManager entityManager;
 
 
     /**
