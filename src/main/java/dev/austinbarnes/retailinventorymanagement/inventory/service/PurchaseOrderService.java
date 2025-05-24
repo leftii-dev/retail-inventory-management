@@ -3,6 +3,7 @@ package dev.austinbarnes.retailinventorymanagement.inventory.service;
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderResponseDTO;
+import dev.austinbarnes.retailinventorymanagement.inventory.entity.PurchaseOrder;
 import dev.austinbarnes.retailinventorymanagement.inventory.mapper.PurchaseOrderMapper;
 import dev.austinbarnes.retailinventorymanagement.inventory.repo.PurchaseOrderRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,6 +17,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * PurchaseOrderService handles all operations related to purchase orders.
+ * <p>
+ * It provides methods to create, update, retrieve, and delete purchase orders.
+ */
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -66,6 +72,39 @@ public class PurchaseOrderService {
                         .map(purchaseOrder -> isManager() ? (PurchaseOrderResponseDTO) mapper.toDetailDTO(purchaseOrder) : mapper.toBasicDTO(purchaseOrder))
                         .toList()
         );
+    }
+
+    /**
+     * Updates an existing purchase order.
+     *
+     * @param id      the ID of the purchase order to update.
+     * @param request the purchase order request DTO containing the updated details.
+     * @return ResponseEntity with the updated purchase order details.
+     */
+    public ResponseEntity<ApiResponseDto<PurchaseOrderResponseDTO>> updatePurchaseOrder(UUID id, PurchaseOrderRequestDTO request) {
+        log.info("Updating purchase order with ID: {}", id);
+        PurchaseOrder target = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Purchase Order not found with ID: " + id));
+
+        mapper.updateEntityFromRequest(request, target);
+
+        return ApiResponseDto.ok(isManager() ?
+                mapper.toDetailDTO(repository.save(target)) :
+                mapper.toBasicDTO(repository.save(target))
+        );
+    }
+
+    /**
+     * Deletes a purchase order by its ID.
+     *
+     * @param id the ID of the purchase order to delete.
+     * @return ResponseEntity indicating the result of the deletion operation.
+     */
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER') and hasAuthority('WRITE_PO')")
+    public ResponseEntity<ApiResponseDto<Void>> deletePurchaseOrder(UUID id) {
+        log.info("Deleting purchase order with ID: {}", id);
+        repository.deleteById(id);
+        return ApiResponseDto.noContent();
     }
 
     /**

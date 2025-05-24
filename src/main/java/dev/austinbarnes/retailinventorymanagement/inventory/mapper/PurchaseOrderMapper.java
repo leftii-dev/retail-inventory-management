@@ -1,12 +1,13 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.mapper;
 
+import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.PurchaseOrder;
-import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 /**
@@ -48,4 +49,11 @@ public interface PurchaseOrderMapper {
     @Mapping(target = "status", qualifiedByName = "detailStatus")
     @Named("detailPurchaseOrder")
     PurchaseOrderResponseDetailDTO toDetailDTO(PurchaseOrder purchaseOrder);
+
+    /**
+     * Converts PurchaseOrder entity to PurchaseOrderResponseBasicDTO in-place.
+     *
+     * @param purchaseOrder the PurchaseOrder entity to convert
+     */
+    void updateEntityFromRequest(PurchaseOrderRequestDTO request, @MappingTarget PurchaseOrder purchaseOrder);
 }
