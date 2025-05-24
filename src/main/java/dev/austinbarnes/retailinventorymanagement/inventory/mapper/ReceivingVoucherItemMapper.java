@@ -1,13 +1,14 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.mapper;
 
+import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherItemRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherItemResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherItemResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.ReceivingVoucherItem;
-import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.product.mapper.ProductMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 /**
@@ -49,4 +50,12 @@ public interface ReceivingVoucherItemMapper {
     @Mapping(target = "receivingVoucherID", source = "receivingVoucher.id")
     @Named("detailReceivingVoucherItem")
     ReceivingVoucherItemResponseDetailDTO toDetailDTO(ReceivingVoucherItem receivingVoucherItem);
+
+    /**
+     * Updates an existing ReceivingVoucherItem entity with the values from the ReceivingVoucherItemRequestDTO.
+     *
+     * @param receivingVoucherItemRequestDTO the ReceivingVoucherItemRequestDTO containing the new values
+     * @param receivingVoucherItem           the ReceivingVoucherItem entity to update
+     */
+    void updateEntityFromRequest(ReceivingVoucherItemRequestDTO receivingVoucherItemRequestDTO, @MappingTarget ReceivingVoucherItem receivingVoucherItem);
 }

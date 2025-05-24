@@ -7,6 +7,7 @@ import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryH
 import dev.austinbarnes.retailinventorymanagement.product.entity.CategoryHierarchy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 /**
@@ -46,4 +47,12 @@ public interface CategoryHierarchyMapper {
     @Mapping(target = "parentCategoryID", source = "parentCategory.id")
     @Named("detailCategoryHierarchy")
     CategoryHierarchyResponseDetailDTO toDetailDTO(CategoryHierarchy categoryHierarchy);
+
+    /**
+     * Updates an existing CategoryHierarchy entity with the values from the CategoryHierarchyRequestDTO.
+     *
+     * @param categoryHierarchyRequestDTO the CategoryHierarchyRequestDTO containing the new values
+     * @param categoryHierarchy           the CategoryHierarchy entity to update
+     */
+    void updateEntityFromRequest(CategoryHierarchyRequestDTO categoryHierarchyRequestDTO, @MappingTarget CategoryHierarchy categoryHierarchy);
 }

@@ -1,12 +1,12 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.mapper;
 
+import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.vendor.VendorRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.vendor.VendorResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.vendor.VendorResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Vendor;
-import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 /**
@@ -44,4 +44,12 @@ public interface VendorMapper {
      */
     @Named("detailVendor")
     VendorResponseDetailDTO toDetailDTO(Vendor vendor);
+
+    /**
+     * Updates an existing Vendor entity with the values from the VendorRequestDTO.
+     *
+     * @param vendorRequestDTO the VendorRequestDTO containing the new values
+     * @param vendor           the Vendor entity to update
+     */
+    void updateEntityFromRequest(VendorRequestDTO vendorRequestDTO, @MappingTarget Vendor vendor);
 }

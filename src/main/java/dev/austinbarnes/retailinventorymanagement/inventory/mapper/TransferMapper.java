@@ -1,12 +1,13 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.mapper;
 
+import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Transfer;
-import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 /**
@@ -52,4 +53,12 @@ public interface TransferMapper {
     @Mapping(target = "locationFromID", source = "locationFrom.id")
     @Named("detailTransfer")
     TransferResponseDetailDTO toDetailDTO(Transfer transfer);
+
+    /**
+     * Updates an existing Transfer entity with the values from the TransferRequestDTO.
+     *
+     * @param transferRequestDTO the TransferRequestDTO containing the new values
+     * @param transfer           the Transfer entity to update
+     */
+    void updateEntityFromRequest(TransferRequestDTO transferRequestDTO, @MappingTarget Transfer transfer);
 }

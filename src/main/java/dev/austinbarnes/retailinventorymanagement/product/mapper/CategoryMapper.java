@@ -7,6 +7,7 @@ import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryR
 import dev.austinbarnes.retailinventorymanagement.product.entity.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 /**
@@ -44,4 +45,12 @@ public interface CategoryMapper {
     @Mapping(target = "discountID", source = "discount.id")
     @Named("detailCategory")
     CategoryResponseDetailDTO toDetailDTO(Category category);
+
+    /**
+     * Updates an existing Category entity with the values from the CategoryRequestDTO.
+     *
+     * @param categoryRequestDTO the CategoryRequestDTO containing the new values
+     * @param category           the Category entity to update
+     */
+    void updateEntityFromRequest(CategoryRequestDTO categoryRequestDTO, @MappingTarget Category category);
 }

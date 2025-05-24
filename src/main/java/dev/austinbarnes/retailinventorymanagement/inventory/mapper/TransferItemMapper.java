@@ -1,13 +1,14 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.mapper;
 
+import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferItemRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferItemResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferItemResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.TransferItem;
-import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.product.mapper.ProductMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 /**
@@ -49,4 +50,12 @@ public interface TransferItemMapper {
     @Mapping(target = "product", qualifiedByName = "detailProduct")
     @Named("detailTransferItem")
     TransferItemResponseDetailDTO toDetailDTO(TransferItem transferItem);
+
+    /**
+     * Updates an existing TransferItem entity with the values from the TransferItemRequestDTO.
+     *
+     * @param transferItemRequestDTO the TransferItemRequestDTO containing the new values
+     * @param transferItem           the TransferItem entity to update
+     */
+    void updateEntityFromRequest(TransferItemRequestDTO transferItemRequestDTO, @MappingTarget TransferItem transferItem);
 }

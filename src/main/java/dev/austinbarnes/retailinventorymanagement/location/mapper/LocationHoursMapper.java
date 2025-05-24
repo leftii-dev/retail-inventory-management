@@ -7,6 +7,7 @@ import dev.austinbarnes.retailinventorymanagement.location.dto.hours.LocationHou
 import dev.austinbarnes.retailinventorymanagement.location.entity.LocationHours;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 /**
@@ -40,4 +41,12 @@ public interface LocationHoursMapper {
     @Mapping(target = "location", qualifiedByName = "detailLocation")
     @Named("detailLocationHours")
     LocationHoursResponseDetailDTO toDetailDTO(LocationHours locationHours);
+
+    /**
+     * Updates an existing LocationHours entity with the values from the LocationHoursRequestDTO.
+     *
+     * @param locationHoursRequestDTO the LocationHoursRequestDTO containing the new values
+     * @param locationHours           the LocationHours entity to update
+     */
+    void updateEntityFromRequest(LocationHoursRequestDTO locationHoursRequestDTO, @MappingTarget LocationHours locationHours);
 }

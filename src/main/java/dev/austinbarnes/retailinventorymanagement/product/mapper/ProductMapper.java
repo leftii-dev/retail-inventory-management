@@ -7,6 +7,7 @@ import dev.austinbarnes.retailinventorymanagement.product.dto.product.ProductRes
 import dev.austinbarnes.retailinventorymanagement.product.entity.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 /**
@@ -54,4 +55,12 @@ public interface ProductMapper {
     @Mapping(target = "discountName", source = "discount.name")
     @Named("detailProduct")
     ProductResponseDetailDTO toDetailDTO(Product product);
+
+    /**
+     * Updates an existing Product entity with the values from the ProductRequestDTO.
+     *
+     * @param productRequestDTO the ProductRequestDTO containing the new values
+     * @param product           the Product entity to update
+     */
+    void updateEntityFromRequest(ProductRequestDTO productRequestDTO, @MappingTarget Product product);
 }
