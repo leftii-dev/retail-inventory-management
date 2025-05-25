@@ -2,6 +2,9 @@ package dev.austinbarnes.retailinventorymanagement.location.repo;
 
 import dev.austinbarnes.retailinventorymanagement.location.entity.LocationDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
@@ -13,4 +16,17 @@ import java.util.UUID;
  */
 @Repository
 public interface LocationDetailsRepository extends JpaRepository<LocationDetails, UUID> {
+    @Modifying
+    @Query("UPDATE LocationDetails l SET l.active = false WHERE l.id = :id")
+    void softDeleteById(UUID id);
+
+    @Override
+    default void delete(LocationDetails locationDetails) {
+        softDeleteById(locationDetails.getId());
+    }
+
+    @Override
+    default void deleteById(@NonNull UUID id) {
+        softDeleteById(id);
+    }
 }

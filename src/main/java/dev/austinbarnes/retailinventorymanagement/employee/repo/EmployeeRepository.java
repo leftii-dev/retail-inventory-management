@@ -2,6 +2,9 @@ package dev.austinbarnes.retailinventorymanagement.employee.repo;
 
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,5 +23,19 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
     Optional<Employee> findByUserId(UUID userId);
     List<Employee> findAllByActiveTrue();
     List<Employee> findAllByOrderByActiveDescNameLastAsc();
+
+    @Modifying
+    @Query("UPDATE Employee e SET e.active = false WHERE e.id = :id")
+    void softDeleteById(UUID id);
+
+    @Override
+    default void delete(Employee employee) {
+        softDeleteById(employee.getId());
+    }
+
+    @Override
+    default void deleteById(@NonNull UUID id) {
+        softDeleteById(id);
+    }
 
 }

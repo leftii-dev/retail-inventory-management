@@ -2,6 +2,9 @@ package dev.austinbarnes.retailinventorymanagement.inventory.repo;
 
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Vendor;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
@@ -15,4 +18,17 @@ import java.util.UUID;
  */
 @Repository
 public interface VendorRepository extends JpaRepository<Vendor, UUID> {
+    @Modifying
+    @Query("UPDATE Vendor v SET v.active = false WHERE v.id = :id")
+    void softDeleteById(UUID id);
+
+    @Override
+    default void delete(Vendor vendor) {
+        softDeleteById(vendor.getId());
+    }
+
+    @Override
+    default void deleteById(@NonNull UUID id) {
+        softDeleteById(id);
+    }
 }
