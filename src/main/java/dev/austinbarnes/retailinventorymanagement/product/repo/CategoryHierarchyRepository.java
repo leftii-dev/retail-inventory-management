@@ -2,6 +2,9 @@ package dev.austinbarnes.retailinventorymanagement.product.repo;
 
 import dev.austinbarnes.retailinventorymanagement.product.entity.CategoryHierarchy;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
@@ -13,4 +16,17 @@ import java.util.UUID;
  */
 @Repository
 public interface CategoryHierarchyRepository extends JpaRepository<CategoryHierarchy, UUID> {
+    @Modifying
+    @Query("UPDATE CategoryHierarchy c SET c.active = false WHERE c.id = :id")
+    void softDeleteById(UUID id);
+
+    @Override
+    default void delete(CategoryHierarchy categoryHierarchy) {
+        softDeleteById(categoryHierarchy.getId());
+    }
+
+    @Override
+    default void deleteById(@NonNull UUID id) {
+        softDeleteById(id);
+    }
 }

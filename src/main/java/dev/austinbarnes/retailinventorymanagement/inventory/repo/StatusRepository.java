@@ -2,6 +2,9 @@ package dev.austinbarnes.retailinventorymanagement.inventory.repo;
 
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
@@ -15,4 +18,17 @@ import java.util.UUID;
  */
 @Repository
 public interface StatusRepository extends JpaRepository<Status, UUID> {
+    @Modifying
+    @Query("UPDATE Status s SET s.active = false WHERE s.id = :id")
+    void softDeleteById(UUID id);
+
+    @Override
+    default void delete(Status status) {
+        softDeleteById(status.getId());
+    }
+
+    @Override
+    default void deleteById(@NonNull UUID id) {
+        softDeleteById(id);
+    }
 }

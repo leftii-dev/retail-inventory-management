@@ -2,6 +2,9 @@ package dev.austinbarnes.retailinventorymanagement.inventory.repo;
 
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Transfer;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
@@ -15,4 +18,17 @@ import java.util.UUID;
  */
 @Repository
 public interface TransferRepository extends JpaRepository<Transfer, UUID> {
+    @Modifying
+    @Query("UPDATE Transfer t SET t.active = false WHERE t.id = :id")
+    void softDeleteById(UUID id);
+
+    @Override
+    default void delete(Transfer transfer) {
+        softDeleteById(transfer.getId());
+    }
+
+    @Override
+    default void deleteById(@NonNull UUID id) {
+        softDeleteById(id);
+    }
 }
