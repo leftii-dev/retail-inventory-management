@@ -1,0 +1,115 @@
+package dev.austinbarnes.retailinventorymanagement.inventory.service;
+
+import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherRequestDTO;
+import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherResponseDTO;
+import dev.austinbarnes.retailinventorymanagement.inventory.entity.ReceivingVoucher;
+import dev.austinbarnes.retailinventorymanagement.inventory.mapper.ReceivingVoucherMapper;
+import dev.austinbarnes.retailinventorymanagement.inventory.repo.ReceivingVoucherRepository;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class ReceivingVoucherService {
+    private final ReceivingVoucherRepository repository;
+    private final ReceivingVoucherMapper mapper;
+
+    /**
+     * Creates a new receiving voucher.
+     *
+     * @param request the receiving voucher request DTO containing the details of the receiving voucher to create.
+     * @return ResponseEntity with the created receiving voucher details.
+     */
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE' and hasAuthority('WRITE_RV'))")
+    public ResponseEntity<ApiResponseDto<ReceivingVoucherResponseDTO>> createReceivingVoucher(
+            ReceivingVoucherRequestDTO request) {
+        log.info("Creating receiving voucher: {}", request);
+        return ApiResponseDto.created(isManager() ?
+                mapper.toDetailDTO(repository.save(mapper.toEntity(request))) :
+                mapper.toBasicDTO(repository.save(mapper.toEntity(request)))
+        );
+    }
+
+    /**
+     * Retrieves a receiving voucher by its ID.
+     *
+     * @param id the ID of the receiving voucher to retrieve.
+     * @return ResponseEntity with the receiving voucher details.
+     */
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('READ_RV')")
+    public ResponseEntity<ApiResponseDto<ReceivingVoucherResponseDTO>> getReceivingVoucherById(UUID id) {
+        log.info("Retrieving receiving voucher with ID: {}", id);
+        return repository.findById(id)
+                .map(receivingVoucher -> ApiResponseDto.ok(isManager() ?
+                        (ReceivingVoucherResponseDTO) mapper.toDetailDTO(receivingVoucher) :
+                        mapper.toBasicDTO(receivingVoucher)))
+                .orElseThrow(() -> new EntityNotFoundException("Receiving Voucher not found with ID: " + id));
+    }
+
+    /**
+     * Retrieves all receiving vouchers.
+     *
+     * @return ResponseEntity with a list of all receiving vouchers.
+     */
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('READ_RV')")
+    public ResponseEntity<ApiResponseDto<List<ReceivingVoucherResponseDTO>>> getAllReceivingVouchers() {
+        log.info("Retrieving all receiving vouchers");
+        return ApiResponseDto.ok(repository.findAll().stream()
+                .map(receivingVoucher -> isManager() ?
+                        (ReceivingVoucherResponseDTO) mapper.toDetailDTO(receivingVoucher) :
+                        mapper.toBasicDTO(receivingVoucher))
+                .toList());
+    }
+
+    /**
+     * Updates an existing receiving voucher.
+     *
+     * @param id      the ID of the receiving voucher to update.
+     * @param request the receiving voucher request DTO containing the updated details.
+     * @return ResponseEntity with the updated receiving voucher details.
+     */
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('WRITE_RV')")
+    public ResponseEntity<ApiResponseDto<ReceivingVoucherResponseDTO>> updateReceivingVoucher(UUID id, ReceivingVoucherRequestDTO request) {
+        log.info("Updating receiving voucher with ID: {}", id);
+        ReceivingVoucher target = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Receiving Voucher not found with ID: " + id));
+        mapper.updateEntityFromRequest(request, target);
+        return ApiResponseDto.ok(isManager() ?
+                mapper.toDetailDTO(repository.save(target)) :
+                mapper.toBasicDTO(repository.save(target)));
+    }
+
+    /**
+     * Deletes a receiving voucher by its ID.
+     *
+     * @param id the ID of the receiving voucher to delete.
+     * @return ResponseEntity indicating the result of the deletion operation.
+     */
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('WRITE_RV')")
+    public ResponseEntity<ApiResponseDto<Void>> deleteReceivingVoucher(UUID id) {
+        log.info("Deleting receiving voucher with ID: {}", id);
+        repository.deleteById(id);
+        return ApiResponseDto.noContent();
+    }
+
+    /**
+     * Determines is the current user has manager or admin role.
+     *
+     * @return true if the user has manager or admin role, false otherwise.
+     */
+    private boolean isManager() {
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(
+                authority -> authority.getAuthority().equals("ROLE_MANAGER") || authority.getAuthority().equals("ROLE_ADMIN")
+        );
+    }
+}
