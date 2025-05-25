@@ -37,7 +37,7 @@ public class PurchaseOrderItemService {
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('WRITE_PO')")
     public ResponseEntity<ApiResponseDto<PurchaseOrderItemResponseDTO>> createPurchaseOrderItem(
             PurchaseOrderItemRequestDTO request) {
-
+        log.info("Creating purchase order item: {}", request);
         return ApiResponseDto.created(isManager() ?
                 mapper.toDetailDTO(repository.save(mapper.toEntity(request)))
                 :
@@ -53,6 +53,7 @@ public class PurchaseOrderItemService {
      */
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('READ_PO')")
     public ResponseEntity<ApiResponseDto<PurchaseOrderItemResponseDTO>> getPurchaseOrderItem(UUID id) {
+        log.info("Getting purchase order item: {}", id);
         return repository.findById(id)
                 .map(item -> ApiResponseDto.ok(isManager()
                         ?
@@ -69,6 +70,7 @@ public class PurchaseOrderItemService {
      */
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('READ_PO')")
     public ResponseEntity<ApiResponseDto<List<PurchaseOrderItemResponseDTO>>> getAllPurchaseOrderItems() {
+        log.info("Getting all purchase order items");
         List<PurchaseOrderItemResponseDTO> items = repository.findAll().stream()
                 .map(item -> isManager()
                         ?
@@ -88,6 +90,7 @@ public class PurchaseOrderItemService {
      */
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('WRITE_PO')")
     public ResponseEntity<ApiResponseDto<PurchaseOrderItemResponseDTO>> updatePurchaseOrderItem(UUID id, PurchaseOrderItemRequestDTO request) {
+        log.info("Updating purchase order item: {}", id);
         PurchaseOrderItem target = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Purchase Order Item not found"));
         mapper.updateEntityFromRequest(request, target);
@@ -105,6 +108,7 @@ public class PurchaseOrderItemService {
      */
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('WRITE_PO')")
     public ResponseEntity<ApiResponseDto<Void>> deletePurchaseOrderItem(UUID id) {
+        log.info("Deleting purchase order item: {}", id);
         repository.deleteById(id);
         return ApiResponseDto.noContent();
     }
