@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -65,7 +66,7 @@ public class StatusService {
      */
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('READ_STATUS')")
-    public ResponseEntity<ApiResponseDto<Iterable<StatusResponseDTO>>> getAllStatuses() {
+    public ResponseEntity<ApiResponseDto<List<StatusResponseDTO>>> getAllStatuses() {
         log.info("Retrieving all statuses");
         return ApiResponseDto.ok(repository.findAll().stream()
                 .map(status -> isManager() ?
