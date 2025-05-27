@@ -44,7 +44,7 @@ public class PurchaseOrderController {
      * @return a response entity containing the purchase order details
      */
     @GetMapping("/{id}")
-    ResponseEntity<ApiResponseDto<PurchaseOrderResponseDTO>> getPurchaseOrderById(UUID id) {
+    ResponseEntity<ApiResponseDto<PurchaseOrderResponseDTO>> getPurchaseOrderById(@PathVariable UUID id) {
         log.info("Retrieving purchase order with ID: {}", id);
         return service.getPurchaseOrderById(id);
     }

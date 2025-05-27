@@ -4,6 +4,7 @@ import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.service.PurchaseOrderItemService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public class PurchaseOrderItemController {
      */
     @PostMapping
     public ResponseEntity<ApiResponseDto<PurchaseOrderItemResponseDTO>> createPurchaseOrderItem(
-            PurchaseOrderItemRequestDTO request) {
+            @RequestBody @Valid PurchaseOrderItemRequestDTO request) {
         log.info("Creating purchase order item: {}", request);
         return service.createPurchaseOrderItem(request);
     }
@@ -75,5 +76,19 @@ public class PurchaseOrderItemController {
             @PathVariable UUID id, @RequestBody PurchaseOrderItemRequestDTO request) {
         log.info("Updating purchase order item: {}", id);
         return service.updatePurchaseOrderItem(id, request);
+    }
+
+    /**
+     * Deletes a purchase order item by its ID.
+     * This endpoint is accessible to users with roles MANAGER, ADMIN, or EMPLOYEE
+     * and requires the WRITE_PO authority.
+     *
+     * @param id the UUID of the purchase order item to delete
+     * @return ResponseEntity indicating the result of the deletion operation
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponseDto<Void>> deletePurchaseOrderItem(@PathVariable UUID id) {
+        log.info("Deleting purchase order item: {}", id);
+        return service.deletePurchaseOrderItem(id);
     }
 }
