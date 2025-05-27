@@ -4,6 +4,7 @@ import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferItemRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferItemResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.service.TransferItemService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class TransferItemController {
      * @return ResponseEntity with the created transfer item details.
      */
     @PostMapping
-    public ResponseEntity<ApiResponseDto<TransferItemResponseDTO>> createTransferItem(TransferItemRequestDTO request) {
+    public ResponseEntity<ApiResponseDto<TransferItemResponseDTO>> createTransferItem(@RequestBody @Valid TransferItemRequestDTO request) {
         log.info("Creating transfer item with request: {}", request);
         return service.createTransferItem(request);
     }
@@ -63,7 +64,7 @@ public class TransferItemController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponseDto<TransferItemResponseDTO>> updateTransferItem(
-            @PathVariable UUID id, TransferItemRequestDTO request) {
+            @PathVariable UUID id, @RequestBody @Valid TransferItemRequestDTO request) {
         log.info("Updating transfer item with ID: {}", id);
         return service.updateTransferItem(id, request);
     }

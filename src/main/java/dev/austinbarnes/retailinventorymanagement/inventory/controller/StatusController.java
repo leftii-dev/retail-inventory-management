@@ -27,7 +27,7 @@ public class StatusController {
      * @return ResponseEntity with the created status details.
      */
     @PostMapping
-    public ResponseEntity<ApiResponseDto<StatusResponseDTO>> createStatus(StatusRequestDTO request) {
+    public ResponseEntity<ApiResponseDto<StatusResponseDTO>> createStatus(@RequestBody @Valid StatusRequestDTO request) {
         log.info("Creating new status: {}", request);
         return statusService.createStatus(request);
     }

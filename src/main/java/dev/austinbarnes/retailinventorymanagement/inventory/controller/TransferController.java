@@ -4,6 +4,7 @@ import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.service.TransferService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class TransferController {
      * @return ResponseEntity with the created transfer details.
      */
     @PostMapping
-    public ResponseEntity<ApiResponseDto<TransferResponseDTO>> createTransfer(TransferRequestDTO request) {
+    public ResponseEntity<ApiResponseDto<TransferResponseDTO>> createTransfer(@RequestBody @Valid TransferRequestDTO request) {
         log.info("Creating transfer with request: {}", request);
         return service.createTransfer(request);
     }
