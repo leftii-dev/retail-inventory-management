@@ -18,7 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-//TODO: Add Javadoc Comments
+/**
+ * CategoryHierarchyService handles all operations related to category hierarchies.
+ * <p>
+ * It provides methods to create, update, retrieve, and delete category hierarchies.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -26,6 +30,11 @@ public class CategoryHierarchyService {
     private final CategoryHierarchyRepository repository;
     private CategoryHierarchyMapper mapper;
 
+    /**
+     * Create new CategoryHierarchy.
+     *
+     * @param request request DTO containing the details of the category hierarchy to be created.
+     */
     @Transactional
     @PreAuthorize("hasAnyRole('EMPLOYEE', 'ADMIN', 'MANAGER') and hasAuthority('WRITE_PRODUCT')")
     public ResponseEntity<ApiResponseDto<CategoryHierarchyResponseDTO>> createCategoryHierarchy(CategoryHierarchyRequestDTO request) {
@@ -36,6 +45,12 @@ public class CategoryHierarchyService {
         );
     }
 
+    /**
+     * Retrieves a category hierarchy by its ID.
+     *
+     * @param id The ID of the category hierarchy to retrieve.
+     * @return ResponseEntity with the category hierarchy details.
+     */
     @Transactional(readOnly = true)
     public ResponseEntity<ApiResponseDto<CategoryHierarchyResponseDTO>> getCategoryHierarchy(UUID id) {
         log.info("Get category hierarchy {}", id);
@@ -47,6 +62,11 @@ public class CategoryHierarchyService {
         );
     }
 
+    /**
+     * Retrieves all category hierarchies.
+     *
+     * @return ResponseEntity with a list of all category hierarchies.
+     */
     @Transactional(readOnly = true)
     public ResponseEntity<ApiResponseDto<List<CategoryHierarchyResponseDTO>>> getCategoryHierarchies() {
         log.info("Get category hierarchies");
@@ -58,6 +78,13 @@ public class CategoryHierarchyService {
         );
     }
 
+    /**
+     * Updates an existing category hierarchy.
+     *
+     * @param id      The ID of the category hierarchy to update.
+     * @param request The request DTO containing updated category hierarchy details.
+     * @return ResponseEntity with the updated category hierarchy details.
+     */
     @Transactional
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('WRITE_PRODUCT')")
     public ResponseEntity<ApiResponseDto<CategoryHierarchyResponseDTO>> updateCategoryHierarchy(UUID id, CategoryHierarchyRequestDTO request) {
@@ -70,6 +97,12 @@ public class CategoryHierarchyService {
         );
     }
 
+    /**
+     * Deletes a category hierarchy by its ID.
+     *
+     * @param id The ID of the category hierarchy to delete.
+     * @return ResponseEntity with no content status.
+     */
     @Transactional
     @PreAuthorize("hasAnyRole('EMPLOYEE', 'MANAGER', 'ADMIN') and hasAuthority('WRITE_PRODUCT')")
     public ResponseEntity<ApiResponseDto<Void>> deleteCategoryHierarchy(UUID id) {
