@@ -18,6 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Service class for managing product categories.
+ * Provides methods to create, retrieve, update, and delete categories.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
