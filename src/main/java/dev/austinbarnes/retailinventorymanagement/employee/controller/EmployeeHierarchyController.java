@@ -72,7 +72,12 @@ public class EmployeeHierarchyController {
     /**
      * Retrieves the hierarchy of all employees.
      *
-     * @return ResponseEntity with a list of all employee hierarchies.
+     * @param filterDTO HierarchyFilterDTO for filtering data.
+     * @param page Index of paged data.
+     * @param size Size of list to retrieve.
+     * @param sortBy Allows sorting by parameters.
+     * @param sortDirection ASC or DESC sorting the data.
+     * @return List of EmployeeHierarchyDTO.
      */
     @GetMapping
     public ResponseEntity<ApiResponseDto<List<EmployeeHierarchyResponseDTO>>> getEmployeeHierarchyAll(
