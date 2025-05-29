@@ -1,12 +1,15 @@
 package dev.austinbarnes.retailinventorymanagement.employee.controller;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeHierarchyFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeHierarchyRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeHierarchyResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.service.EmployeeHierarchyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -71,9 +74,13 @@ public class EmployeeHierarchyController {
      * @return ResponseEntity with a list of all employee hierarchies.
      */
     @GetMapping
-    public ResponseEntity<ApiResponseDto<List<EmployeeHierarchyResponseDTO>>> getEmployeeHierarchyAll() {
+    public ResponseEntity<ApiResponseDto<List<EmployeeHierarchyResponseDTO>>> getEmployeeHierarchyAll(
+            @RequestBody(required = false) @Valid EmployeeHierarchyFilterDTO filterDTO,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
         log.info("Get employee hierarchy all");
-        return hierarchyService.getEmployeeHierarchyAll();
+        Pageable pageable = (page != null && size != null) ? PageRequest.of(page, size) : Pageable.unpaged();
+        return hierarchyService.getEmployeeHierarchyAll(filterDTO, pageable);
     }
 
     /**

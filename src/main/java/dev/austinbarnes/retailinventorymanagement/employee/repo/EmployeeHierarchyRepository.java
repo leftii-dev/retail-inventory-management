@@ -2,6 +2,7 @@ package dev.austinbarnes.retailinventorymanagement.employee.repo;
 
 import dev.austinbarnes.retailinventorymanagement.employee.entity.EmployeeHierarchy;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
@@ -17,7 +18,7 @@ import java.util.UUID;
  * It provides methods to perform CRUD operations and custom queries on the employee hierarchy data.
  */
 @Repository
-public interface EmployeeHierarchyRepository extends JpaRepository<EmployeeHierarchy, UUID> {
+public interface EmployeeHierarchyRepository extends JpaRepository<EmployeeHierarchy, UUID>, JpaSpecificationExecutor<EmployeeHierarchy> {
     Optional<EmployeeHierarchy> findByEmployeeId(UUID employeeId);
 
     @Modifying
