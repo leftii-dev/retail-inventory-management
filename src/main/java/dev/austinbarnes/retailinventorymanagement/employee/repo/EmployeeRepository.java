@@ -2,6 +2,7 @@ package dev.austinbarnes.retailinventorymanagement.employee.repo;
 
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
@@ -18,7 +19,7 @@ import java.util.UUID;
  * It provides methods to perform CRUD operations and custom queries on the employee data.
  */
 @Repository
-public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
+public interface EmployeeRepository extends JpaRepository<Employee, UUID>, JpaSpecificationExecutor<Employee> {
     Optional<Employee> findByEmployeeCode(String employeeCode);
     Optional<Employee> findByUserId(UUID userId);
     List<Employee> findAllByActiveTrue();

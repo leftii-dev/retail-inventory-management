@@ -77,7 +77,9 @@ public class EmployeeController {
      * @return ResponseEntity with the updated employee details.
      */
     @PutMapping("/{employeeId}")
-    public ResponseEntity<ApiResponseDto<EmployeeResponseDTO>> updateEmployee(@PathVariable UUID employeeId, @RequestBody @Valid EmployeeRequestDTO request) {
+    public ResponseEntity<ApiResponseDto<EmployeeResponseDTO>> updateEmployee(
+            @PathVariable UUID employeeId,
+            @RequestBody @Valid EmployeeRequestDTO request) {
         log.info("Update employeeId: {} with request: {}", employeeId, request);
         return employeeService.updateEmployee(employeeId, request);
     }
