@@ -11,6 +11,11 @@ public class BaseSpecifications {
         return (Root<T> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) -> {
             Predicate predicates = criteriaBuilder.conjunction();
 
+            if(filterDTO == null) {
+                predicates.getExpressions().add(criteriaBuilder.equal(root.get("active"), true));
+                return predicates;
+            }
+
             if(filterDTO.createdAt() != null)
                 predicates.getExpressions().add(criteriaBuilder.equal(root.get("createdAt"), filterDTO.createdAt()));
 
@@ -35,8 +40,9 @@ public class BaseSpecifications {
             if(filterDTO.modifiedBy() != null)
                 predicates.getExpressions().add(criteriaBuilder.equal(root.get("modifiedBy"), filterDTO.modifiedBy()));
 
-            if (filterDTO.showInactive())
+            if (filterDTO.showInactive() == null || !filterDTO.showInactive()) {
                 predicates.getExpressions().add(criteriaBuilder.equal(root.get("active"), true));
+            }
 
             return predicates;
         };

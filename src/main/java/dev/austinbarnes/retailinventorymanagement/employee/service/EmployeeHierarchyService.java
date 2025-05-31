@@ -88,7 +88,6 @@ public class EmployeeHierarchyService {
             EmployeeHierarchyFilterDTO filterDTO,
             Pageable pageable) {
         Specification<EmployeeHierarchy> spec = EmployeeHierarchySpecifications.applyFilters(filterDTO);
-
         return ApiResponseDto.ok(employeeHierarchyRepository.findAll(spec, pageable).stream()
                 .map(hierarchy -> isManager()
                         ? mapper.toDetailDTO(hierarchy)
