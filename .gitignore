@@ -35,3 +35,5 @@ build/
 .vscode/
 /src/main/resources/olfdschema
 /docker-compose.yml
+/src/main/resources/application-dev.properties
+/docker-compose-dev.yml

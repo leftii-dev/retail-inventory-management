@@ -59,6 +59,19 @@ public class LocationService {
     }
 
     /**
+     * Returns Location Entity for Mapper implementation
+     *
+     * @param id ID of Location to find
+     * @return Location Entity
+     */
+    @Transactional(readOnly = true)
+    public Location getLocationEntityById(UUID id) {
+        log.info("Retrieving location with ID: {} for Mapper", id);
+        return repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Location not found with ID: " + id));
+    }
+
+    /**
      * retrieves all locations.
      *
      * @return ResponseEntity with a list of all locations.

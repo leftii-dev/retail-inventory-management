@@ -1,12 +1,16 @@
 package dev.austinbarnes.retailinventorymanagement.employee.controller;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,48 +56,59 @@ public class EmployeeController {
      * @return ResponseEntity with a list of all employees.
      */
     @GetMapping
-    public ResponseEntity<ApiResponseDto<List<EmployeeResponseDTO>>> getAllEmployees() {
+    public ResponseEntity<ApiResponseDto<List<EmployeeResponseDTO>>> getAllEmployees(
+            @RequestBody(required = false) @Valid EmployeeFilterDTO filterDTO,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortDirection) {
+
         log.info("Get all employees");
-        return employeeService.getAllEmployees();
-    }
+        Sort sort = (sortBy != null && sortDirection != null)
+                ? Sort.by(Sort.Direction.fromString(sortDirection), sortBy)
+                : Sort.unsorted();
 
-    /**
-     * Retrieves an employee by ID.
-     *
-     * @param employeeId The ID of the employee to retrieve.
-     * @return ResponseEntity with the employee details.
-     */
-    @GetMapping("/{employeeId}")
-    public ResponseEntity<ApiResponseDto<EmployeeResponseDTO>> getEmployeeById(@PathVariable UUID employeeId) {
-        log.info("Get employee by id: {}", employeeId);
-        return employeeService.getEmployeeById(employeeId);
-    }
+        Pageable pageable = (page != null && size != null) ? PageRequest.of(page, size, sort) : Pageable.unpaged();
+            return employeeService.getAllEmployees(filterDTO, pageable);
+        }
 
-    /**
-     * Updates an existing employee.
-     *
-     * @param employeeId The ID of the employee to update.
-     * @param request    The employee request DTO containing updated employee details.
-     * @return ResponseEntity with the updated employee details.
-     */
-    @PutMapping("/{employeeId}")
-    public ResponseEntity<ApiResponseDto<EmployeeResponseDTO>> updateEmployee(
-            @PathVariable UUID employeeId,
-            @RequestBody @Valid EmployeeRequestDTO request) {
-        log.info("Update employeeId: {} with request: {}", employeeId, request);
-        return employeeService.updateEmployee(employeeId, request);
-    }
+        /**
+         * Retrieves an employee by ID.
+         *
+         * @param employeeId The ID of the employee to retrieve.
+         * @return ResponseEntity with the employee details.
+         */
+        @GetMapping("/{employeeId}")
+        public ResponseEntity<ApiResponseDto<EmployeeResponseDTO>> getEmployeeById (@PathVariable UUID employeeId){
+            log.info("Get employee by id: {}", employeeId);
+            return employeeService.getEmployeeById(employeeId);
+        }
 
-    /**
-     * Deletes an employee by ID.
-     *
-     * @param employeeId The ID of the employee to delete.
-     * @return ResponseEntity with no content.
-     */
-    @DeleteMapping("/{employeeId}")
-    public ResponseEntity<ApiResponseDto<Void>> deleteEmployee(@PathVariable UUID employeeId) {
-        log.info("Delete employee {}", employeeId);
-        return employeeService.deleteEmployee(employeeId);
+        /**
+         * Updates an existing employee.
+         *
+         * @param employeeId The ID of the employee to update.
+         * @param request    The employee request DTO containing updated employee details.
+         * @return ResponseEntity with the updated employee details.
+         */
+        @PutMapping("/{employeeId}")
+        public ResponseEntity<ApiResponseDto<EmployeeResponseDTO>> updateEmployee (
+                @PathVariable UUID employeeId,
+                @RequestBody @Valid EmployeeRequestDTO request){
+            log.info("Update employeeId: {} with request: {}", employeeId, request);
+            return employeeService.updateEmployee(employeeId, request);
+        }
+
+        /**
+         * Deletes an employee by ID.
+         *
+         * @param employeeId The ID of the employee to delete.
+         * @return ResponseEntity with no content.
+         */
+        @DeleteMapping("/{employeeId}")
+        public ResponseEntity<ApiResponseDto<Void>> deleteEmployee (@PathVariable UUID employeeId){
+            log.info("Delete employee {}", employeeId);
+            return employeeService.deleteEmployee(employeeId);
+        }
     }
-}
 

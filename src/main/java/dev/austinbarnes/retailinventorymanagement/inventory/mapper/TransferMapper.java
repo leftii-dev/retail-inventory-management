@@ -5,6 +5,7 @@ import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.Transfe
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Transfer;
+import dev.austinbarnes.retailinventorymanagement.location.service.LocationService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -18,7 +19,7 @@ import org.mapstruct.Named;
  * The interface includes methods to convert TransferRequestDTO to Transfer entity and
  * to convert Transfer entity to different types of TransferResponseDTOs.
  */
-@Mapper(config = GlobalMapperConfig.class)
+@Mapper(config = GlobalMapperConfig.class, uses = LocationService.class)
 public interface TransferMapper {
 
     /**
@@ -27,9 +28,8 @@ public interface TransferMapper {
      * @param transferRequestDTO the TransferRequestDTO to convert
      * @return the converted Transfer entity
      */
-    // TODO: Once repos and services are created, add LocationService to `uses` and inject to retrieve locationTo/From
-    @Mapping(target = "locationTo", ignore = true) // Remove after injection complete
-    @Mapping(target = "locationFrom", ignore = true) // Remove after injection complete
+    @Mapping(target = "locationTo", expression = "java(locationService.getLocationEntityById(transferRequestDTO.locationTo()))")
+    @Mapping(target = "locationFrom", expression = "java(locationService.getLocationEntityById(transferRequestDTO.locationFrom()))")
     Transfer toEntity(TransferRequestDTO transferRequestDTO);
 
     /**

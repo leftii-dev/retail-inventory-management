@@ -10,8 +10,10 @@ import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.ArrayList;
@@ -211,5 +213,41 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponseDto<Void>> handleTransactionSystemException(org.springframework.transaction.TransactionSystemException ex) {
         log.error("Transaction system exception", ex);
         return ApiResponseDto.internalError("A transaction error occurred. Please try again.");
+    }
+
+    /**
+     * Handles exceptions thrown by bad paging or sorting parameters in request
+     *
+     * @param ex the IllegalArgumentException
+     * @return ResponseEntity with a bad request response
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponseDto<Void>> handleIllegalArgumentException(IllegalArgumentException ex){
+        log.error("Illegal argument exception", ex);
+        return ApiResponseDto.badRequest("Invalid paging or sorting parameter:" + ex.getMessage());
+    }
+
+    /**
+     * Handles exceptions thrown by missing required request parameters
+     *
+     * @param ex the MissingServletRequestParameterException
+     * @return ResponseEntity with a bad request response
+     */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiResponseDto<Void>> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex){
+        log.error("Missing Servlet Request Parameter", ex);
+        return ApiResponseDto.badRequest("Missing required parameter '" + ex.getParameterName() + "'");
+    }
+
+    /**
+     * Handles MethodArgumentTypeMismatchException thrown by mismatch types in request parameters
+     *
+     * @param ex the MethodArgumentTypeMismatchException
+     * @return ResponseEntity with a bad request response
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiResponseDto<Void>> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+        log.error("Type mismatch in request parameter", ex);
+        return ApiResponseDto.badRequest("Invalid type for paging or sorting parameter: " + ex.getName());
     }
 }

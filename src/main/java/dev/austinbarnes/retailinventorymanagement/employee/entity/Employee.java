@@ -55,7 +55,7 @@ public class Employee extends BaseEntity {
     private String email;
 
     @Column(name = "date_of_birth")
-    @Past
+    @Past(message = "Date of birth must be in the past.")
     private LocalDate dateOfBirth;
 
     @Column(name = "employee_code", unique = true, updatable = false, nullable = false)

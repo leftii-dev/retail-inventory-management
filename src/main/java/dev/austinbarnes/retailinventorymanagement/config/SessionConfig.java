@@ -23,9 +23,15 @@ public class SessionConfig {
     @Value("${app.frontend.url}")
     private String frontendUrl; // pulls frontendUrl from application.properties if frontend is different domain
 
+    @Value("${spring.data.redis.host:localhost}")
+    private String redisHost;
+
+    @Value("${spring.data.redis.port}")
+    private int redisPort;
+
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory();
+        return new LettuceConnectionFactory(redisHost, redisPort);
     }
 
     /**
