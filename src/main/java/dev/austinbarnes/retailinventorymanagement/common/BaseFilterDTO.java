@@ -20,9 +20,7 @@ public record BaseFilterDTO(
         Instant modifiedBefore,
         @Future(message = "modifiedAfter must be future.")
         Instant modifiedAfter,
-        @org.hibernate.validator.constraints.UUID(message = "createdBy must be a valid UUID.")
         UUID createdBy,
-        @org.hibernate.validator.constraints.UUID(message = "modifiedBy must be a valid UUID.")
         UUID modifiedBy,
         Boolean showInactive
 ){}

@@ -33,11 +33,11 @@ public class EmployeeSpecifications {
                 }
 
                 if (filterDTO.emailContains() != null) {
-                    predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(root.get("email"), "%" + filterDTO.emailContains() + "%"));
+                    predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(criteriaBuilder.lower(root.get("email")), "%" + filterDTO.emailContains().toLowerCase() + "%"));
                 }
 
                 if (filterDTO.employeeCodeContains() != null) {
-                    predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(root.get("employeeCode"), "%" + filterDTO.employeeCodeContains() + "%"));
+                    predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(criteriaBuilder.lower(root.get("employeeCode")), "%" + filterDTO.employeeCodeContains().toLowerCase() + "%"));
                 }
 
                 if (filterDTO.showNonCurrentEmployee() != null && !filterDTO.showNonCurrentEmployee()) {
@@ -47,7 +47,7 @@ public class EmployeeSpecifications {
                 if (filterDTO.hasPermission() != null) {
                     Join<Employee, EmployeePermission> employeePermissionJoin = root.join("employeePermissions");
                     Join<EmployeePermission, Permission> permissionJoin = employeePermissionJoin.join("permission");
-                    predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(permissionJoin.get("name"), "%" + filterDTO.hasPermission() + "%"));
+                    predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(criteriaBuilder.lower(permissionJoin.get("name")), "%" + filterDTO.hasPermission().toLowerCase() + "%"));
                 }
             }
             return predicate;

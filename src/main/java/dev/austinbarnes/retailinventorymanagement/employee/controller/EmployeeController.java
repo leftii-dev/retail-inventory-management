@@ -64,7 +64,6 @@ public class EmployeeController {
             @RequestParam(required = false) String sortDirection) {
 
         log.info("Get all employees");
-        log.info("RequestFilterDTO: " + filterDTO);
         Sort sort = (sortBy != null && sortDirection != null)
                 ? Sort.by(Sort.Direction.fromString(sortDirection), sortBy)
                 : Sort.unsorted();

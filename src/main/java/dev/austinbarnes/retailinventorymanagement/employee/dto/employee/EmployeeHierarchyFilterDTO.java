@@ -6,9 +6,7 @@ import java.util.UUID;
 
 public record EmployeeHierarchyFilterDTO(
     BaseFilterDTO baseFilterDTO,
-    @org.hibernate.validator.constraints.UUID
     UUID employeeID,
-    @org.hibernate.validator.constraints.UUID
     UUID managerID
 ) {
 }
