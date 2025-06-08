@@ -62,7 +62,7 @@ public class PermissionController {
             ) {
         log.info("Get all permissions");
         Sort sort = (sortBy != null && sortDirection != null
-                ? Sort.by(Sort.Direction.fromString(sortDirection))
+                ? Sort.by(Sort.Direction.fromString(sortDirection), sortBy)
                 : Sort.unsorted());
 
         Pageable pageable = (page != null && size != null
