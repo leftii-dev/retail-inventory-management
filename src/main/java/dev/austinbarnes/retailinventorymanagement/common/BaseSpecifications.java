@@ -9,42 +9,49 @@ import org.springframework.data.jpa.domain.Specification;
 public class BaseSpecifications {
     public static <T extends BaseEntity> Specification<T> applyBaseFilters(BaseFilterDTO filterDTO) {
         return (Root<T> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) -> {
-            Predicate predicates = criteriaBuilder.conjunction();
+            Predicate predicate = criteriaBuilder.conjunction();
 
             if(filterDTO == null) {
-                predicates.getExpressions().add(criteriaBuilder.equal(root.get("active"), true));
-                return predicates;
+                return criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("active"), true));
             }
 
-            if(filterDTO.createdAt() != null)
-                predicates.getExpressions().add(criteriaBuilder.equal(root.get("createdAt"), filterDTO.createdAt()));
-
-            if(filterDTO.createdBefore() != null)
-                predicates.getExpressions().add(criteriaBuilder.lessThan(root.get("createdAt"), filterDTO.createdBefore()));
-
-            if(filterDTO.createdAfter() != null)
-                predicates.getExpressions().add(criteriaBuilder.greaterThan(root.get("createdAt"), filterDTO.createdAfter()));
-
-            if(filterDTO.modifiedAt() != null)
-                predicates.getExpressions().add(criteriaBuilder.equal(root.get("modifiedAt"), filterDTO.modifiedAt()));
-
-            if(filterDTO.modifiedBefore() != null)
-                predicates.getExpressions().add(criteriaBuilder.lessThan(root.get("modifiedAt"), filterDTO.modifiedBefore()));
-
-            if(filterDTO.modifiedAfter() != null)
-                predicates.getExpressions().add(criteriaBuilder.greaterThan(root.get("modifiedAt"), filterDTO.modifiedAfter()));
-
-            if(filterDTO.createdBy() != null)
-                predicates.getExpressions().add(criteriaBuilder.equal(root.get("createdBy"), filterDTO.createdBy()));
-
-            if(filterDTO.modifiedBy() != null)
-                predicates.getExpressions().add(criteriaBuilder.equal(root.get("modifiedBy"), filterDTO.modifiedBy()));
-
-            if (filterDTO.showInactive() == null || !filterDTO.showInactive()) {
-                predicates.getExpressions().add(criteriaBuilder.equal(root.get("active"), true));
+            if(filterDTO.createdAt() != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("createdAt"), filterDTO.createdAt()));
             }
 
-            return predicates;
+            if(filterDTO.createdBefore() != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.lessThan(root.get("createdAt"), filterDTO.createdBefore()));
+            }
+
+            if(filterDTO.createdAfter() != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.greaterThan(root.get("createdAt"), filterDTO.createdAfter()));
+            }
+
+            if(filterDTO.modifiedAt() != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("modifiedAt"), filterDTO.modifiedAt()));
+            }
+
+            if(filterDTO.modifiedBefore() != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.lessThan(root.get("modifiedAt"), filterDTO.modifiedBefore()));
+            }
+
+            if(filterDTO.modifiedAfter() != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.greaterThan(root.get("modifiedAt"), filterDTO.modifiedAfter()));
+            }
+
+            if(filterDTO.createdBy() != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("createdBy"), filterDTO.createdBy()));
+            }
+
+            if(filterDTO.modifiedBy() != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("modifiedBy"), filterDTO.modifiedBy()));
+            }
+
+            if(filterDTO.showInactive() == null || !filterDTO.showInactive()) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("active"), true));
+            }
+
+            return predicate;
         };
     }
 }

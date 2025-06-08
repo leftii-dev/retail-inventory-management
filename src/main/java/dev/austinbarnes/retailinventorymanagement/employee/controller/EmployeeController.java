@@ -57,13 +57,14 @@ public class EmployeeController {
      */
     @GetMapping
     public ResponseEntity<ApiResponseDto<List<EmployeeResponseDTO>>> getAllEmployees(
-            @RequestBody(required = false) @Valid EmployeeFilterDTO filterDTO,
+            @ModelAttribute @Valid EmployeeFilterDTO filterDTO,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) String sortDirection) {
 
         log.info("Get all employees");
+        log.info("RequestFilterDTO: " + filterDTO);
         Sort sort = (sortBy != null && sortDirection != null)
                 ? Sort.by(Sort.Direction.fromString(sortDirection), sortBy)
                 : Sort.unsorted();

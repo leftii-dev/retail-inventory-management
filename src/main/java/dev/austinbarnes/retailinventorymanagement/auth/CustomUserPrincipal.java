@@ -55,6 +55,8 @@ public class CustomUserPrincipal implements OAuth2User, UserDetails {
                     user.getEmployee().getEmployeePermissions().stream()
                             .map(empPerm -> new SimpleGrantedAuthority(empPerm.getPermission().getName())))
             .collect(Collectors.toSet());
+        } else {
+            this.authorities = user.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName())).collect(Collectors.toSet());
         }
 
         this.enabled = user.isEnabled();

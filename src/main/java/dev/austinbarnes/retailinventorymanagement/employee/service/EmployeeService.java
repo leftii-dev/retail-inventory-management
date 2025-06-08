@@ -15,6 +15,7 @@ import dev.austinbarnes.retailinventorymanagement.employee.specification.Employe
 import dev.austinbarnes.retailinventorymanagement.entitycode.CodeGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,7 @@ import java.util.UUID;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final EmployeeHierarchyService employeeHierarchyService;
@@ -92,6 +94,7 @@ public class EmployeeService {
     public ResponseEntity<ApiResponseDto<List<EmployeeResponseDTO>>> getAllEmployees(
             EmployeeFilterDTO filterDTO, Pageable pageable) {
         Specification<Employee> spec = EmployeeSpecifications.applyFilters(filterDTO);
+        log.info("Specifications: " + spec);
         return ApiResponseDto.ok(employeeRepository.findAll(spec, pageable).stream()
                 .map(employee -> isManager()
                         ? (EmployeeResponseDTO) mapper.toDetailDTO(employee)
