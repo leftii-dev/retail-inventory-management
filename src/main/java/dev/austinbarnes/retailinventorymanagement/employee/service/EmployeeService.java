@@ -94,7 +94,6 @@ public class EmployeeService {
     public ResponseEntity<ApiResponseDto<List<EmployeeResponseDTO>>> getAllEmployees(
             EmployeeFilterDTO filterDTO, Pageable pageable) {
         Specification<Employee> spec = EmployeeSpecifications.applyFilters(filterDTO);
-        log.info("Specifications: " + spec);
         return ApiResponseDto.ok(employeeRepository.findAll(spec, pageable).stream()
                 .map(employee -> isManager()
                         ? (EmployeeResponseDTO) mapper.toDetailDTO(employee)

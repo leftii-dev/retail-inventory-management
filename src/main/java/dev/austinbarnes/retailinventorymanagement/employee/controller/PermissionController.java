@@ -1,12 +1,16 @@
 package dev.austinbarnes.retailinventorymanagement.employee.controller;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.PermissionFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.PermissionRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.PermissionResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.service.PermissionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,9 +53,22 @@ public class PermissionController {
      * @return ResponseEntity with a list of all permissions.
      */
     @GetMapping("/")
-    public ResponseEntity<ApiResponseDto<List<PermissionResponseDTO>>> getAllPermissions() {
+    public ResponseEntity<ApiResponseDto<List<PermissionResponseDTO>>> getAllPermissions(
+            @ModelAttribute @Valid PermissionFilterDTO filterDTO,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortDirection
+            ) {
         log.info("Get all permissions");
-        return permissionService.getAllPermissions();
+        Sort sort = (sortBy != null && sortDirection != null
+                ? Sort.by(Sort.Direction.fromString(sortDirection))
+                : Sort.unsorted());
+
+        Pageable pageable = (page != null && size != null
+                ? PageRequest.of(page, size, sort)
+                : Pageable.unpaged());
+        return permissionService.getAllPermissions(filterDTO, pageable);
     }
 
     /**

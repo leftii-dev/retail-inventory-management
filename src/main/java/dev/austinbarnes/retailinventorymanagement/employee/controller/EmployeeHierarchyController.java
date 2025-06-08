@@ -81,7 +81,7 @@ public class EmployeeHierarchyController {
      */
     @GetMapping
     public ResponseEntity<ApiResponseDto<List<EmployeeHierarchyResponseDTO>>> getEmployeeHierarchyAll(
-            @RequestBody(required = false) @Valid EmployeeHierarchyFilterDTO filterDTO,
+            @ModelAttribute @Valid EmployeeHierarchyFilterDTO filterDTO,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) String sortBy,

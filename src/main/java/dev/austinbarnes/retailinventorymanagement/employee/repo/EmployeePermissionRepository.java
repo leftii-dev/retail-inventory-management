@@ -2,6 +2,7 @@ package dev.austinbarnes.retailinventorymanagement.employee.repo;
 
 import dev.austinbarnes.retailinventorymanagement.employee.entity.EmployeePermission;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
@@ -17,7 +18,7 @@ import java.util.UUID;
  * It provides methods to perform CRUD operations and custom queries on the employee permission data.
  */
 @Repository
-public interface EmployeePermissionRepository extends JpaRepository<EmployeePermission, UUID> {
+public interface EmployeePermissionRepository extends JpaRepository<EmployeePermission, UUID>, JpaSpecificationExecutor<EmployeePermission> {
     List<EmployeePermission> findAllByEmployeeId(UUID employeeId);
 
     @Modifying

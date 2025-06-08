@@ -1,13 +1,17 @@
 package dev.austinbarnes.retailinventorymanagement.employee.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.PermissionFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.PermissionRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.PermissionResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Permission;
 import dev.austinbarnes.retailinventorymanagement.employee.mapper.PermissionMapper;
 import dev.austinbarnes.retailinventorymanagement.employee.repo.PermissionRepository;
+import dev.austinbarnes.retailinventorymanagement.employee.specification.PermissionSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -69,8 +73,10 @@ public class PermissionService {
      *
      * @return a ResponseEntity containing a list of all permissions
      */
-    public ResponseEntity<ApiResponseDto<List<PermissionResponseDTO>>> getAllPermissions() {
-        return ApiResponseDto.ok(permissionRepository.findAll()
+    public ResponseEntity<ApiResponseDto<List<PermissionResponseDTO>>> getAllPermissions(
+            PermissionFilterDTO filterDTO, Pageable pageable) {
+        Specification<Permission> spec = PermissionSpecifications.applyFilters(filterDTO);
+        return ApiResponseDto.ok(permissionRepository.findAll(spec, pageable)
                 .stream()
                 .map(permission -> (PermissionResponseDTO) mapper.toDetailDTO(permission))
                 .toList());
