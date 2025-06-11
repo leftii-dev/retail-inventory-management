@@ -1,6 +1,7 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.controller;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.inventory.dto.inventory.InventoryFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.inventory.InventoryQtyChangeRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.inventory.InventoryRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.inventory.InventoryResponseDTO;
@@ -8,6 +9,9 @@ import dev.austinbarnes.retailinventorymanagement.inventory.service.InventorySer
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,27 +64,23 @@ public class InventoryController {
     /**
      * Retrieves all inventory items, optionally filtered by location and/or product.
      *
-     * @param locationId ID of the location to filter by (optional).
-     * @param productId ID of the product to filter by (optional).
      * @return ResponseEntity with a list of inventory items.
      */
     @GetMapping
     public ResponseEntity<ApiResponseDto<List<InventoryResponseDTO>>> getAllInventories(
-            @RequestParam(required = false) UUID locationId,
-            @RequestParam(required = false) UUID productId) {
-        if(locationId != null && productId != null) {
-            log.info("Get all inventories request with locationId: {} and productId: {}", locationId, productId);
-            return service.getAllInventoriesByLocationAndProduct(locationId, productId);
-        } else if (locationId != null) {
-            log.info("Get all inventories request with locationId: {}", locationId);
-            return service.getAllInventoriesByLocation(locationId);
-        } else if (productId != null) {
-            log.info("Get all inventories request with productId: {}", productId);
-            return service.getAllInventoriesByProduct(productId);
-        } else {
+            @ModelAttribute InventoryFilterDTO filterDTO,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortDirection) {
             log.info("Get all inventories request without filters");
-            return service.getAllInventories();
-        }
+
+            Sort sort = (sortBy != null && sortDirection != null
+                    ? Sort.by(Sort.Direction.fromString(sortDirection), sortBy)
+                    : Sort.unsorted()
+            );
+            Pageable pageable = (page != null && size != null) ? PageRequest.of(page, size, sort) : Pageable.unpaged();
+            return service.getAllInventories(filterDTO, pageable);
     }
 
     /**

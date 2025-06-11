@@ -1,15 +1,19 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.inventory.dto.inventory.InventoryFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.inventory.InventoryQtyChangeRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.inventory.InventoryRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.inventory.InventoryResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Inventory;
 import dev.austinbarnes.retailinventorymanagement.inventory.mapper.InventoryMapper;
 import dev.austinbarnes.retailinventorymanagement.inventory.repo.InventoryRepository;
+import dev.austinbarnes.retailinventorymanagement.inventory.specification.InventorySpecificatitions;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -77,49 +81,10 @@ public class InventoryService {
      * @return ResponseEntity containing a list of all inventory items.
      */
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE')")
-    public ResponseEntity<ApiResponseDto<List<InventoryResponseDTO>>> getAllInventories() {
-        return ApiResponseDto.ok(repository.findAll().stream()
-                .map(inventory -> isManager() ? (InventoryResponseDTO) mapper.toDetailDTO(inventory) : mapper.toBasicDTO(inventory))
-                .toList());
-    }
+    public ResponseEntity<ApiResponseDto<List<InventoryResponseDTO>>> getAllInventories(InventoryFilterDTO filterDTO, Pageable pageable) {
+        Specification<Inventory> spec = InventorySpecificatitions.applyFilters(filterDTO);
 
-    /**
-     * Retrieves all inventory items for a specific location.
-     *
-     * @param locationId The UUID of the location to filter inventory items.
-     * @return ResponseEntity containing a list of inventory items for the specified location.
-     */
-    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE')")
-    public ResponseEntity<ApiResponseDto<List<InventoryResponseDTO>>> getAllInventoriesByLocation(UUID locationId) {
-        return ApiResponseDto.ok(repository.findAllByLocationId(locationId).stream()
-                .map(inventory -> isManager() ? (InventoryResponseDTO) mapper.toDetailDTO(inventory) : mapper.toBasicDTO(inventory))
-                .toList());
-    }
-
-    /**
-     * Retrieves all inventory items for a specific product.
-     *
-     * @param productId The UUID of the product to filter inventory items.
-     * @return ResponseEntity containing a list of inventory items for the specified product.
-     */
-    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE')")
-    public ResponseEntity<ApiResponseDto<List<InventoryResponseDTO>>> getAllInventoriesByProduct(UUID productId) {
-        return ApiResponseDto.ok(repository.findAllByProductId(productId).stream()
-                .map(inventory -> isManager() ? (InventoryResponseDTO) mapper.toDetailDTO(inventory) : mapper.toBasicDTO(inventory))
-                .toList());
-    }
-
-    /**
-     * Retrieves all inventory items for a specific location and product.
-     *
-     * @param locationId The UUID of the location to filter inventory items.
-     * @param productId  The UUID of the product to filter inventory items.
-     * @return ResponseEntity containing a list of inventory items for the specified location and product.
-     */
-    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE')")
-    public ResponseEntity<ApiResponseDto<List<InventoryResponseDTO>>> getAllInventoriesByLocationAndProduct(UUID locationId, UUID productId) {
-        return ApiResponseDto.ok(repository.findAllByLocationId(locationId).stream()
-                .filter(inventory -> inventory.getProduct().getId().equals(productId))
+        return ApiResponseDto.ok(repository.findAll(spec, pageable).stream()
                 .map(inventory -> isManager() ? (InventoryResponseDTO) mapper.toDetailDTO(inventory) : mapper.toBasicDTO(inventory))
                 .toList());
     }
