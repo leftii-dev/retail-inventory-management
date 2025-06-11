@@ -1,18 +1,13 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.entity;
 
 import dev.austinbarnes.retailinventorymanagement.common.BaseEntity;
-import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import dev.austinbarnes.retailinventorymanagement.product.entity.Product;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.UUID;
 
 /**
  * PurchaseOrderItem is an entity class representing an item in a purchase order in a retail management system.
@@ -44,8 +39,8 @@ public class PurchaseOrderItem extends BaseEntity {
     private BigDecimal costLineTotal;
 
     @Column(name = "quantity")
-    @Min(1)
-    @Max(10_000)
+    @Min(value = 1, message = "Quantity cannot be negative")
+    @Max(value = 10_000, message = "Quantity cannot exceed 10,000")
     private short quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)

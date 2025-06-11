@@ -1,12 +1,16 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.controller;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.service.PurchaseOrderItemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,9 +61,22 @@ public class PurchaseOrderItemController {
      * @return ResponseEntity with a list of all purchase order items
      */
     @GetMapping
-    public ResponseEntity<ApiResponseDto<List<PurchaseOrderItemResponseDTO>>> getAllPurchaseOrderItems() {
+    public ResponseEntity<ApiResponseDto<List<PurchaseOrderItemResponseDTO>>> getAllPurchaseOrderItems(
+            @ModelAttribute @Valid PurchaseOrderItemFilterDTO filterDTO,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortDirection
+            ) {
         log.info("Getting all purchase order items");
-        return service.getAllPurchaseOrderItems();
+        Sort sort = (sortBy != null && sortDirection != null)
+                ? Sort.by(Sort.Direction.fromString(sortDirection), sortBy)
+                : Sort.unsorted();
+
+        Pageable pageable = (page != null && size != null)
+                ? PageRequest.of(page, size, sort)
+                : Pageable.unpaged();
+        return service.getAllPurchaseOrderItems(filterDTO, pageable);
     }
 
     /**
