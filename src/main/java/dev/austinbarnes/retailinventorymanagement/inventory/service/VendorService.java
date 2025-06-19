@@ -1,14 +1,18 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.inventory.dto.vendor.VendorFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.vendor.VendorRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.vendor.VendorResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Vendor;
 import dev.austinbarnes.retailinventorymanagement.inventory.mapper.VendorMapper;
 import dev.austinbarnes.retailinventorymanagement.inventory.repo.VendorRepository;
+import dev.austinbarnes.retailinventorymanagement.inventory.specification.VendorSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -64,9 +68,12 @@ public class VendorService {
      */
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('READ_VENDOR')")
-    public ResponseEntity<ApiResponseDto<List<VendorResponseDTO>>> getAllVendors() {
+    public ResponseEntity<ApiResponseDto<List<VendorResponseDTO>>> getAllVendors(
+            VendorFilterDTO filterDTO, Pageable pageable
+    ) {
         log.info("Get all vendors");
-        return ApiResponseDto.ok(repository.findAll().stream()
+        Specification<Vendor> spec = VendorSpecifications.applyFilters(filterDTO);
+        return ApiResponseDto.ok(repository.findAll(spec, pageable).stream()
                 .map(vendor -> isManager() ?
                         (VendorResponseDTO) mapper.toDetailDTO(vendor) : mapper.toBasicDTO(vendor))
                 .toList());
