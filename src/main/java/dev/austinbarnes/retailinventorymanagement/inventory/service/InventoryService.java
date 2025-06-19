@@ -8,7 +8,7 @@ import dev.austinbarnes.retailinventorymanagement.inventory.dto.inventory.Invent
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Inventory;
 import dev.austinbarnes.retailinventorymanagement.inventory.mapper.InventoryMapper;
 import dev.austinbarnes.retailinventorymanagement.inventory.repo.InventoryRepository;
-import dev.austinbarnes.retailinventorymanagement.inventory.specification.InventorySpecificatitions;
+import dev.austinbarnes.retailinventorymanagement.inventory.specification.InventorySpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -82,7 +82,7 @@ public class InventoryService {
      */
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE')")
     public ResponseEntity<ApiResponseDto<List<InventoryResponseDTO>>> getAllInventories(InventoryFilterDTO filterDTO, Pageable pageable) {
-        Specification<Inventory> spec = InventorySpecificatitions.applyFilters(filterDTO);
+        Specification<Inventory> spec = InventorySpecifications.applyFilters(filterDTO);
 
         return ApiResponseDto.ok(repository.findAll(spec, pageable).stream()
                 .map(inventory -> isManager() ? (InventoryResponseDTO) mapper.toDetailDTO(inventory) : mapper.toBasicDTO(inventory))

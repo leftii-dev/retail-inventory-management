@@ -8,7 +8,7 @@ import dev.austinbarnes.retailinventorymanagement.product.entity.Product;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 
-public class InventorySpecificatitions {
+public class InventorySpecifications {
     public static Specification<Inventory> applyFilters(InventoryFilterDTO filterDTO) {
         return (Root<Inventory> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) -> {
             Predicate predicate = criteriaBuilder.conjunction();
