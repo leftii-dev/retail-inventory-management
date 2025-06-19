@@ -1,14 +1,18 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.inventory.dto.status.StatusFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.status.StatusRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.status.StatusResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Status;
 import dev.austinbarnes.retailinventorymanagement.inventory.mapper.StatusMapper;
 import dev.austinbarnes.retailinventorymanagement.inventory.repo.StatusRepository;
+import dev.austinbarnes.retailinventorymanagement.inventory.specification.StatusSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -66,9 +70,12 @@ public class StatusService {
      */
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('READ_STATUS')")
-    public ResponseEntity<ApiResponseDto<List<StatusResponseDTO>>> getAllStatuses() {
+    public ResponseEntity<ApiResponseDto<List<StatusResponseDTO>>> getAllStatuses(
+            StatusFilterDTO filterDTO, Pageable pageable
+    ) {
         log.info("Retrieving all statuses");
-        return ApiResponseDto.ok(repository.findAll().stream()
+        Specification<Status> spec = StatusSpecifications.applyFilters(filterDTO);
+        return ApiResponseDto.ok(repository.findAll(spec, pageable).stream()
                 .map(status -> isManager() ?
                         (StatusResponseDTO) mapper.toDetailDTO(status) :
                         mapper.toBasicDTO(status))
