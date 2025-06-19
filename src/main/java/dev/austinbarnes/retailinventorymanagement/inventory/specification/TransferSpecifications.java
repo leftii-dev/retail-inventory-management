@@ -1,5 +1,6 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.specification;
 
+import dev.austinbarnes.retailinventorymanagement.common.BaseSpecifications;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Transfer;
 import dev.austinbarnes.retailinventorymanagement.location.entity.Location;
@@ -11,6 +12,9 @@ public class TransferSpecifications {
     public static Specification<Transfer> applyFilters(TransferFilterDTO filterDTO) {
         return (root, query, criteriaBuilder) -> {
             Predicate predicate = criteriaBuilder.conjunction();
+            Specification<Transfer> baseSpec = BaseSpecifications.applyBaseFilters(filterDTO != null ? filterDTO.baseFilterDTO() : null);
+            predicate = criteriaBuilder.and(predicate, baseSpec.toPredicate(root, query, criteriaBuilder));
+
 
             if (filterDTO != null) {
                 if(filterDTO.transferDate() != null) {
