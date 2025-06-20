@@ -10,7 +10,6 @@ import org.springframework.data.jpa.domain.Specification;
 public class LocationSpecifications {
     public static Specification<Location> applyFilters(LocationFilterDTO filterDTO){
         return (Root<Location> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) -> {
-            criteriaBuilder.conjunction();
             Predicate predicate = criteriaBuilder.conjunction();
 
             Specification<Location> baseSpec = BaseSpecifications.applyBaseFilters(filterDTO != null ? filterDTO.baseFilterDTO() : null);
