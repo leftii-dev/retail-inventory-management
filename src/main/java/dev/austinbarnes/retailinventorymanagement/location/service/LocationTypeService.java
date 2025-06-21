@@ -1,14 +1,18 @@
 package dev.austinbarnes.retailinventorymanagement.location.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.location.dto.type.LocationTypeFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.type.LocationTypeRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.type.LocationTypeResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.location.entity.LocationType;
 import dev.austinbarnes.retailinventorymanagement.location.mapper.LocationTypeMapper;
 import dev.austinbarnes.retailinventorymanagement.location.repo.LocationTypeRepository;
+import dev.austinbarnes.retailinventorymanagement.location.specification.LocationTypeSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -64,9 +68,12 @@ public class LocationTypeService {
      * @return ResponseEntity with a list of all location types.
      */
     @Transactional(readOnly = true)
-    public ResponseEntity<ApiResponseDto<List<LocationTypeResponseDTO>>> getAllLocationTypes() {
+    public ResponseEntity<ApiResponseDto<List<LocationTypeResponseDTO>>> getAllLocationTypes(
+            LocationTypeFilterDTO filterDTO, Pageable pageable
+    ) {
         log.info("Retrieving all location types");
-        return ApiResponseDto.ok(repository.findAll().stream()
+        Specification<LocationType> spec = LocationTypeSpecifications.applyFilters(filterDTO);
+        return ApiResponseDto.ok(repository.findAll(spec, pageable).stream()
                 .map(locationType -> isManager() ?
                         (LocationTypeResponseDTO) mapper.toDetailDTO(locationType) :
                         mapper.toBasicDTO(locationType))
