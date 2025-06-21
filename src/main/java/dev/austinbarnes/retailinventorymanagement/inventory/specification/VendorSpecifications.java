@@ -27,11 +27,13 @@ public class VendorSpecifications {
                     predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(criteriaBuilder.lower(root.get("address")), "%" + filterDTO.addressContains().toLowerCase() + "%"));
                 }
                 if(filterDTO.addressContains() != null) {
-                    predicate = criteriaBuilder.and(predicate,
-                            criteriaBuilder.or(predicate,
-                                    criteriaBuilder.like(criteriaBuilder.lower(root.get("addressLine1")), "%" + filterDTO.addressContains().toLowerCase() + "%"),
-                                    criteriaBuilder.like(criteriaBuilder.lower(root.get("addressLine2")), "%" + filterDTO.addressContains().toLowerCase() + "%")
-                            ));
+                    Predicate addressPredicate = criteriaBuilder.disjunction();
+                    addressPredicate = criteriaBuilder.or(addressPredicate, criteriaBuilder.like(criteriaBuilder.lower(root.get("addressLine1")), "%" + filterDTO.addressContains().toLowerCase() + "%"));
+                    addressPredicate = criteriaBuilder.or(addressPredicate, criteriaBuilder.like(criteriaBuilder.lower(root.get("addressLine2")), "%" + filterDTO.addressContains().toLowerCase() + "%"));
+                    addressPredicate = criteriaBuilder.or(addressPredicate, criteriaBuilder.like(criteriaBuilder.lower(root.get("city")), "%" + filterDTO.addressContains().toLowerCase() + "%"));
+                    addressPredicate = criteriaBuilder.or(addressPredicate, criteriaBuilder.like(criteriaBuilder.lower(root.get("state")), "%" + filterDTO.addressContains().toLowerCase() + "%"));
+                    addressPredicate = criteriaBuilder.or(addressPredicate, criteriaBuilder.like(criteriaBuilder.lower(root.get("zip")), "%" + filterDTO.addressContains().toLowerCase() + "%"));
+                    predicate = criteriaBuilder.and(predicate, addressPredicate);
                 }
                 if(filterDTO.contactContains() != null) {
                     predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(criteriaBuilder.lower(root.get("contactName")), "%" + filterDTO.contactContains().toLowerCase() + "%"));

@@ -15,6 +15,9 @@ public record VendorResponseBasicDTO(
         String name,
         String addressLine1,
         String addressLine2,
+        String city,
+        String state,
+        String zipCode,
         String contactName,
         String phone,
         String email

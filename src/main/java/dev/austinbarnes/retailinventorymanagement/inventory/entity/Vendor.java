@@ -1,19 +1,14 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.entity;
 
 import dev.austinbarnes.retailinventorymanagement.common.BaseEntity;
-import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
-import jakarta.persistence.*;
-import jakarta.validation.Valid;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.Instant;
-import java.util.UUID;
 
 /**
  * Vendor is an entity class representing a vendor in a retail management system.
@@ -46,6 +41,18 @@ public class Vendor extends BaseEntity {
     @Column(name = "address_line_2")
     @Size(min = 3, max = 60, message = "Address line 2 must be between 3 and 60 characters")
     private String addressLine2;
+
+    @Column(name = "city")
+    @Size(min = 2, max = 30, message = "City must be between 2 and 30 characters")
+    private String city;
+
+    @Column(name = "state")
+    @Size(min = 2, max = 2, message = "State must be a 2-character abbreviation")
+    private String state;
+
+    @Column(name = "zip_code")
+    @Pattern(regexp = "\\d{5}", message = "Zip Code must be exactly 5 digits long")
+    private String zipCode;
 
     @Column(name = "contact_name")
     @Size(min = 2, max = 60, message = "Contact name must be between 2 and 60 characters")

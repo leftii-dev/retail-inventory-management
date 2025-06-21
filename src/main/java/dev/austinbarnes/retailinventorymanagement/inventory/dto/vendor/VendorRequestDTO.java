@@ -17,6 +17,12 @@ public record VendorRequestDTO(
         String addressLine1,
         @Size(min = 3, max = 60, message = "Address line 2 must be between 3 and 60 characters")
         String addressLine2,
+        @Size(min = 2, max = 30, message = "City must be between 2 and 30 characters")
+        String city,
+        @Size(min = 2, max = 2, message = "State must be a 2-character abbreviation")
+        String state,
+        @Pattern(regexp = "\\d{5}", message = "Zip Code must be exactly 5 digits long")
+        String zipCode,
         @Size(min = 2, max = 60, message = "Contact name must be between 2 and 60 characters")
         String contactName,
         @Pattern(regexp = "//d{10}", message = "Phone must be 10 digits, no spaces or hyphens")
