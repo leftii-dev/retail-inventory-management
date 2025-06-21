@@ -56,7 +56,7 @@ public class RetailLocationController {
      */
     @GetMapping
     public ResponseEntity<ApiResponseDto<List<RetailLocationResponseDTO>>> getAllRetailLocations(
-            @ModelAttribute RetailLocationFilterDTO filterDTO,
+            @ModelAttribute @Valid RetailLocationFilterDTO filterDTO,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) String sortBy,

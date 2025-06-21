@@ -2,6 +2,7 @@ package dev.austinbarnes.retailinventorymanagement.location.repo;
 
 import dev.austinbarnes.retailinventorymanagement.location.entity.WarehouseLocation;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
@@ -15,7 +16,7 @@ import java.util.UUID;
  * The repository is annotated with @Repository to indicate that it is a Spring Data repository.
  */
 @Repository
-public interface WarehouseLocationRepository extends JpaRepository<WarehouseLocation, UUID> {
+public interface WarehouseLocationRepository extends JpaRepository<WarehouseLocation, UUID>, JpaSpecificationExecutor<WarehouseLocation> {
     @Modifying
     @Query("UPDATE WarehouseLocation w SET w.active = false WHERE w.id = :id")
     void softDeleteById(UUID id);
