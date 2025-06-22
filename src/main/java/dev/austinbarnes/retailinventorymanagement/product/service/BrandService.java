@@ -1,14 +1,18 @@
 package dev.austinbarnes.retailinventorymanagement.product.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.product.dto.brand.BrandFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.brand.BrandRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.brand.BrandResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.product.entity.Brand;
 import dev.austinbarnes.retailinventorymanagement.product.mapper.BrandMapper;
 import dev.austinbarnes.retailinventorymanagement.product.repo.BrandRepository;
+import dev.austinbarnes.retailinventorymanagement.product.specification.BrandSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -63,9 +67,12 @@ public class BrandService {
      * @return ResponseEntity with a list of all brands.
      */
     @Transactional(readOnly = true)
-    public ResponseEntity<ApiResponseDto<List<BrandResponseDTO>>> getBrands() {
+    public ResponseEntity<ApiResponseDto<List<BrandResponseDTO>>> getBrands(
+            BrandFilterDTO filterDTO, Pageable pageable
+    ) {
         log.info("Retrieving all brands");
-        return ApiResponseDto.ok(repository.findAll().stream()
+        Specification<Brand> spec = BrandSpecifications.applyFilters(filterDTO);
+        return ApiResponseDto.ok(repository.findAll(spec, pageable).stream()
                 .map(brand -> isManager() ?
                         (BrandResponseDTO) mapper.toDetailDTO(brand) :
                         mapper.toBasicDTO(brand))

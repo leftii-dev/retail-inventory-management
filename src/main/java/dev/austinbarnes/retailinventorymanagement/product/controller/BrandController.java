@@ -1,11 +1,16 @@
 package dev.austinbarnes.retailinventorymanagement.product.controller;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.product.dto.brand.BrandFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.brand.BrandRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.brand.BrandResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.product.service.BrandService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,9 +54,19 @@ public class BrandController {
      * @return ResponseEntity with a list of all brands.
      */
     @GetMapping
-    public ResponseEntity<ApiResponseDto<List<BrandResponseDTO>>> getAllBrands() {
+    public ResponseEntity<ApiResponseDto<List<BrandResponseDTO>>> getAllBrands(
+            @ModelAttribute @Valid BrandFilterDTO filterDTO,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortDirection
+            ) {
         log.info("Retrieving all brands");
-        return service.getBrands();
+        Sort sort = (sortBy != null && sortDirection != null) ?
+                Sort.by(Sort.Direction.fromString(sortDirection), sortBy) : Sort.unsorted();
+        Pageable pageable = (page != null && size != null) ?
+                PageRequest.of(page, size, sort) : Pageable.unpaged();
+        return service.getBrands(filterDTO, pageable);
     }
 
     /**
