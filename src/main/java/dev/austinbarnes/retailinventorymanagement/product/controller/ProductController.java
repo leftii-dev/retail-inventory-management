@@ -1,12 +1,16 @@
 package dev.austinbarnes.retailinventorymanagement.product.controller;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.product.dto.product.ProductFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.product.ProductRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.product.ProductResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.product.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,9 +54,19 @@ public class ProductController {
      * @return List of ProductResponseDTO
      */
     @GetMapping
-    public ResponseEntity<ApiResponseDto<List<ProductResponseDTO>>> getAllProducts() {
+    public ResponseEntity<ApiResponseDto<List<ProductResponseDTO>>> getAllProducts(
+            @ModelAttribute @Valid ProductFilterDTO filterDTO,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortDirection
+            ) {
         log.info("Getting all products");
-        return service.getAllProducts();
+        Sort sort = (sortBy != null && sortDirection != null) ?
+                Sort.by(Sort.Direction.fromString(sortDirection), sortBy) : Sort.unsorted();
+        Pageable pageable = (page != null && size != null) ?
+                PageRequest.of(page, size, sort) : Pageable.unpaged();
+        return service.getAllProducts(filterDTO, pageable);
     }
 
     /**
