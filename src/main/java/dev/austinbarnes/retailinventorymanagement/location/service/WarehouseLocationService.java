@@ -1,14 +1,18 @@
 package dev.austinbarnes.retailinventorymanagement.location.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.location.dto.warehouse.WarehouseLocationFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.warehouse.WarehouseLocationRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.warehouse.WarehouseLocationResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.location.entity.WarehouseLocation;
 import dev.austinbarnes.retailinventorymanagement.location.mapper.WarehouseLocationMapper;
 import dev.austinbarnes.retailinventorymanagement.location.repo.WarehouseLocationRepository;
+import dev.austinbarnes.retailinventorymanagement.location.specification.WarehouseLocationSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -67,9 +71,12 @@ public class WarehouseLocationService {
      * @return ResponseEntity with a list of all warehouse locations.
      */
     @Transactional(readOnly = true)
-    public ResponseEntity<ApiResponseDto<List<WarehouseLocationResponseDTO>>> getAllWarehouseLocations() {
+    public ResponseEntity<ApiResponseDto<List<WarehouseLocationResponseDTO>>> getAllWarehouseLocations(
+            WarehouseLocationFilterDTO filterDTO, Pageable pageable
+    ) {
         log.info("Retrieving all warehouse locations");
-        List<WarehouseLocationResponseDTO> locations = repository.findAll().stream()
+        Specification<WarehouseLocation> spec = WarehouseLocationSpecifications.applyFilters(filterDTO);
+        List<WarehouseLocationResponseDTO> locations = repository.findAll(spec, pageable).stream()
                 .map(warehouseLocation -> isManager() ?
                         (WarehouseLocationResponseDTO) mapper.toDetailDTO(warehouseLocation) :
                         mapper.toBasicDTO(warehouseLocation))

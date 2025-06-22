@@ -1,14 +1,18 @@
 package dev.austinbarnes.retailinventorymanagement.location.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.location.dto.details.LocationDetailsFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.details.LocationDetailsRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.details.LocationDetailsResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.location.entity.LocationDetails;
 import dev.austinbarnes.retailinventorymanagement.location.mapper.LocationDetailsMapper;
 import dev.austinbarnes.retailinventorymanagement.location.repo.LocationDetailsRepository;
+import dev.austinbarnes.retailinventorymanagement.location.specification.LocationDetailsSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -67,9 +71,12 @@ public class LocationDetailsService {
      * @return ResponseEntity with a list of all location details.
      */
     @Transactional(readOnly = true)
-    public ResponseEntity<ApiResponseDto<List<LocationDetailsResponseDTO>>> getAllLocationDetails() {
+    public ResponseEntity<ApiResponseDto<List<LocationDetailsResponseDTO>>> getAllLocationDetails(
+            LocationDetailsFilterDTO filterDTO, Pageable pageable
+    ) {
         log.info("Retrieving all location details");
-        return ApiResponseDto.ok(repository.findAll().stream()
+        Specification<LocationDetails> spec = LocationDetailsSpecifications.applyFilters(filterDTO);
+        return ApiResponseDto.ok(repository.findAll(spec, pageable).stream()
                 .map(details -> isManager() ?
                         (LocationDetailsResponseDTO) mapper.toDetailDTO(details) :
                         mapper.toBasicDTO(details)

@@ -1,12 +1,16 @@
 package dev.austinbarnes.retailinventorymanagement.location.controller;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.location.dto.warehouse.WarehouseLocationFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.warehouse.WarehouseLocationRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.warehouse.WarehouseLocationResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.location.service.WarehouseLocationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,9 +59,21 @@ public class WarehouseLocationController {
      * @return ResponseEntity with a list of all warehouse locations.
      */
     @GetMapping
-    public ResponseEntity<ApiResponseDto<List<WarehouseLocationResponseDTO>>> getAllWarehouseLocations() {
+    public ResponseEntity<ApiResponseDto<List<WarehouseLocationResponseDTO>>> getAllWarehouseLocations(
+            @ModelAttribute @Valid WarehouseLocationFilterDTO filterDTO,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortDirection
+    ) {
         log.info("Retrieving all warehouse locations");
-        return service.getAllWarehouseLocations();
+        Sort sort = (sortBy != null && sortDirection != null) ?
+                Sort.by(Sort.Direction.fromString(sortDirection), sortBy) :
+                Sort.unsorted();
+        Pageable pageable = (page != null && size != null) ?
+                PageRequest.of(page, size, sort) :
+                Pageable.unpaged();
+        return service.getAllWarehouseLocations(filterDTO, pageable);
     }
 
     /**

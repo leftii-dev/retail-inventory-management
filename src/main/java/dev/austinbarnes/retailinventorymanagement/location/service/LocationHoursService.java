@@ -1,14 +1,18 @@
 package dev.austinbarnes.retailinventorymanagement.location.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.location.dto.hours.LocationHoursFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.hours.LocationHoursRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.hours.LocationHoursResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.location.entity.LocationHours;
 import dev.austinbarnes.retailinventorymanagement.location.mapper.LocationHoursMapper;
 import dev.austinbarnes.retailinventorymanagement.location.repo.LocationHoursRepository;
+import dev.austinbarnes.retailinventorymanagement.location.specification.LocationHoursSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -69,10 +73,12 @@ public class LocationHoursService {
      * @return ResponseEntity with a list of all location hours.
      */
     @Transactional(readOnly = true)
-    public ResponseEntity<ApiResponseDto<List<LocationHoursResponseDTO>>> getAllLocationHours() {
+    public ResponseEntity<ApiResponseDto<List<LocationHoursResponseDTO>>> getAllLocationHours(
+            LocationHoursFilterDTO filterDTO, Pageable pageable
+    ) {
         log.info("Retrieving all location hours");
-        List<LocationHours> hoursList = repository.findAll();
-        return ApiResponseDto.ok(hoursList.stream()
+        Specification<LocationHours> spec = LocationHoursSpecifications.applyFilter(filterDTO);
+        return ApiResponseDto.ok(repository.findAll(spec, pageable).stream()
                 .map(locationHours -> isManager() ?
                         (LocationHoursResponseDTO) mapper.toDetailDTO(locationHours) :
                         mapper.toBasicDTO(locationHours))

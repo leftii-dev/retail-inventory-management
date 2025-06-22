@@ -1,19 +1,14 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.entity;
 
 import dev.austinbarnes.retailinventorymanagement.common.BaseEntity;
-import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import dev.austinbarnes.retailinventorymanagement.location.entity.Location;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.util.UUID;
 
 /**
  * Transfer is an entity class representing a transfer of products between locations in a retail management system.
@@ -47,7 +42,7 @@ public class Transfer extends BaseEntity {
 
     @Column(name = "total_qty")
     @Min(value = 1, message = "Total quantity cannot be less that one (1), double check entered quantities")
-    @Max(value = 10000, message = "Total quantity exceeds limit, double check entered quantities")
+    @Max(value = 1_000_000, message = "Total quantity exceeds limit, double check entered quantities")
     private int totalQuantity;
 
     @ManyToOne(fetch = FetchType.LAZY)

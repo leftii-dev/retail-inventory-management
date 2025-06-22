@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * CustomUserDetails implements UserDetails interface to provide user
@@ -31,9 +32,17 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .collect(Collectors.toList());
+        if(user.getEmployee() != null) {
+            return Stream.concat(
+                            // Map User roles to authorities (e.g., ROLE_ADMIN, ROLE_EMPLOYEE)
+                            user.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName())),
+                            // Map Employee permissions to authorities (e.g., READ_PRODUCTS, WRITE_INVENTORY)
+                            user.getEmployee().getEmployeePermissions().stream()
+                                    .map(empPerm -> new SimpleGrantedAuthority(empPerm.getPermission().getName())))
+                    .collect(Collectors.toSet());
+        } else {
+            return user.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName())).collect(Collectors.toSet());
+        }
     }
 
 

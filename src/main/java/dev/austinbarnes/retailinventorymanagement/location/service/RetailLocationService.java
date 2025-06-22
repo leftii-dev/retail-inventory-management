@@ -1,14 +1,18 @@
 package dev.austinbarnes.retailinventorymanagement.location.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.location.dto.retail.RetailLocationFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.retail.RetailLocationRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.retail.RetailLocationResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.location.entity.RetailLocation;
 import dev.austinbarnes.retailinventorymanagement.location.mapper.RetailLocationMapper;
 import dev.austinbarnes.retailinventorymanagement.location.repo.RetailLocationRepository;
+import dev.austinbarnes.retailinventorymanagement.location.specification.RetailLocationSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -64,9 +68,12 @@ public class RetailLocationService {
      * @return ResponseEntity with the list of all retail locations.
      */
     @Transactional(readOnly = true)
-    public ResponseEntity<ApiResponseDto<List<RetailLocationResponseDTO>>> getAllRetailLocations() {
+    public ResponseEntity<ApiResponseDto<List<RetailLocationResponseDTO>>> getAllRetailLocations(
+            RetailLocationFilterDTO filterDTO, Pageable pageable
+    ) {
         log.info("Retrieving all retail locations");
-        return ApiResponseDto.ok(repository.findAll().stream()
+        Specification<RetailLocation> spec = RetailLocationSpecifications.applyFilters(filterDTO);
+        return ApiResponseDto.ok(repository.findAll(spec, pageable).stream()
                 .map(location -> isManager() ?
                         (RetailLocationResponseDTO) mapper.toDetailDTO(location) :
                         mapper.toBasicDTO(location))

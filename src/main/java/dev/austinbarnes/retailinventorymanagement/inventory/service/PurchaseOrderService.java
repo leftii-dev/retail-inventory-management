@@ -1,14 +1,18 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.PurchaseOrder;
 import dev.austinbarnes.retailinventorymanagement.inventory.mapper.PurchaseOrderMapper;
 import dev.austinbarnes.retailinventorymanagement.inventory.repo.PurchaseOrderRepository;
+import dev.austinbarnes.retailinventorymanagement.inventory.specification.PurchaseOrderSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -66,9 +70,10 @@ public class PurchaseOrderService {
      * @return ResponseEntity containing a list of all purchase orders.
      */
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE') and hasAuthority('READ_PO')")
-    public ResponseEntity<ApiResponseDto<List<PurchaseOrderResponseDTO>>> getAllPurchaseOrders() {
+    public ResponseEntity<ApiResponseDto<List<PurchaseOrderResponseDTO>>> getAllPurchaseOrders(PurchaseOrderFilterDTO filterDTO, Pageable pageable) {
+        Specification<PurchaseOrder> spec = PurchaseOrderSpecifications.applyFilters(filterDTO);
         return ApiResponseDto.ok(
-                repository.findAll().stream()
+                repository.findAll(spec, pageable).stream()
                         .map(purchaseOrder -> isManager() ? (PurchaseOrderResponseDTO) mapper.toDetailDTO(purchaseOrder) : mapper.toBasicDTO(purchaseOrder))
                         .toList()
         );

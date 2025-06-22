@@ -1,12 +1,16 @@
 package dev.austinbarnes.retailinventorymanagement.location.controller;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.location.dto.retail.RetailLocationFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.retail.RetailLocationRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.retail.RetailLocationResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.location.service.RetailLocationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,9 +55,20 @@ public class RetailLocationController {
      * @return ResponseEntity with a list of all retail locations.
      */
     @GetMapping
-    public ResponseEntity<ApiResponseDto<List<RetailLocationResponseDTO>>> getAllRetailLocations() {
+    public ResponseEntity<ApiResponseDto<List<RetailLocationResponseDTO>>> getAllRetailLocations(
+            @ModelAttribute @Valid RetailLocationFilterDTO filterDTO,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortDirection
+    ) {
         log.info("Retrieving all retail locations");
-        return service.getAllRetailLocations();
+        Sort sort = (sortBy != null && sortDirection != null) ?
+                Sort.by(Sort.Direction.fromString(sortDirection), sortBy) : Sort.unsorted();
+
+        Pageable pageable = (page != null && size != null) ?
+                PageRequest.of(page, size, sort) : Pageable.unpaged();
+        return service.getAllRetailLocations(filterDTO, pageable);
     }
 
     /**

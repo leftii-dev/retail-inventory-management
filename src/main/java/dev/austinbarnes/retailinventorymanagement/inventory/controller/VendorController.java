@@ -1,12 +1,16 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.controller;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.inventory.dto.vendor.VendorFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.vendor.VendorRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.vendor.VendorResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.service.VendorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,9 +54,21 @@ public class VendorController {
      * @return ResponseEntity with a list of all vendors.
      */
     @GetMapping
-    public ResponseEntity<ApiResponseDto<List<VendorResponseDTO>>> getAllVendors() {
+    public ResponseEntity<ApiResponseDto<List<VendorResponseDTO>>> getAllVendors(
+            @ModelAttribute @Valid VendorFilterDTO filterDTO,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortDirection
+    ) {
         log.info("Retrieving all vendors");
-        return service.getAllVendors();
+        Sort sort = (sortBy != null && sortDirection != null) ?
+                Sort.by(Sort.Direction.fromString(sortDirection), sortBy) :
+                Sort.unsorted();
+        Pageable pageable = (page != null && size != null) ?
+                PageRequest.of(page, size, sort) :
+                Pageable.unpaged();
+        return service.getAllVendors(filterDTO, pageable);
     }
 
     /**

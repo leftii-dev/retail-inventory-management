@@ -1,14 +1,18 @@
 package dev.austinbarnes.retailinventorymanagement.product.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.product.entity.Category;
 import dev.austinbarnes.retailinventorymanagement.product.mapper.CategoryMapper;
 import dev.austinbarnes.retailinventorymanagement.product.repo.CategoryRepository;
+import dev.austinbarnes.retailinventorymanagement.product.specification.CategorySpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -67,9 +71,12 @@ public class CategoryService {
      * @return ResponseEntity with a list of all categories.
      */
     @Transactional(readOnly = true)
-    public ResponseEntity<ApiResponseDto<List<CategoryResponseDTO>>> getCategories() {
+    public ResponseEntity<ApiResponseDto<List<CategoryResponseDTO>>> getCategories(
+            CategoryFilterDTO filterFTO, Pageable pageable
+    ) {
         log.info("Retrieving all categories");
-        List<CategoryResponseDTO> categories = repository.findAll().stream()
+        Specification<Category> spec = CategorySpecifications.applyFilters(filterFTO);
+        List<CategoryResponseDTO> categories = repository.findAll(spec, pageable).stream()
                 .map(category -> isManager() ?
                         (CategoryResponseDTO) mapper.toDetailDTO(category) :
                         mapper.toBasicDTO(category))

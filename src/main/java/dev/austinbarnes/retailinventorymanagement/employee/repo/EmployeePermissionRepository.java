@@ -2,12 +2,12 @@ package dev.austinbarnes.retailinventorymanagement.employee.repo;
 
 import dev.austinbarnes.retailinventorymanagement.employee.entity.EmployeePermission;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -17,9 +17,7 @@ import java.util.UUID;
  * It provides methods to perform CRUD operations and custom queries on the employee permission data.
  */
 @Repository
-public interface EmployeePermissionRepository extends JpaRepository<EmployeePermission, UUID> {
-    List<EmployeePermission> findAllByEmployeeId(UUID employeeId);
-
+public interface EmployeePermissionRepository extends JpaRepository<EmployeePermission, UUID>, JpaSpecificationExecutor<EmployeePermission> {
     @Modifying
     @Query("UPDATE EmployeePermission e SET e.active = false WHERE e.id = :id")
     void softDeleteById(UUID id);

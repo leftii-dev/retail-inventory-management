@@ -1,14 +1,18 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.PurchaseOrderItem;
 import dev.austinbarnes.retailinventorymanagement.inventory.mapper.PurchaseOrderItemMapper;
 import dev.austinbarnes.retailinventorymanagement.inventory.repo.PurchaseOrderItemRepository;
+import dev.austinbarnes.retailinventorymanagement.inventory.specification.PurchaseOrderItemSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -69,9 +73,13 @@ public class PurchaseOrderItemService {
      * @return ResponseEntity with a list of purchase order item details.
      */
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('READ_PO')")
-    public ResponseEntity<ApiResponseDto<List<PurchaseOrderItemResponseDTO>>> getAllPurchaseOrderItems() {
+    public ResponseEntity<ApiResponseDto<List<PurchaseOrderItemResponseDTO>>> getAllPurchaseOrderItems(
+            PurchaseOrderItemFilterDTO filterDTO,
+            Pageable pageable
+    ) {
         log.info("Getting all purchase order items");
-        List<PurchaseOrderItemResponseDTO> items = repository.findAll().stream()
+        Specification<PurchaseOrderItem> spec = PurchaseOrderItemSpecifications.applyFilters(filterDTO);
+        List<PurchaseOrderItemResponseDTO> items = repository.findAll(spec, pageable).stream()
                 .map(item -> isManager()
                         ?
                         (PurchaseOrderItemResponseDTO) mapper.toDetailDTO(item)

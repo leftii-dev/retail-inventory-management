@@ -1,14 +1,18 @@
 package dev.austinbarnes.retailinventorymanagement.product.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.product.dto.product.ProductFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.product.ProductRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.product.ProductResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.product.entity.Product;
 import dev.austinbarnes.retailinventorymanagement.product.mapper.ProductMapper;
 import dev.austinbarnes.retailinventorymanagement.product.repo.ProductRepository;
+import dev.austinbarnes.retailinventorymanagement.product.specification.ProductSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -63,9 +67,12 @@ public class ProductService {
      * @return List of ProductResponseDTO for all products
      */
     @Transactional(readOnly = true)
-    public ResponseEntity<ApiResponseDto<List<ProductResponseDTO>>> getAllProducts() {
+    public ResponseEntity<ApiResponseDto<List<ProductResponseDTO>>> getAllProducts(
+            ProductFilterDTO filterDTO, Pageable pageable
+    ) {
         log.info("Getting all products");
-        return ApiResponseDto.ok(repository.findAll().stream().map(
+        Specification<Product> spec = ProductSpecifications.applyFilters(filterDTO);
+        return ApiResponseDto.ok(repository.findAll(spec, pageable).stream().map(
                 product -> isManager() ?
                         (ProductResponseDTO) mapper.toDetailDTO(product) :
                         mapper.toBasicDTO(product)

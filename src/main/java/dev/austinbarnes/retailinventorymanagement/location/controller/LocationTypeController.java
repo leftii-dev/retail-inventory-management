@@ -1,11 +1,16 @@
 package dev.austinbarnes.retailinventorymanagement.location.controller;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.location.dto.type.LocationTypeFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.type.LocationTypeRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.type.LocationTypeResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.location.service.LocationTypeService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,9 +55,19 @@ public class LocationTypeController {
      * @return ResponseEntity with a list of all location types.
      */
     @GetMapping
-    public ResponseEntity<ApiResponseDto<List<LocationTypeResponseDTO>>> getAllLocationTypes() {
+    public ResponseEntity<ApiResponseDto<List<LocationTypeResponseDTO>>> getAllLocationTypes(
+            @ModelAttribute @Valid LocationTypeFilterDTO filterDTO,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortDirection
+            ) {
         log.info("Retrieving all location types");
-        return service.getAllLocationTypes();
+        Sort sort = (sortBy != null && sortDirection != null) ?
+                Sort.by(Sort.Direction.fromString(sortDirection), sortBy) : Sort.unsorted();
+        Pageable pageable = (page != null && size != null) ?
+                PageRequest.of(page, size, sort) : Pageable.unpaged();
+        return service.getAllLocationTypes(filterDTO, pageable);
     }
 
     /**

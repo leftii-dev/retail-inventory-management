@@ -1,12 +1,16 @@
 package dev.austinbarnes.retailinventorymanagement.product.controller;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryHierarchyFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryHierarchyRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryHierarchyResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.product.service.CategoryHierarchyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,9 +60,19 @@ public class CategoryHierarchyController {
      * @return ResponseEntity with a list of all CategoryHierarchyResponseDTOs.
      */
     @GetMapping
-    public ResponseEntity<ApiResponseDto<List<CategoryHierarchyResponseDTO>>> getCategoryHierarchies() {
+    public ResponseEntity<ApiResponseDto<List<CategoryHierarchyResponseDTO>>> getCategoryHierarchies(
+            @ModelAttribute @Valid CategoryHierarchyFilterDTO filterDTO,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortDirection
+    ) {
         log.info("Received request to get category hierarchies");
-        return service.getCategoryHierarchies();
+        Sort sort = (sortBy != null && sortDirection != null) ?
+                Sort.by(Sort.Direction.fromString(sortDirection), sortBy) : Sort.unsorted();
+        Pageable pageable = (page != null && size != null) ?
+                PageRequest.of(page, size, sort) : Pageable.unpaged();
+        return service.getCategoryHierarchies(filterDTO, pageable);
     }
     /**
      * Updates an existing CategoryHierarchy with the specified ID.

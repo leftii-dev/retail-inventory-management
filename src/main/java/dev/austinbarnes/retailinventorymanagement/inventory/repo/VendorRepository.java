@@ -2,6 +2,7 @@ package dev.austinbarnes.retailinventorymanagement.inventory.repo;
 
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Vendor;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
@@ -17,7 +18,7 @@ import java.util.UUID;
  * The repository is annotated with @Repository, indicating that it is a Spring-managed component.
  */
 @Repository
-public interface VendorRepository extends JpaRepository<Vendor, UUID> {
+public interface VendorRepository extends JpaRepository<Vendor, UUID>, JpaSpecificationExecutor<Vendor> {
     @Modifying
     @Query("UPDATE Vendor v SET v.active = false WHERE v.id = :id")
     void softDeleteById(UUID id);

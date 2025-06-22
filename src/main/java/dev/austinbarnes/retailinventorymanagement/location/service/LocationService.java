@@ -1,14 +1,18 @@
 package dev.austinbarnes.retailinventorymanagement.location.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.location.dto.LocationFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.LocationRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.LocationResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.location.entity.Location;
 import dev.austinbarnes.retailinventorymanagement.location.mapper.LocationMapper;
 import dev.austinbarnes.retailinventorymanagement.location.repo.LocationRepository;
+import dev.austinbarnes.retailinventorymanagement.location.specification.LocationSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -59,14 +63,30 @@ public class LocationService {
     }
 
     /**
+     * Returns Location Entity for Mapper implementation
+     *
+     * @param id ID of Location to find
+     * @return Location Entity
+     */
+    @Transactional(readOnly = true)
+    public Location getLocationEntityById(UUID id) {
+        log.info("Retrieving location with ID: {} for Mapper", id);
+        return repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Location not found with ID: " + id));
+    }
+
+    /**
      * retrieves all locations.
      *
      * @return ResponseEntity with a list of all locations.
      */
     @Transactional(readOnly = true)
-    public ResponseEntity<ApiResponseDto<List<LocationResponseDTO>>> getLocations() {
+    public ResponseEntity<ApiResponseDto<List<LocationResponseDTO>>> getLocations(
+            LocationFilterDTO filterDTO, Pageable pageable
+    ) {
         log.info("Retrieving all locations");
-        return ApiResponseDto.ok(repository.findAll().stream()
+        Specification<Location> spec = LocationSpecifications.applyFilters(filterDTO);
+        return ApiResponseDto.ok(repository.findAll(spec, pageable).stream()
                 .map(location -> isManager() ?
                         (LocationResponseDTO) mapper.toDetailDTO(location) : mapper.toBasicDTO(location))
                 .toList());

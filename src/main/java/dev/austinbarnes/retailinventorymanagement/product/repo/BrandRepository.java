@@ -2,6 +2,7 @@ package dev.austinbarnes.retailinventorymanagement.product.repo;
 
 import dev.austinbarnes.retailinventorymanagement.product.entity.Brand;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
@@ -15,7 +16,7 @@ import java.util.UUID;
  * This repository is used to interact with the database and perform operations on the Brand entity.
  */
 @Repository
-public interface BrandRepository extends JpaRepository<Brand, UUID> {
+public interface BrandRepository extends JpaRepository<Brand, UUID>, JpaSpecificationExecutor<Brand> {
     @Modifying
     @Query("UPDATE Brand b SET b.active = false WHERE b.id = :id")
     void softDeleteById(UUID id);

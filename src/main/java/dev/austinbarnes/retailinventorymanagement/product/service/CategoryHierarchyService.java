@@ -1,14 +1,18 @@
 package dev.austinbarnes.retailinventorymanagement.product.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryHierarchyFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryHierarchyRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryHierarchyResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.product.entity.CategoryHierarchy;
 import dev.austinbarnes.retailinventorymanagement.product.mapper.CategoryHierarchyMapper;
 import dev.austinbarnes.retailinventorymanagement.product.repo.CategoryHierarchyRepository;
+import dev.austinbarnes.retailinventorymanagement.product.specification.CategoryHierarchySpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -68,9 +72,12 @@ public class CategoryHierarchyService {
      * @return ResponseEntity with a list of all category hierarchies.
      */
     @Transactional(readOnly = true)
-    public ResponseEntity<ApiResponseDto<List<CategoryHierarchyResponseDTO>>> getCategoryHierarchies() {
+    public ResponseEntity<ApiResponseDto<List<CategoryHierarchyResponseDTO>>> getCategoryHierarchies(
+            CategoryHierarchyFilterDTO filterDTO, Pageable pageable
+    ) {
         log.info("Get category hierarchies");
-        return ApiResponseDto.ok(repository.findAll().stream().map( categoryHierarchy ->
+        Specification<CategoryHierarchy> spec = CategoryHierarchySpecifications.applyFilters(filterDTO);
+        return ApiResponseDto.ok(repository.findAll(spec, pageable).stream().map( categoryHierarchy ->
                 isManager() ?
                         (CategoryHierarchyResponseDTO) mapper.toDetailDTO(categoryHierarchy) :
                         mapper.toBasicDTO(categoryHierarchy)

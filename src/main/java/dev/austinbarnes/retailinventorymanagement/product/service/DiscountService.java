@@ -1,14 +1,18 @@
 package dev.austinbarnes.retailinventorymanagement.product.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.product.dto.discount.DiscountFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.discount.DiscountRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.discount.DiscountResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.product.entity.Discount;
 import dev.austinbarnes.retailinventorymanagement.product.mapper.DiscountMapper;
 import dev.austinbarnes.retailinventorymanagement.product.repo.DiscountRepository;
+import dev.austinbarnes.retailinventorymanagement.product.specification.DiscountSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -66,9 +70,12 @@ public class DiscountService {
      * @return ResponseEntity with a list of all discounts.
      */
     @Transactional(readOnly = true)
-    public ResponseEntity<ApiResponseDto<List<DiscountResponseDTO>>> getAllDiscounts() {
+    public ResponseEntity<ApiResponseDto<List<DiscountResponseDTO>>> getAllDiscounts(
+            DiscountFilterDTO filterDTO, Pageable pageable
+    ) {
         log.info("Get all discounts");
-        List<DiscountResponseDTO> discounts = repository.findAll().stream()
+        Specification<Discount> spec = DiscountSpecifications.applyFilters(filterDTO);
+        List<DiscountResponseDTO> discounts = repository.findAll(spec, pageable).stream()
                 .map(discount -> isManager() ?
                         (DiscountResponseDTO) mapper.toDetailDTO(discount) :
                         mapper.toBasicDTO(discount))

@@ -3,25 +3,28 @@ package dev.austinbarnes.retailinventorymanagement.employee.service;
 import dev.austinbarnes.retailinventorymanagement.auth.CustomUserPrincipal;
 import dev.austinbarnes.retailinventorymanagement.auth.entity.User;
 import dev.austinbarnes.retailinventorymanagement.auth.repo.UserRepository;
-import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.*;
+import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeFilterDTO;
+import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeHierarchyRequestDTO;
+import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeRequestDTO;
+import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import dev.austinbarnes.retailinventorymanagement.employee.mapper.EmployeeMapper;
 import dev.austinbarnes.retailinventorymanagement.employee.repo.EmployeeRepository;
-import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.employee.specification.EmployeeSpecifications;
 import dev.austinbarnes.retailinventorymanagement.entitycode.CodeGenerator;
-import jakarta.persistence.Entity;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * EmployeeService handles all operations related to employee management.
@@ -30,6 +33,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final EmployeeHierarchyService employeeHierarchyService;
@@ -87,15 +91,14 @@ public class EmployeeService {
      * @return ResponseEntity with a list of employee details.
      */
     @PreAuthorize("hasAnyRole('EMPLOYEE', 'MANAGER', 'ADMIN')")
-    public ResponseEntity<ApiResponseDto<List<EmployeeResponseDTO>>> getAllEmployees() {
-        if(isManager()){
-            return ApiResponseDto.ok(employeeRepository.findAllByOrderByActiveDescNameLastAsc().stream()
-                    .map(employee -> (EmployeeResponseDTO) mapper.toDetailDTO(employee))
-                    .toList());
-        }
-            return ApiResponseDto.ok(employeeRepository.findAllByActiveTrue().stream()
-                    .map(employee -> (EmployeeResponseDTO) mapper.toBasicDTO(employee))
-                    .toList());
+    public ResponseEntity<ApiResponseDto<List<EmployeeResponseDTO>>> getAllEmployees(
+            EmployeeFilterDTO filterDTO, Pageable pageable) {
+        Specification<Employee> spec = EmployeeSpecifications.applyFilters(filterDTO);
+        return ApiResponseDto.ok(employeeRepository.findAll(spec, pageable).stream()
+                .map(employee -> isManager()
+                        ? (EmployeeResponseDTO) mapper.toDetailDTO(employee)
+                        : mapper.toBasicDTO(employee))
+                .toList());
     }
 
     /**

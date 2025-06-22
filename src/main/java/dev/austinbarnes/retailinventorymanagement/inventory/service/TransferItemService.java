@@ -1,14 +1,18 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferItemFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferItemRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferItemResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.TransferItem;
 import dev.austinbarnes.retailinventorymanagement.inventory.mapper.TransferItemMapper;
 import dev.austinbarnes.retailinventorymanagement.inventory.repo.TransferItemRepository;
+import dev.austinbarnes.retailinventorymanagement.inventory.specification.TransferItemSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -66,9 +70,12 @@ public class TransferItemService {
      */
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('READ_TRANSFER')")
-    public ResponseEntity<ApiResponseDto<List<TransferItemResponseDTO>>> getAllTransferItems() {
+    public ResponseEntity<ApiResponseDto<List<TransferItemResponseDTO>>> getAllTransferItems(
+            TransferItemFilterDTO filterDTO, Pageable pageable
+    ) {
         log.info("Retrieving all transfer items");
-        return ApiResponseDto.ok(repository.findAll().stream()
+        Specification<TransferItem> spec = TransferItemSpecifications.applyFilters(filterDTO);
+        return ApiResponseDto.ok(repository.findAll(spec, pageable).stream()
                 .map(transferItem -> isManager() ?
                         (TransferItemResponseDTO) mapper.toDetailDTO(transferItem) :
                         mapper.toBasicDTO(transferItem))

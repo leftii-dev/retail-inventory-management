@@ -1,12 +1,16 @@
 package dev.austinbarnes.retailinventorymanagement.employee.controller;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.EmployeePermissionFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.EmployeePermissionRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.EmployeePermissionResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.service.EmployeePermissionService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,15 +66,29 @@ public class EmployeePermissionController {
     }
 
     /**
-     * Retrieves all employee permissions, optionally filtered by employee ID.
-     *
-     * @param employeeId (optional) the ID of the employee to filter permissions by
-     * @return ResponseEntity with a list of employee permission details
+     * Requests all Employee Permission relationships allows filtering
+     * @param filterDTO Used to filter values
+     * @param page number of page to retrieve
+     * @param size size of page to retrieve
+     * @param sortBy allows sort by parameter
+     * @param sortDirection ASC or DESC
+     * @return List of all filtered EmployeePermission Objects
      */
     @GetMapping
-    public ResponseEntity<ApiResponseDto<List<EmployeePermissionResponseDTO>>> getAllEmployeePermissions(@RequestParam(required = false) UUID employeeId) {
-        log.info("Getting all employee permissions with employee ID: {}", employeeId != null ? employeeId : "all");
-        return employeeId != null ? service.getAllEmployeePermissionsByEmployeeId(employeeId) : service.getAllEmployeePermissions();
+    public ResponseEntity<ApiResponseDto<List<EmployeePermissionResponseDTO>>> getAllEmployeePermissions(
+            @ModelAttribute EmployeePermissionFilterDTO filterDTO,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortDirection
+            ) {
+        Sort sort = (sortBy != null && sortDirection != null
+                ? Sort.by(Sort.Direction.fromString(sortDirection), sortBy)
+                : Sort.unsorted());
+        Pageable pageable = (page != null && size != null
+                ? PageRequest.of(page, size, sort)
+                : Pageable.unpaged(sort));
+        return service.getAllEmployeePermissions(filterDTO, pageable);
     }
 
     /**

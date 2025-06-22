@@ -1,12 +1,16 @@
 package dev.austinbarnes.retailinventorymanagement.product.controller;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.product.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,9 +58,19 @@ public class CategoryController {
      * @return ResponseEntity with a list of all categories.
      */
     @GetMapping
-    public ResponseEntity<ApiResponseDto<List<CategoryResponseDTO>>> getAllCategories() {
+    public ResponseEntity<ApiResponseDto<List<CategoryResponseDTO>>> getAllCategories(
+            @ModelAttribute @Valid CategoryFilterDTO filterDTO,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortDirection
+    ) {
         log.info("Retrieving all categories");
-        return service.getCategories();
+        Sort sort = (sortBy != null && sortDirection != null) ?
+                Sort.by(Sort.Direction.fromString(sortDirection), sortBy) : Sort.unsorted();
+        Pageable pageable = (page != null && size != null) ?
+                PageRequest.of(page, size, sort) : Pageable.unpaged();
+        return service.getCategories(filterDTO, pageable);
     }
     /**
      * Updates an existing product category.

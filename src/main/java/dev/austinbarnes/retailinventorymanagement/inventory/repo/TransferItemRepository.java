@@ -2,6 +2,7 @@ package dev.austinbarnes.retailinventorymanagement.inventory.repo;
 
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.TransferItem;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
@@ -17,7 +18,7 @@ import java.util.UUID;
  * The repository is annotated with @Repository, indicating that it is a Spring-managed component.
  */
 @Repository
-public interface TransferItemRepository extends JpaRepository<TransferItem, UUID> {
+public interface TransferItemRepository extends JpaRepository<TransferItem, UUID>, JpaSpecificationExecutor<TransferItem> {
     @Modifying
     @Query("UPDATE TransferItem t SET t.active = false WHERE t.id = :id")
     void softDeleteById(UUID id);

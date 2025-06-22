@@ -1,14 +1,18 @@
 package dev.austinbarnes.retailinventorymanagement.employee.service;
 
+import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeHierarchyFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeHierarchyRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeHierarchyResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.EmployeeHierarchy;
 import dev.austinbarnes.retailinventorymanagement.employee.mapper.EmployeeHierarchyMapper;
 import dev.austinbarnes.retailinventorymanagement.employee.repo.EmployeeHierarchyRepository;
-import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
 import dev.austinbarnes.retailinventorymanagement.employee.repo.EmployeeRepository;
+import dev.austinbarnes.retailinventorymanagement.employee.specification.EmployeeHierarchySpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -80,8 +84,11 @@ public class EmployeeHierarchyService {
      * @return ResponseEntity with a list of all employee hierarchies.
      */
     @PreAuthorize("hasAnyRole('MANAGER', 'EMPLOYEE', 'ADMIN')")
-    public ResponseEntity<ApiResponseDto<List<EmployeeHierarchyResponseDTO>>> getEmployeeHierarchyAll() {
-        return ApiResponseDto.ok(employeeHierarchyRepository.findAll().stream()
+    public ResponseEntity<ApiResponseDto<List<EmployeeHierarchyResponseDTO>>> getEmployeeHierarchyAll(
+            EmployeeHierarchyFilterDTO filterDTO,
+            Pageable pageable) {
+        Specification<EmployeeHierarchy> spec = EmployeeHierarchySpecifications.applyFilters(filterDTO);
+        return ApiResponseDto.ok(employeeHierarchyRepository.findAll(spec, pageable).stream()
                 .map(hierarchy -> isManager()
                         ? mapper.toDetailDTO(hierarchy)
                         : (EmployeeHierarchyResponseDTO) mapper.toBasicDTO(hierarchy))

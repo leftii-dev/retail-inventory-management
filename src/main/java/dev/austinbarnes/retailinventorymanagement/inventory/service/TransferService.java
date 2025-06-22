@@ -1,14 +1,18 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Transfer;
 import dev.austinbarnes.retailinventorymanagement.inventory.mapper.TransferMapper;
 import dev.austinbarnes.retailinventorymanagement.inventory.repo.TransferRepository;
+import dev.austinbarnes.retailinventorymanagement.inventory.specification.TransferSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -65,9 +69,12 @@ public class TransferService {
      */
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('READ_TRANSFER')")
-    public ResponseEntity<ApiResponseDto<List<TransferResponseDTO>>> getAllTransfers() {
+    public ResponseEntity<ApiResponseDto<List<TransferResponseDTO>>> getAllTransfers(
+            TransferFilterDTO filterDTO, Pageable pageable
+    ) {
         log.info("Retrieving all transfers");
-        return ApiResponseDto.ok(repository.findAll().stream()
+        Specification<Transfer> spec = TransferSpecifications.applyFilters(filterDTO);
+        return ApiResponseDto.ok(repository.findAll(spec, pageable).stream()
                 .map(transfer -> isManager() ?
                         (TransferResponseDTO) mapper.toDetailDTO(transfer) :
                         mapper.toBasicDTO(transfer))

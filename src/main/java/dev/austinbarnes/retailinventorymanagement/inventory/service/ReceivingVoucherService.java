@@ -1,14 +1,18 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.ReceivingVoucher;
 import dev.austinbarnes.retailinventorymanagement.inventory.mapper.ReceivingVoucherMapper;
 import dev.austinbarnes.retailinventorymanagement.inventory.repo.ReceivingVoucherRepository;
+import dev.austinbarnes.retailinventorymanagement.inventory.specification.ReceivingVoucherSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -62,9 +66,12 @@ public class ReceivingVoucherService {
      * @return ResponseEntity with a list of all receiving vouchers.
      */
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('READ_RV')")
-    public ResponseEntity<ApiResponseDto<List<ReceivingVoucherResponseDTO>>> getAllReceivingVouchers() {
+    public ResponseEntity<ApiResponseDto<List<ReceivingVoucherResponseDTO>>> getAllReceivingVouchers(
+            ReceivingVoucherFilterDTO filterDTO, Pageable pageable
+    ) {
         log.info("Retrieving all receiving vouchers");
-        return ApiResponseDto.ok(repository.findAll().stream()
+        Specification<ReceivingVoucher> spec = ReceivingVoucherSpecifications.applyFilters(filterDTO);
+        return ApiResponseDto.ok(repository.findAll(spec, pageable).stream()
                 .map(receivingVoucher -> isManager() ?
                         (ReceivingVoucherResponseDTO) mapper.toDetailDTO(receivingVoucher) :
                         mapper.toBasicDTO(receivingVoucher))

@@ -1,14 +1,18 @@
 package dev.austinbarnes.retailinventorymanagement.employee.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.EmployeePermissionFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.EmployeePermissionRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.EmployeePermissionResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.EmployeePermission;
 import dev.austinbarnes.retailinventorymanagement.employee.mapper.EmployeePermissionMapper;
 import dev.austinbarnes.retailinventorymanagement.employee.repo.EmployeePermissionRepository;
+import dev.austinbarnes.retailinventorymanagement.employee.specification.EmployeePermissionSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -68,21 +72,11 @@ public class EmployeePermissionService {
     /**
      * Retrieves all employee permission relationships.
      */
-    public ResponseEntity<ApiResponseDto<List<EmployeePermissionResponseDTO>>> getAllEmployeePermissions() {
+    public ResponseEntity<ApiResponseDto<List<EmployeePermissionResponseDTO>>> getAllEmployeePermissions(EmployeePermissionFilterDTO filterDTO, Pageable pageable) {
         log.info("Getting all employee permissions");
-        return ApiResponseDto.ok(repository.findAll().stream()
-                .map(employeePermission -> (EmployeePermissionResponseDTO) mapper.toDetailDTO(employeePermission))
-                .toList());
-    }
-
-    /**
-     * Retrieves all employee permissions by employee ID.
-     *
-     * @param employeeId The ID of the employee to retrieve permissions for.
-     */
-    public ResponseEntity<ApiResponseDto<List<EmployeePermissionResponseDTO>>> getAllEmployeePermissionsByEmployeeId(UUID employeeId) {
-        log.info("Getting all employee permissions by employee ID: {}", employeeId);
-        return ApiResponseDto.ok(repository.findAllByEmployeeId(employeeId).stream()
+        Specification<EmployeePermission> spec = EmployeePermissionSpecifications.applyFilters(filterDTO);
+        return ApiResponseDto.ok(repository.findAll(spec, pageable)
+                .stream()
                 .map(employeePermission -> (EmployeePermissionResponseDTO) mapper.toDetailDTO(employeePermission))
                 .toList());
     }

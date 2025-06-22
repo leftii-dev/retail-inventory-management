@@ -1,7 +1,6 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.entity;
 
 import dev.austinbarnes.retailinventorymanagement.common.BaseEntity;
-import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import dev.austinbarnes.retailinventorymanagement.location.entity.Location;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
@@ -10,13 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.util.UUID;
 
 /**
  * ReceivingVoucher is an entity class representing a receiving voucher in a retail management system.
@@ -65,7 +60,7 @@ public class ReceivingVoucher extends BaseEntity {
 
     @Column(name = "payment_discount", precision = 5, scale = 2)
     @DecimalMin(value = "0.00", message = "Discount percentage cannot be negative")
-    @DecimalMax(value = "100.00", message = "Discount percantage cannot exceed 100.00")
+    @DecimalMax(value = "100.00", message = "Discount percentage cannot exceed 100.00")
     @Digits(integer = 3, fraction = 2)
     private BigDecimal discountPercent;
 

@@ -1,12 +1,16 @@
 package dev.austinbarnes.retailinventorymanagement.product.controller;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.product.dto.discount.DiscountFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.discount.DiscountRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.discount.DiscountResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.product.service.DiscountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,9 +58,19 @@ public class DiscountController {
      * @return ResponseEntity with a list of all discounts.
      */
     @GetMapping
-    public ResponseEntity<ApiResponseDto<List<DiscountResponseDTO>>> getAllDiscounts() {
+    public ResponseEntity<ApiResponseDto<List<DiscountResponseDTO>>> getAllDiscounts(
+            @ModelAttribute @Valid DiscountFilterDTO filterDTO,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortDirection
+    ) {
         log.info("Get all discounts");
-        return service.getAllDiscounts();
+        Sort sort = (sortBy != null && sortDirection != null) ?
+                Sort.by(Sort.Direction.fromString(sortDirection), sortBy) : Sort.unsorted();
+        Pageable pageable = (page != null && size != null) ?
+                PageRequest.of(page, size, sort) : Pageable.unpaged();
+        return service.getAllDiscounts(filterDTO, pageable);
     }
 
     /**

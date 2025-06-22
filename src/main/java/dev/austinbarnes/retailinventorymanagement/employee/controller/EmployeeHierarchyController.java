@@ -1,12 +1,16 @@
 package dev.austinbarnes.retailinventorymanagement.employee.controller;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeHierarchyFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeHierarchyRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeHierarchyResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.service.EmployeeHierarchyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -68,12 +72,27 @@ public class EmployeeHierarchyController {
     /**
      * Retrieves the hierarchy of all employees.
      *
-     * @return ResponseEntity with a list of all employee hierarchies.
+     * @param filterDTO HierarchyFilterDTO for filtering data.
+     * @param page Index of paged data.
+     * @param size Size of list to retrieve.
+     * @param sortBy Allows sorting by parameters.
+     * @param sortDirection ASC or DESC sorting the data.
+     * @return List of EmployeeHierarchyDTO.
      */
     @GetMapping
-    public ResponseEntity<ApiResponseDto<List<EmployeeHierarchyResponseDTO>>> getEmployeeHierarchyAll() {
+    public ResponseEntity<ApiResponseDto<List<EmployeeHierarchyResponseDTO>>> getEmployeeHierarchyAll(
+            @ModelAttribute @Valid EmployeeHierarchyFilterDTO filterDTO,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortDirection) {
         log.info("Get employee hierarchy all");
-        return hierarchyService.getEmployeeHierarchyAll();
+        Sort sort = (sortBy != null && sortDirection != null)
+                ? Sort.by(Sort.Direction.fromString(sortDirection), sortBy)
+                : Sort.unsorted();
+
+        Pageable pageable = (page != null && size != null) ? PageRequest.of(page, size, sort) : Pageable.unpaged();
+        return hierarchyService.getEmployeeHierarchyAll(filterDTO, pageable);
     }
 
     /**
