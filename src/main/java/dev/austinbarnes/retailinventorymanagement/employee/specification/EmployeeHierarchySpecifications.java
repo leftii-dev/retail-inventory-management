@@ -13,8 +13,8 @@ public class EmployeeHierarchySpecifications {
         return (Root<EmployeeHierarchy> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) -> {
             Predicate predicates = criteriaBuilder.conjunction();
 
-            Specification<EmployeeHierarchy> baseSpec = BaseSpecifications.applyBaseFilters(filterDTO.baseFilterDTO());
-            predicates = criteriaBuilder.and(baseSpec.toPredicate(root, query, criteriaBuilder));
+            Specification<EmployeeHierarchy> baseSpec = BaseSpecifications.applyBaseFilters(filterDTO != null ? filterDTO.baseFilterDTO() : null);
+            predicates = criteriaBuilder.and(predicates, baseSpec.toPredicate(root, query, criteriaBuilder));
 
             if(filterDTO.employeeID() != null){
                 Join<EmployeeHierarchy, Employee> join = root.join("employee", JoinType.INNER);
