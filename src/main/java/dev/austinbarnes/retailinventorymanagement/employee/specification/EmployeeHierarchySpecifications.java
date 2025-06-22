@@ -16,14 +16,16 @@ public class EmployeeHierarchySpecifications {
             Specification<EmployeeHierarchy> baseSpec = BaseSpecifications.applyBaseFilters(filterDTO != null ? filterDTO.baseFilterDTO() : null);
             predicates = criteriaBuilder.and(predicates, baseSpec.toPredicate(root, query, criteriaBuilder));
 
-            if(filterDTO.employeeID() != null){
-                Join<EmployeeHierarchy, Employee> join = root.join("employee", JoinType.INNER);
-                predicates = criteriaBuilder.and(predicates, criteriaBuilder.equal(join.get("id"), filterDTO.employeeID()));
-            }
+            if(filterDTO != null) {
+                if(filterDTO.employeeID() != null){
+                    Join<EmployeeHierarchy, Employee> join = root.join("employee", JoinType.INNER);
+                    predicates = criteriaBuilder.and(predicates, criteriaBuilder.equal(join.get("id"), filterDTO.employeeID()));
+                }
 
-            if(filterDTO.managerID() != null){
-                Join<EmployeeHierarchy, Employee> join = root.join("manager", JoinType.INNER);
-                predicates = criteriaBuilder.and(predicates, criteriaBuilder.equal(join.get("id"), filterDTO.managerID()));
+                if(filterDTO.managerID() != null){
+                    Join<EmployeeHierarchy, Employee> join = root.join("manager", JoinType.INNER);
+                    predicates = criteriaBuilder.and(predicates, criteriaBuilder.equal(join.get("id"), filterDTO.managerID()));
+                }
             }
             return predicates;
         };
