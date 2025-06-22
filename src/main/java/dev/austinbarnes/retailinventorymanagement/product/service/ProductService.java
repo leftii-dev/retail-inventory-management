@@ -51,7 +51,7 @@ public class ProductService {
     /**
      * Retrieve a Product by ID
      * @param id ID of product to retrieve.
-     * @return ResponseEntity with ProductResponsDTO as data.
+     * @return ResponseEntity with ProductResponseDTO as data.
      */
     @Transactional(readOnly = true)
     public ResponseEntity<ApiResponseDto<ProductResponseDTO>> getProductById(UUID id) {
