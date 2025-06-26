@@ -1,13 +1,12 @@
 package dev.austinbarnes.retailinventorymanagement.auth.controller;
 
-import dev.austinbarnes.retailinventorymanagement.auth.dto.EmployeeLoginRequestDto;
-import dev.austinbarnes.retailinventorymanagement.auth.dto.RegistrationRequestDto;
-import dev.austinbarnes.retailinventorymanagement.auth.dto.UserLoginRequestDto;
-import dev.austinbarnes.retailinventorymanagement.auth.dto.UserResponseDto;
+import dev.austinbarnes.retailinventorymanagement.auth.dto.*;
 import dev.austinbarnes.retailinventorymanagement.auth.service.AuthService;
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,10 +39,17 @@ public class AuthController {
      */
     @Operation(summary = "User Login", description = "Authenticates a user with their credentials.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "User successfully authenticated"),
-            @ApiResponse(responseCode = "401", description = "Invalid credentials provided"),
-            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data")
-
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "User logged in successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    oneOf = {UserResponseBasicDto.class, UserResponseDetailDto.class}
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data"),
     })
     @PostMapping("/user")
     public ResponseEntity<ApiResponseDto<UserResponseDto>> userLogin(@Valid @RequestBody UserLoginRequestDto loginRequest) {
@@ -60,9 +66,17 @@ public class AuthController {
             summary = "Employee Login",
             description = "Authenticates an employee with their credentials.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Employee successfully authenticated"),
-            @ApiResponse(responseCode = "401", description = "Invalid credentials provided"),
-            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data")
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Employee logged in successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    oneOf = {UserResponseBasicDto.class, UserResponseDetailDto.class}
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data"),
     })
     @PostMapping("/employee")
     public ResponseEntity<ApiResponseDto<UserResponseDto>> employeeLogin(
@@ -81,9 +95,19 @@ public class AuthController {
             description = "Registers a new user with the provided details."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "User successfully registered"),
-            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data or user already exists"),
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "User registered successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    oneOf = {UserResponseBasicDto.class, UserResponseDetailDto.class}
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data"),
     })
+
     @PostMapping("/register")
     public ResponseEntity<ApiResponseDto<UserResponseDto>> register(@Valid @RequestBody RegistrationRequestDto registrationRequest) {
         return authService.register(registrationRequest);
@@ -100,9 +124,17 @@ public class AuthController {
             description = "Activates a user account using the provided activation token."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Account successfully activated"),
-            @ApiResponse(responseCode = "400", description = "Bad request, invalid token"),
-            @ApiResponse(responseCode = "404", description = "Not found, token does not exist")
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "User account activated successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    oneOf = {UserResponseBasicDto.class, UserResponseDetailDto.class}
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data"),
     })
     @PostMapping("/activate/{token}")
     public ResponseEntity<ApiResponseDto<UserResponseDto>> activateAccount(@PathVariable String token) {
@@ -120,8 +152,17 @@ public class AuthController {
             description = "Logs out the user by invalidating the session."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "User successfully logged out"),
-            @ApiResponse(responseCode = "400", description = "Bad request, session not found")
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "User logged out successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    oneOf = {UserResponseBasicDto.class, UserResponseDetailDto.class}
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data"),
     })
     @PostMapping("/logout")
     public <T> ResponseEntity<ApiResponseDto<T>> logout(HttpServletRequest request) {
@@ -143,8 +184,17 @@ public class AuthController {
             description = "Forwards the request to Google OAuth2 authorization endpoint."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "302", description = "Redirects to Google OAuth2 authorization endpoint"),
-            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data")
+            @ApiResponse(
+                    responseCode = "302",
+                    description = "Google OAuth2 authorization endpoint redirect",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    oneOf = {UserResponseBasicDto.class, UserResponseDetailDto.class}
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data"),
     })
     @GetMapping("/google")
     public ResponseEntity<Void> oAuth2Google(){
@@ -162,8 +212,17 @@ public class AuthController {
             summary = "GitHub OAuth2 Login",
             description = "Forwards the request to GitHub OAuth2 authorization endpoint.")
     @ApiResponses({
-            @ApiResponse(responseCode = "302", description = "Redirects to GitHub OAuth2 authorization endpoint"),
-            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data")
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Github OAuth2 authorization endpoint redirect",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    oneOf = {UserResponseBasicDto.class, UserResponseDetailDto.class}
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data"),
     })
     @GetMapping("/github")
     public ResponseEntity<Void> oAuth2Github(){

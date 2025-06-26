@@ -1,10 +1,13 @@
 package dev.austinbarnes.retailinventorymanagement.employee.controller;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
-import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeFilterDTO;
-import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeRequestDTO;
-import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeResponseDTO;
+import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.*;
 import dev.austinbarnes.retailinventorymanagement.employee.service.EmployeeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +39,26 @@ public class EmployeeController {
      * @param managerId Optional manager ID for the new employee.
      * @return ResponseEntity with the created employee details.
      */
+    @Operation(
+            summary = "Create Employee",
+            description = "Creates a new employee with optional manager assignment."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "User registered successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    oneOf = {EmployeeResponseBasicDTO.class, EmployeeResponseDetailDTO.class}
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Not found")
+    })
+
     @PostMapping
     public ResponseEntity<ApiResponseDto<EmployeeResponseDTO>> createEmployee(
             @RequestBody @Valid EmployeeRequestDTO request,
