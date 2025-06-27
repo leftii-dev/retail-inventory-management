@@ -1,10 +1,13 @@
 package dev.austinbarnes.retailinventorymanagement.employee.controller;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
-import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeHierarchyFilterDTO;
-import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeHierarchyRequestDTO;
-import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeHierarchyResponseDTO;
+import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.*;
 import dev.austinbarnes.retailinventorymanagement.employee.service.EmployeeHierarchyService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +38,22 @@ public class EmployeeHierarchyController {
      * @param request The request DTO containing employee hierarchy details.
      * @return ResponseEntity with the created employee hierarchy details.
      */
+    @Operation(
+            summary = "Create Employee Hierarchy",
+            description = "Creates a new employee hierarchy relationship."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Employee hierarchy created successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(oneOf = {EmployeeHierarchyResponseBasicDTO.class, EmployeeHierarchyResponseDetailDTO.class})
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data"),
+            @ApiResponse(responseCode = "404", description = "Employee not found")
+    })
     @PostMapping
     public ResponseEntity<ApiResponseDto<EmployeeHierarchyResponseDTO>> createEmployeeHierarchy(
             @RequestBody @Valid EmployeeHierarchyRequestDTO request
@@ -49,6 +68,21 @@ public class EmployeeHierarchyController {
      * @param request The request DTO containing updated employee hierarchy details.
      * @return ResponseEntity with the updated employee hierarchy details.
      */
+    @Operation(
+            summary = "Update Employee Hierarchy",
+            description = "Updates an existing employee hierarchy relationship.")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Employee hierarchy updated successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(oneOf = {EmployeeHierarchyResponseBasicDTO.class, EmployeeHierarchyResponseDetailDTO.class})
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data"),
+            @ApiResponse(responseCode = "404", description = "Employee not found")
+    })
     @PutMapping
     public ResponseEntity<ApiResponseDto<EmployeeHierarchyResponseDTO>> updateEmployeeHierarchy(
             @RequestBody @Valid EmployeeHierarchyRequestDTO request
@@ -63,6 +97,20 @@ public class EmployeeHierarchyController {
      * @param employeeId The ID of the employee whose hierarchy is to be retrieved.
      * @return ResponseEntity with the employee hierarchy details.
      */
+    @Operation(
+            summary = "Get Employee Hierarchy",
+            description = "Retrieves the hierarchy of a specific employee.")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Employee hierarchy retrieved successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(oneOf = {EmployeeHierarchyResponseBasicDTO.class, EmployeeHierarchyResponseDetailDTO.class})
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Employee not found")
+    })
     @GetMapping("/{employeeId}")
     public ResponseEntity<ApiResponseDto<EmployeeHierarchyResponseDTO>> getEmployeeHierarchy(@PathVariable UUID employeeId) {
         log.info("Get employee hierarchy request: {}", employeeId);
@@ -79,6 +127,21 @@ public class EmployeeHierarchyController {
      * @param sortDirection ASC or DESC sorting the data.
      * @return List of EmployeeHierarchyDTO.
      */
+    @Operation(
+            summary = "Get All Employee Hierarchies",
+            description = "Retrieves the hierarchy of all employees with optional filtering and pagination."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Employee hierarchies retrieved successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(oneOf = {EmployeeHierarchyResponseBasicDTO.class, EmployeeHierarchyResponseDetailDTO.class})
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data")
+    })
     @GetMapping
     public ResponseEntity<ApiResponseDto<List<EmployeeHierarchyResponseDTO>>> getEmployeeHierarchyAll(
             @ModelAttribute @Valid EmployeeHierarchyFilterDTO filterDTO,
@@ -101,6 +164,21 @@ public class EmployeeHierarchyController {
      * @param relationshipId The ID of the relationship to be deleted.
      * @return ResponseEntity indicating the result of the deletion operation.
      */
+    @Operation(
+            summary = "Delete Employee Hierarchy Relationship",
+            description = "Deletes an employee hierarchy relationship by its ID."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Employee hierarchy relationship deleted successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(oneOf = {Void.class})
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Relationship not found")
+    })
     @DeleteMapping("/{relationshipId}")
     public ResponseEntity<ApiResponseDto<Void>> deleteEmployeeHierarchyRelationship(@PathVariable UUID relationshipId) {
         log.info("Delete hierarchy relationship {}", relationshipId);
