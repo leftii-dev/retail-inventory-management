@@ -1,10 +1,13 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.controller;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
-import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherItemFIlterDTO;
-import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherItemRequestDTO;
-import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherItemResponseDTO;
+import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.*;
 import dev.austinbarnes.retailinventorymanagement.inventory.service.ReceivingVoucherItemService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +33,22 @@ public class ReceivingVoucherItemController {
      * @param request the receiving voucher item request DTO containing the details of the item to create.
      * @return ResponseEntity with the created receiving voucher item details.
      */
+    @Operation(
+            summary = "Create New Receiving Voucher Item",
+            description = "Creates a new receiving voucher item with the provided details.")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Receiving Voucher Item created successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    oneOf = {ReceivingVoucherItemResponseBasicDTO.class, ReceivingVoucherItemResponseDetailDTO.class}
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data or receiving voucher item already exists"),
+    })
     @PostMapping
     public ResponseEntity<ApiResponseDto<ReceivingVoucherItemResponseDTO>> createReceivingVoucherItem(
             @Valid @RequestBody ReceivingVoucherItemRequestDTO request) {
@@ -43,6 +62,21 @@ public class ReceivingVoucherItemController {
      * @param id the ID of the receiving voucher item to retrieve.
      * @return ResponseEntity with the receiving voucher item details.
      */
+    @Operation(
+            summary = "Get Receiving Voucher Item by ID",
+            description = "Retrieves a receiving voucher item by its ID."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Receiving Voucher Item retrieved successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(oneOf = {ReceivingVoucherItemResponseBasicDTO.class, ReceivingVoucherItemResponseDetailDTO.class})
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Receiving Voucher Item not found")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponseDto<ReceivingVoucherItemResponseDTO>> getReceivingVoucherItemById(
             @PathVariable UUID id) {
@@ -55,6 +89,21 @@ public class ReceivingVoucherItemController {
      *
      * @return ResponseEntity with a list of all receiving voucher items.
      */
+    @Operation(
+            summary = "Get All Receiving Voucher Items",
+            description = "Retrieves all receiving voucher items with optional filtering and pagination."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Receiving Voucher Items retrieved successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(oneOf = {ReceivingVoucherItemResponseBasicDTO.class, ReceivingVoucherItemResponseDetailDTO.class})
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data")
+    })
     @GetMapping
     public ResponseEntity<ApiResponseDto<List<ReceivingVoucherItemResponseDTO>>> getAllReceivingVoucherItems(
             @ModelAttribute @Valid ReceivingVoucherItemFIlterDTO filterDTO,
@@ -80,6 +129,22 @@ public class ReceivingVoucherItemController {
      * @param request the receiving voucher item request DTO containing the updated details.
      * @return ResponseEntity with the updated receiving voucher item details.
      */
+    @Operation(
+            summary = "Update Receiving Voucher Item",
+            description = "Updates an existing receiving voucher item with the provided details."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Receiving Voucher Item updated successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(oneOf = {ReceivingVoucherItemResponseBasicDTO.class, ReceivingVoucherItemResponseDetailDTO.class})
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data"),
+            @ApiResponse(responseCode = "404", description = "Receiving Voucher Item not found")
+    })
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponseDto<ReceivingVoucherItemResponseDTO>> updateReceivingVoucherItem(
             @PathVariable UUID id,
@@ -94,6 +159,20 @@ public class ReceivingVoucherItemController {
      * @param id the ID of the receiving voucher item to delete.
      * @return ResponseEntity indicating the result of the deletion operation.
      */
+    @Operation(
+            summary = "Delete Receiving Voucher Item",
+            description = "Deletes a receiving voucher item by its ID."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Receiving Voucher Item deleted successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(type = "void")
+                    )
+            )
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponseDto<Void>> deleteReceivingVoucherItem(@PathVariable UUID id) {
         log.info("Deleting receiving voucher item with ID: {}", id);

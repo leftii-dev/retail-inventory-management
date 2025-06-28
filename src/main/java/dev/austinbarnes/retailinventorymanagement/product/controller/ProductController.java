@@ -1,10 +1,13 @@
 package dev.austinbarnes.retailinventorymanagement.product.controller;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
-import dev.austinbarnes.retailinventorymanagement.product.dto.product.ProductFilterDTO;
-import dev.austinbarnes.retailinventorymanagement.product.dto.product.ProductRequestDTO;
-import dev.austinbarnes.retailinventorymanagement.product.dto.product.ProductResponseDTO;
+import dev.austinbarnes.retailinventorymanagement.product.dto.product.*;
 import dev.austinbarnes.retailinventorymanagement.product.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +33,23 @@ public class ProductController {
      * @param request ProductRequestDTO containing product information
      * @return ProductResponseDTO for new product.
      */
+    @Operation(
+            summary = "Create New Product",
+            description = "Creates a new product with the provided details."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Product created successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    oneOf = {ProductResponseBasicDTO.class, ProductResponseDetailDTO.class}
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data or product already exists")
+    })
     @PostMapping
     public ResponseEntity<ApiResponseDto<ProductResponseDTO>> createProduct(@RequestBody @Valid ProductRequestDTO request) {
         log.info("Creating product {}", request);
@@ -42,6 +62,23 @@ public class ProductController {
      * @param id ID of the product requested
      * @return ProductResponseDTO representing the product retrieved.
      */
+    @Operation(
+            summary = "Get Product by ID",
+            description = "Retrieves a product by its ID."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Product retrieved successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    oneOf = {ProductResponseBasicDTO.class, ProductResponseDetailDTO.class}
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Product not found")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponseDto<ProductResponseDTO>> getProduct(@PathVariable UUID id) {
         log.info("Getting product {}", id);
@@ -53,6 +90,21 @@ public class ProductController {
      *
      * @return List of ProductResponseDTO
      */
+    @Operation(
+            summary = "Get All Products",
+            description = "Retrieves all products with optional filtering and pagination."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Products retrieved successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(oneOf = {ProductResponseBasicDTO.class, ProductResponseDetailDTO.class})
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid filter parameters")
+    })
     @GetMapping
     public ResponseEntity<ApiResponseDto<List<ProductResponseDTO>>> getAllProducts(
             @ModelAttribute @Valid ProductFilterDTO filterDTO,
@@ -60,7 +112,7 @@ public class ProductController {
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) String sortDirection
-            ) {
+    ) {
         log.info("Getting all products");
         Sort sort = (sortBy != null && sortDirection != null) ?
                 Sort.by(Sort.Direction.fromString(sortDirection), sortBy) : Sort.unsorted();
@@ -72,10 +124,28 @@ public class ProductController {
     /**
      * Update Product
      *
-     * @param id ID of product to update
+     * @param id      ID of product to update
      * @param request ProductRequestDTO with updated values
      * @return ProductResponseDTO representing updated Product
      */
+    @Operation(
+            summary = "Update Product",
+            description = "Updates an existing product with the provided details."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Product updated successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    oneOf = {ProductResponseBasicDTO.class, ProductResponseDetailDTO.class}
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Product not found"),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data")
+    })
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponseDto<ProductResponseDTO>> updateProduct(
             @PathVariable UUID id, @RequestBody @Valid ProductRequestDTO request) {
@@ -85,9 +155,20 @@ public class ProductController {
 
     /**
      * Delete Product
+     *
      * @param id ID of Product to delete
      * @return API Response NO_CONTENT
      */
+    @Operation(
+            summary = "Delete Product",
+            description = "Deletes a product by its ID."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Product deleted successfully"
+            )
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponseDto<Void>> deleteProduct(@PathVariable UUID id) {
         log.info("Deleting product {}", id);

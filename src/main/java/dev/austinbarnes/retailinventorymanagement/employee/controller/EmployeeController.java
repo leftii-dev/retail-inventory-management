@@ -180,11 +180,10 @@ public class EmployeeController {
             description = "Deletes an employee by their unique ID.")
     @ApiResponses({
             @ApiResponse(
-                    responseCode = "200",
+                    responseCode = "204",
                     description = "Employee deleted successfully",
                     content =  {@Content(mediaType = "application/json", schema = @Schema(oneOf = {Void.class})) }
-            ),
-            @ApiResponse(responseCode = "404", description = "Employee not found")
+            )
     })
     @DeleteMapping("/{employeeId}")
     public ResponseEntity<ApiResponseDto<Void>> deleteEmployee(@PathVariable UUID employeeId) {

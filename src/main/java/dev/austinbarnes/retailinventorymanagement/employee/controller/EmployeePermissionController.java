@@ -165,14 +165,13 @@ public class EmployeePermissionController {
     )
     @ApiResponses({
         @ApiResponse(
-                responseCode = "200",
+                responseCode = "204",
                 description = "Employee permission deleted successfully",
                 content = @Content(
                         mediaType = "application/json",
                         schema = @Schema(oneOf = {Void.class})
                 )
-        ),
-        @ApiResponse(responseCode = "404", description = "Employee permission not found")
+        )
     })
     @DeleteMapping("/{permissionId}")
     public ResponseEntity<ApiResponseDto<Void>> deleteEmployeePermission(@PathVariable UUID permissionId) {

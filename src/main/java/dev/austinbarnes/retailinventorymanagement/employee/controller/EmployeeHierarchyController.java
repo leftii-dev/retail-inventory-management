@@ -170,14 +170,13 @@ public class EmployeeHierarchyController {
     )
     @ApiResponses({
             @ApiResponse(
-                    responseCode = "200",
+                    responseCode = "204",
                     description = "Employee hierarchy relationship deleted successfully",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(oneOf = {Void.class})
                     )
-            ),
-            @ApiResponse(responseCode = "404", description = "Relationship not found")
+            )
     })
     @DeleteMapping("/{relationshipId}")
     public ResponseEntity<ApiResponseDto<Void>> deleteEmployeeHierarchyRelationship(@PathVariable UUID relationshipId) {
