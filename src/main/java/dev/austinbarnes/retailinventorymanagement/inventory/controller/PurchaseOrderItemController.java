@@ -1,10 +1,13 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.controller;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
-import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemFilterDTO;
-import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemRequestDTO;
-import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemResponseDTO;
+import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.*;
 import dev.austinbarnes.retailinventorymanagement.inventory.service.PurchaseOrderItemService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +35,22 @@ public class PurchaseOrderItemController {
      * @param request the purchase order item request DTO containing item details
      * @return ResponseEntity with the created purchase order item details
      */
+    @Operation(
+            summary = "Create New Purchase Order Item",
+            description = "Creates a new purchase order item with the provided details.")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Purchase order item created successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    oneOf = {PurchaseOrderItemResponseBasicDTO.class, PurchaseOrderItemResponseDetailDTO.class}
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data or purchase order item already exists"),
+    })
     @PostMapping
     public ResponseEntity<ApiResponseDto<PurchaseOrderItemResponseDTO>> createPurchaseOrderItem(
             @RequestBody @Valid PurchaseOrderItemRequestDTO request) {
@@ -47,6 +66,21 @@ public class PurchaseOrderItemController {
      * @param id the UUID of the purchase order item
      * @return ResponseEntity with the purchase order item details
      */
+    @Operation(
+            summary = "Get Purchase Order Item",
+            description = "Retrieves a purchase order item by its ID."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Purchase order item retrieved successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(oneOf = {PurchaseOrderItemResponseBasicDTO.class, PurchaseOrderItemResponseDetailDTO.class})
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Purchase order item not found")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponseDto<PurchaseOrderItemResponseDTO>> getPurchaseOrderItem(@PathVariable UUID id) {
         log.info("Getting purchase order item: {}", id);
@@ -60,6 +94,21 @@ public class PurchaseOrderItemController {
      *
      * @return ResponseEntity with a list of all purchase order items
      */
+    @Operation(
+            summary = "Get All Purchase Order Items",
+            description = "Retrieves all purchase order items with optional filtering and pagination."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Purchase order items retrieved successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(oneOf = {PurchaseOrderItemResponseBasicDTO.class, PurchaseOrderItemResponseDetailDTO.class})
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data")
+    })
     @GetMapping
     public ResponseEntity<ApiResponseDto<List<PurchaseOrderItemResponseDTO>>> getAllPurchaseOrderItems(
             @ModelAttribute @Valid PurchaseOrderItemFilterDTO filterDTO,
@@ -67,7 +116,7 @@ public class PurchaseOrderItemController {
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) String sortDirection
-            ) {
+    ) {
         log.info("Getting all purchase order items");
         Sort sort = (sortBy != null && sortDirection != null)
                 ? Sort.by(Sort.Direction.fromString(sortDirection), sortBy)
@@ -84,11 +133,29 @@ public class PurchaseOrderItemController {
      * This endpoint is accessible to users with roles MANAGER, ADMIN, or EMPLOYEE
      * and requires the WRITE_PO authority.
      *
-     * @param id the UUID of the purchase order item to update
+     * @param id      the UUID of the purchase order item to update
      * @param request the purchase order item request DTO containing updated item details
      * @return ResponseEntity with the updated purchase order item details
      */
-    @PutMapping("/{id}")
+    @Operation(
+            summary = "Update Purchase Order Item",
+            description = "Updates an existing purchase order item with the provided details."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Purchase order item updated successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    oneOf = {PurchaseOrderItemResponseBasicDTO.class, PurchaseOrderItemResponseDetailDTO.class}
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data"),
+            @ApiResponse(responseCode = "404", description = "Purchase order item not found")
+    })
+            @PutMapping("/{id}")
     public ResponseEntity<ApiResponseDto<PurchaseOrderItemResponseDTO>> updatePurchaseOrderItem(
             @PathVariable UUID id, @RequestBody PurchaseOrderItemRequestDTO request) {
         log.info("Updating purchase order item: {}", id);
@@ -103,6 +170,20 @@ public class PurchaseOrderItemController {
      * @param id the UUID of the purchase order item to delete
      * @return ResponseEntity indicating the result of the deletion operation
      */
+    @Operation(
+            summary = "Delete Purchase Order Item",
+            description = "Deletes a purchase order item by its ID."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Purchase order item deleted successfully",
+                    content = @Content(
+                            mediaType = "application/json"
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Purchase order item not found")
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponseDto<Void>> deletePurchaseOrderItem(@PathVariable UUID id) {
         log.info("Deleting purchase order item: {}", id);
