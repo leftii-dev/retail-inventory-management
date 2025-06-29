@@ -84,5 +84,6 @@ public interface UserMapper {
      * @param userRequestDto the UserRequestDto containing the new values
      * @param user           the User entity to update
      */
+    @Mapping(target = "roles", ignore = true)
     void updateEntityFromRequest(UserRequestDto userRequestDto, @MappingTarget User user);
 }

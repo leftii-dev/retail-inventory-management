@@ -49,7 +49,7 @@ public class UserService {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
-    public ResponseEntity<ApiResponseDto<UserResponseDto>> createUser(UUID id, UserRequestDto userRequestDto) {
+    public ResponseEntity<ApiResponseDto<UserResponseDto>> updateUser(UUID id, UserRequestDto userRequestDto) {
         User target = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User with ID: %s not found".formatted(id)));
         mapper.updateEntityFromRequest(userRequestDto, target);
