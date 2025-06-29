@@ -1,6 +1,7 @@
 package dev.austinbarnes.retailinventorymanagement.location.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.entitycode.CodeGenerator;
 import dev.austinbarnes.retailinventorymanagement.location.dto.warehouse.WarehouseLocationFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.warehouse.WarehouseLocationRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.warehouse.WarehouseLocationResponseDTO;
@@ -32,6 +33,7 @@ import java.util.UUID;
 public class WarehouseLocationService {
     private final WarehouseLocationRepository repository;
     private final WarehouseLocationMapper mapper;
+    private final CodeGenerator codeGenerator;
 
     /**
      * Creates a new warehouse location.
@@ -43,9 +45,11 @@ public class WarehouseLocationService {
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE') and hasAuthority('WRITE_LOCATION')")
     public ResponseEntity<ApiResponseDto<WarehouseLocationResponseDTO>> createWarehouseLocation(WarehouseLocationRequestDTO request) {
         log.info("Creating new warehouse location: {}", request);
+        WarehouseLocation newLocation = mapper.toEntity(request);
+        newLocation.setWarehouseCode(codeGenerator.generateWarehouseLocationCode());
         return ApiResponseDto.created(isManager() ?
-                mapper.toDetailDTO(repository.save(mapper.toEntity(request))) :
-                mapper.toBasicDTO(repository.save(mapper.toEntity(request)))
+                mapper.toDetailDTO(repository.save(newLocation)) :
+                mapper.toBasicDTO(repository.save(newLocation))
         );
     }
 

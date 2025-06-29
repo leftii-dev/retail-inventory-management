@@ -1,6 +1,7 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.entitycode.CodeGenerator;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderResponseDTO;
@@ -32,6 +33,7 @@ import java.util.UUID;
 public class PurchaseOrderService {
     private final PurchaseOrderRepository repository;
     private final PurchaseOrderMapper mapper;
+    private final CodeGenerator codeGenerator;
 
     /**
      * Creates a new purchase order.
@@ -42,9 +44,11 @@ public class PurchaseOrderService {
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE') and hasAuthority('WRITE_PO')")
     public ResponseEntity<ApiResponseDto<PurchaseOrderResponseDTO>> createPurchaseOrder(PurchaseOrderRequestDTO request) {
         log.info("Creating purchase order: {}", request);
+        PurchaseOrder newPo = mapper.toEntity(request);
+        newPo.setPurchaseOrderCode(codeGenerator.generatePurchaseOrderCode());
         return ApiResponseDto.created(isManager() ?
-                mapper.toDetailDTO(repository.save(mapper.toEntity(request))) :
-                mapper.toBasicDTO(repository.save(mapper.toEntity(request)))
+                mapper.toDetailDTO(repository.save(newPo)) :
+                mapper.toBasicDTO(repository.save(newPo))
         );
     }
 

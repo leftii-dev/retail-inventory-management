@@ -1,6 +1,7 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.entitycode.CodeGenerator;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferResponseDTO;
@@ -28,6 +29,7 @@ import java.util.UUID;
 public class TransferService {
     private final TransferRepository repository;
     private final TransferMapper mapper;
+    private final CodeGenerator codeGenerator;
 
     /**
      * Creates a new transfer.
@@ -39,9 +41,11 @@ public class TransferService {
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('WRITE_TRANSFER')")
     public ResponseEntity<ApiResponseDto<TransferResponseDTO>> createTransfer(TransferRequestDTO request){
         log.info("Creating transfer with request: {}", request);
+        Transfer newTransfer = mapper.toEntity(request);
+        newTransfer.setTransferCode(codeGenerator.generateTransferCode());
         return ApiResponseDto.created(isManager() ?
-                mapper.toDetailDTO(repository.save(mapper.toEntity(request))) :
-                mapper.toBasicDTO(repository.save(mapper.toEntity(request)))
+                mapper.toDetailDTO(repository.save(newTransfer)) :
+                mapper.toBasicDTO(repository.save(newTransfer))
         );
     }
 

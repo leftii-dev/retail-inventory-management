@@ -1,6 +1,7 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.entitycode.CodeGenerator;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.vendor.VendorFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.vendor.VendorRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.vendor.VendorResponseDTO;
@@ -28,6 +29,7 @@ import java.util.UUID;
 public class VendorService {
     private final VendorRepository repository;
     private final VendorMapper mapper;
+    private final CodeGenerator codeGenerator;
 
     /**
      * Creates a new vendor.
@@ -39,9 +41,11 @@ public class VendorService {
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('WRITE_VENDOR')")
     public ResponseEntity<ApiResponseDto<VendorResponseDTO>> createVendor(VendorRequestDTO request) {
         log.info("Create vendor request: {}", request);
+        Vendor newVendor = mapper.toEntity(request);
+        newVendor.setVendorCode(codeGenerator.generateVendorCode());
         return ApiResponseDto.created(isManager() ?
-                mapper.toDetailDTO(repository.save(mapper.toEntity(request))):
-                mapper.toBasicDTO(repository.save(mapper.toEntity(request))));
+                mapper.toDetailDTO(repository.save(newVendor)) :
+                mapper.toBasicDTO(repository.save(newVendor)));
     }
 
     /**

@@ -1,6 +1,7 @@
 package dev.austinbarnes.retailinventorymanagement.inventory.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.entitycode.CodeGenerator;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherResponseDTO;
@@ -27,6 +28,7 @@ import java.util.UUID;
 public class ReceivingVoucherService {
     private final ReceivingVoucherRepository repository;
     private final ReceivingVoucherMapper mapper;
+    private final CodeGenerator codeGenerator;
 
     /**
      * Creates a new receiving voucher.
@@ -38,9 +40,11 @@ public class ReceivingVoucherService {
     public ResponseEntity<ApiResponseDto<ReceivingVoucherResponseDTO>> createReceivingVoucher(
             ReceivingVoucherRequestDTO request) {
         log.info("Creating receiving voucher: {}", request);
+        ReceivingVoucher newRv = mapper.toEntity(request);
+        newRv.setReceivingVoucherCode(codeGenerator.generateReceivingVoucherCode());
         return ApiResponseDto.created(isManager() ?
-                mapper.toDetailDTO(repository.save(mapper.toEntity(request))) :
-                mapper.toBasicDTO(repository.save(mapper.toEntity(request)))
+                mapper.toDetailDTO(repository.save(newRv)) :
+                mapper.toBasicDTO(repository.save(newRv))
         );
     }
 

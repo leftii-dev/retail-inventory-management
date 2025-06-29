@@ -1,6 +1,7 @@
 package dev.austinbarnes.retailinventorymanagement.product.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.entitycode.CodeGenerator;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryResponseDTO;
@@ -32,6 +33,7 @@ import java.util.UUID;
 public class CategoryService {
     private final CategoryRepository repository;
     private final CategoryMapper mapper;
+    private final CodeGenerator codeGenerator;
 
     /**
      * Creates a new category.
@@ -43,9 +45,11 @@ public class CategoryService {
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'MANAGER') and hasAuthority('WRITE_PRODUCT')")
     public ResponseEntity<ApiResponseDto<CategoryResponseDTO>> createCategory(CategoryRequestDTO request) {
         log.info("Creating category: {}", request);
+        Category newCategory = mapper.toEntity(request);
+        newCategory.setCategoryCode(codeGenerator.generateCategoryCode());
         return ApiResponseDto.created(isManager()?
-                mapper.toDetailDTO(repository.save(mapper.toEntity(request))) :
-                mapper.toBasicDTO(repository.save(mapper.toEntity(request)))
+                mapper.toDetailDTO(repository.save(newCategory)) :
+                mapper.toBasicDTO(repository.save(newCategory))
                 );
     }
 

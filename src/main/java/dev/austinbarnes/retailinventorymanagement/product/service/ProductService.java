@@ -1,6 +1,7 @@
 package dev.austinbarnes.retailinventorymanagement.product.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.entitycode.CodeGenerator;
 import dev.austinbarnes.retailinventorymanagement.product.dto.product.ProductFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.product.ProductRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.product.ProductResponseDTO;
@@ -32,6 +33,7 @@ import java.util.UUID;
 public class ProductService {
     private final ProductRepository repository;
     private final ProductMapper mapper;
+    private final CodeGenerator codeGenerator;
 
     /**
      * Creates new Product
@@ -43,9 +45,11 @@ public class ProductService {
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE') and hasAuthority('WRITE_PRODUCT')")
     public ResponseEntity<ApiResponseDto<ProductResponseDTO>> createProduct(ProductRequestDTO request) {
         log.info("Creating product {}", request);
+        Product newProduct = mapper.toEntity(request);
+        newProduct.setProductCode(codeGenerator.generateProductCode());
         return ApiResponseDto.created(isManager() ?
-                mapper.toDetailDTO(repository.save(mapper.toEntity(request))) :
-                mapper.toBasicDTO(repository.save(mapper.toEntity(request))));
+                mapper.toDetailDTO(repository.save(newProduct)) :
+                mapper.toBasicDTO(repository.save(newProduct)));
     }
 
     /**

@@ -1,6 +1,7 @@
 package dev.austinbarnes.retailinventorymanagement.location.service;
 
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import dev.austinbarnes.retailinventorymanagement.entitycode.CodeGenerator;
 import dev.austinbarnes.retailinventorymanagement.location.dto.retail.RetailLocationFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.retail.RetailLocationRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.retail.RetailLocationResponseDTO;
@@ -28,6 +29,7 @@ import java.util.UUID;
 public class RetailLocationService {
     private final RetailLocationRepository repository;
     private final RetailLocationMapper mapper;
+    private final CodeGenerator codeGenerator;
 
     /**
      * Creates a new retail location.
@@ -40,9 +42,11 @@ public class RetailLocationService {
     public ResponseEntity<ApiResponseDto<RetailLocationResponseDTO>> createRetailLocation(
             RetailLocationRequestDTO request) {
         log.info("Creating new retail location: {}", request);
+        RetailLocation newLocation = mapper.toEntity(request);
+        newLocation.setRetailLocationCode(codeGenerator.generateRetailLocationCode());
         return ApiResponseDto.created(isManager() ?
-                mapper.toDetailDTO(repository.save(mapper.toEntity(request))) :
-                mapper.toBasicDTO(repository.save(mapper.toEntity(request)))
+                mapper.toDetailDTO(repository.save(newLocation)) :
+                mapper.toBasicDTO(repository.save(newLocation))
         );
     }
 
