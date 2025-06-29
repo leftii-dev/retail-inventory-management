@@ -7,10 +7,7 @@ import dev.austinbarnes.retailinventorymanagement.auth.dto.UserResponseDetailDto
 import dev.austinbarnes.retailinventorymanagement.auth.entity.User;
 import dev.austinbarnes.retailinventorymanagement.auth.repo.RoleRepository;
 import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-import org.mapstruct.ObjectFactory;
+import org.mapstruct.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
@@ -31,9 +28,11 @@ public interface UserMapper {
     User toEntity(UserRequestDto userRequestDto);
 
     /**
-     * Converts a User entity to a UserResponseBasicDto.
+     * Converts a RegistrationRequestDto to a User entity without roles.
      *
-     * @return the converted UserResponseBasicDto
+     * @param registrationRequestDto the RegistrationRequestDto to convert
+     * @param passwordEncoder         the PasswordEncoder to use for password encoding
+     * @return the converted User entity without roles
      */
     @Mapping(target = "roles", ignore = true)
     @Mapping(target = "password", expression = "java(passwordEncoder.encode(registrationRequestDto.password()))")
@@ -78,4 +77,12 @@ public interface UserMapper {
     default RoleMapper getRoleMapper() {
         return new RoleMapper() {};
     }
+
+    /**
+     * Updates an existing User entity with the values from the UserRequestDto.
+     *
+     * @param userRequestDto the UserRequestDto containing the new values
+     * @param user           the User entity to update
+     */
+    void updateEntityFromRequest(UserRequestDto userRequestDto, @MappingTarget User user);
 }
