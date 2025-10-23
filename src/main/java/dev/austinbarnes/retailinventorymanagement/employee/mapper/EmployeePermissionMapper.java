@@ -4,11 +4,15 @@ import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.EmployeePermissionRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.EmployeePermissionResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.EmployeePermissionResponseDetailDTO;
+import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.EmployeePermission;
+import dev.austinbarnes.retailinventorymanagement.employee.entity.Permission;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
+
+import java.util.UUID;
 
 /**
  * EmployeePermissionMapper is an interface for mapping between EmployeePermission entities and their DTO representations.
@@ -23,8 +27,24 @@ public interface EmployeePermissionMapper {
      * @param employeePermissionRequestDTO the EmployeePermissionRequestDTO to convert
      * @return the converted EmployeePermission entity
      */
+
+    @Mapping(target = "employee", source = "employeeID")
+    @Mapping(target = "permission", source = "roleID")
     EmployeePermission toEntity(EmployeePermissionRequestDTO employeePermissionRequestDTO);
 
+    default Employee mapEmployee(UUID employeeID) {
+        if(employeeID == null) return null;
+        Employee employee = new Employee();
+        employee.setId(employeeID);
+        return employee;
+    }
+
+    default Permission mapPermission(UUID permissionID) {
+        if(permissionID == null) return null;
+        Permission permission = new Permission();
+        permission.setId(permissionID);
+        return permission;
+    }
     /**
      * Converts an EmployeePermission entity to an EmployeePermissionResponseBasicDTO.
      *

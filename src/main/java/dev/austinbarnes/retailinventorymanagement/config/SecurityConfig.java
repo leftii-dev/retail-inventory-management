@@ -57,8 +57,8 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http, InMemoryClientRegistrationRepository clientRegistrationRepository) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-//                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .cors(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+//                .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**",
                                             "/api/v1/public/**",
@@ -66,8 +66,9 @@ public class SecurityConfig {
                                             "/login/**",
                                             "/oauth2/**",
                                             "/favicon.ico",
+                                            "/swagger-ui.html",
                                             "/swagger-ui/**",
-                                              "/v3/api-docs/**").permitAll()
+                                            "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(customAuthenticationProvider)
@@ -75,8 +76,8 @@ public class SecurityConfig {
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .authorizationEndpoint(authorizationEndpointConfig ->
-                                authorizationEndpointConfig.authorizationRequestResolver(customAuthorizationRequestResolver(clientRegistrationRepository)))
+//                        .authorizationEndpoint(authorizationEndpointConfig ->
+//                                authorizationEndpointConfig.authorizationRequestResolver(customAuthorizationRequestResolver(clientRegistrationRepository)))
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(oAuthUserService)
                         )
@@ -101,7 +102,8 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        // TODO: Update for production
+        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // should become https://inventory-system.austinbarnes.dev
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

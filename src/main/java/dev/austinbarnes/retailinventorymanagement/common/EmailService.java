@@ -25,7 +25,7 @@ public class EmailService {
 
     @Value("${spring.mail.username}")
     private String fromEmail;
-    @Value("${app.base.url}")
+    @Value("${app.frontend.url}")
     private String baseUrl;
 
     /**
@@ -44,7 +44,8 @@ public class EmailService {
             helper.setTo(to);
             helper.setSubject("Activate Your Account");
 
-            String link = baseUrl + "/api/v1/auth/activate?token=" + token;
+            String link = "%s/auth/activate/%s".formatted(baseUrl, token);
+
 
             String htmlContent = """
                     <html>

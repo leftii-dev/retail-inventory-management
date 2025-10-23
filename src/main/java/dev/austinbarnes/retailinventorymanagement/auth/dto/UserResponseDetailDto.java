@@ -1,7 +1,5 @@
 package dev.austinbarnes.retailinventorymanagement.auth.dto;
 
-import dev.austinbarnes.retailinventorymanagement.auth.entity.Role;
-
 import java.util.Set;
 import java.util.UUID;
 
@@ -26,8 +24,9 @@ public record UserResponseDetailDto(
         String email,
         String name,
         String oauthProvider,
+        String pictureUrl,
         UUID employeeId,
-        Set<Role> roles,
+        Set<String> roles,
         boolean enabled,
         boolean accountNonExpired,
         boolean accountNonLocked,

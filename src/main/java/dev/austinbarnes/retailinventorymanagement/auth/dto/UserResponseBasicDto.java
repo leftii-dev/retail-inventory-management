@@ -1,5 +1,6 @@
 package dev.austinbarnes.retailinventorymanagement.auth.dto;
 
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -11,6 +12,9 @@ import java.util.UUID;
  */
 public record UserResponseBasicDto(
         UUID id,
-        String name
+        String name,
+        String email,
+        String pictureUrl,
+        Set<String> roles
 ) implements UserResponseDto{
 }

@@ -59,7 +59,7 @@ public class AuthService {
     @Transactional
     public ResponseEntity<ApiResponseDto<UserResponseDto>> authenticateUser(UserLoginRequestDto loginRequestDto) {
         UserResponseBasicDto userResponse = userRepository.findByEmail(loginRequestDto.email())
-                .map(userMapper::toBasicDto)
+                .map(user -> userMapper.toBasicDto(user, roleRepository))
                 .orElseThrow(() -> new UsernameNotFoundException(loginRequestDto.email()));
 
         authenticate(loginRequestDto.email(), loginRequestDto.password());
@@ -80,7 +80,7 @@ public class AuthService {
         User user = userRepository.findById(employee.getUser().getId())
                 .orElseThrow(() -> new UsernameNotFoundException("Employee not found"));
 
-        UserResponseBasicDto userResponse = userMapper.toBasicDto(user);
+        UserResponseBasicDto userResponse = userMapper.toBasicDto(user, roleRepository);
 
         authenticate(user.getEmail(), loginRequestDto.password());
 
@@ -100,7 +100,7 @@ public class AuthService {
             User user = userRepository.save(userMapper.toEntity(registrationRequest, roleRepository, passwordEncoder));
 
             activationTokenService.activateAndSendEmail(user.getId(), registrationRequest.email());
-            return ApiResponseDto.created(userMapper.toBasicDto(user));
+            return ApiResponseDto.created(userMapper.toBasicDto(user, roleRepository));
     }
 
     /**
@@ -120,7 +120,7 @@ public class AuthService {
         user.setEnabled(true);
         userRepository.save(user);
 
-        return ApiResponseDto.ok(userMapper.toBasicDto(user));
+        return ApiResponseDto.ok(userMapper.toBasicDto(user, roleRepository));
     }
 
     /**

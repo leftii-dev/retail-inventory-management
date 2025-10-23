@@ -80,7 +80,7 @@ public class EmployeePermissionController {
         @ApiResponse(responseCode = "404", description = "Employee permission not found")
     })
     @PutMapping("/{employeePermissionID}")
-    public ResponseEntity<ApiResponseDto<EmployeePermissionResponseDTO>> updateEmployeePermission(@RequestParam UUID employeePermissionID, @RequestBody @Valid EmployeePermissionRequestDTO employeePermission) {
+    public ResponseEntity<ApiResponseDto<EmployeePermissionResponseDTO>> updateEmployeePermission(@PathVariable UUID employeePermissionID, @RequestBody @Valid EmployeePermissionRequestDTO employeePermission) {
         log.info("Updating employee permissions with employee ID: {} permission ID: {}", employeePermission.employeeID(), employeePermission.roleID());
         return service.updateEmployeePermission(employeePermissionID, employeePermission);
     }

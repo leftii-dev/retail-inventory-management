@@ -3,9 +3,9 @@ package dev.austinbarnes.retailinventorymanagement.auth.controller;
 import dev.austinbarnes.retailinventorymanagement.auth.CustomUserPrincipal;
 import dev.austinbarnes.retailinventorymanagement.auth.dto.UserRequestDto;
 import dev.austinbarnes.retailinventorymanagement.auth.dto.UserResponseDto;
-import dev.austinbarnes.retailinventorymanagement.auth.repo.UserRepository;
 import dev.austinbarnes.retailinventorymanagement.auth.service.UserService;
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final UserRepository repository;
 
     @GetMapping
     public ResponseEntity<ApiResponseDto<List<UserResponseDto>>> getAllUsers(){
@@ -36,7 +35,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponseDto<UserResponseDto>> updateUser(@PathVariable UUID id, UserRequestDto request) {
+    public ResponseEntity<ApiResponseDto<UserResponseDto>> updateUser(@PathVariable UUID id, @RequestBody @Valid UserRequestDto request) {
         return userService.updateUser(id, request);
     }
 

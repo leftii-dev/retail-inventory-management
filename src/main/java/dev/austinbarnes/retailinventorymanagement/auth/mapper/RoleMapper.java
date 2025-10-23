@@ -3,6 +3,7 @@ package dev.austinbarnes.retailinventorymanagement.auth.mapper;
 import dev.austinbarnes.retailinventorymanagement.auth.entity.Role;
 import dev.austinbarnes.retailinventorymanagement.auth.repo.RoleRepository;
 import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
+import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Named;
 
@@ -24,11 +25,12 @@ public interface RoleMapper {
      * @return the converted set of Role entities
      */
     @Named("toRoleSet")
-    default Set<Role> toRoleSet(Set<String> roles, RoleRepository roleRepository) {
-        return roles.stream()
+    default Set<Role> toRoleSet(Set<String> roles, @Context RoleRepository roleRepository) {
+        return roles != null ? roles.stream()
                 .map(roleName -> roleRepository.findByName(roleName)
                         .orElseThrow(() -> new RuntimeException("Role not found: %s".formatted(roleName))))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet())
+                : Set.of();
     }
 
     /**
@@ -39,6 +41,7 @@ public interface RoleMapper {
      */
     @Named("toRoleNameSet")
     default Set<String> toRoleNameSet(Set<Role> roles) {
+        if(roles == null) return Set.of();
         return roles.stream()
                 .map(Role::getName)
                 .collect(Collectors.toSet());
