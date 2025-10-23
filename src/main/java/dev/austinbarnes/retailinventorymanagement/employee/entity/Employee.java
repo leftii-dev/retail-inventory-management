@@ -67,6 +67,6 @@ public class Employee extends BaseEntity {
     @NotNull
     private boolean isCurrentEmployee = true;
 
-    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<EmployeePermission> employeePermissions = new HashSet<>();
 }

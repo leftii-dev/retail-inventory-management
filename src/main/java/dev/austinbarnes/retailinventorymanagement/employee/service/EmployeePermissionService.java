@@ -7,6 +7,8 @@ import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.Employ
 import dev.austinbarnes.retailinventorymanagement.employee.entity.EmployeePermission;
 import dev.austinbarnes.retailinventorymanagement.employee.mapper.EmployeePermissionMapper;
 import dev.austinbarnes.retailinventorymanagement.employee.repo.EmployeePermissionRepository;
+import dev.austinbarnes.retailinventorymanagement.employee.repo.EmployeeRepository;
+import dev.austinbarnes.retailinventorymanagement.employee.repo.PermissionRepository;
 import dev.austinbarnes.retailinventorymanagement.employee.specification.EmployeePermissionSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -31,6 +33,8 @@ import java.util.UUID;
 @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
 public class EmployeePermissionService {
     private final EmployeePermissionRepository repository;
+    private final PermissionRepository permissionRepository;
+    private final EmployeeRepository employeeRepository;
     private final EmployeePermissionMapper mapper;
 
     /**
@@ -50,10 +54,14 @@ public class EmployeePermissionService {
      *
      * @param request The request DTO containing updated employee permission details.
      */
-    public ResponseEntity<ApiResponseDto<EmployeePermissionResponseDTO>> updateEmployeePermission(EmployeePermissionRequestDTO request) {
+    public ResponseEntity<ApiResponseDto<EmployeePermissionResponseDTO>> updateEmployeePermission(UUID employeePermissionID, EmployeePermissionRequestDTO request) {
         log.info("Updating employee permission for employee ID: {} and permission ID: {}", request.employeeID(), request.roleID());
-        EmployeePermission target = repository.findById(request.roleID())
+        EmployeePermission target = repository.findById(employeePermissionID)
                 .orElseThrow(() -> new EntityNotFoundException("Employee permission with ID: %s not found".formatted(request.roleID())));
+        target.setPermission(permissionRepository.findById(request.roleID())
+                .orElseThrow(() -> new EntityNotFoundException("Permission with ID: %s not found".formatted(request.roleID()))));
+        target.setEmployee(employeeRepository.findById(request.employeeID())
+                .orElseThrow(() -> new EntityNotFoundException("Employee with ID: %s not found".formatted(request.employeeID()))));
         return ApiResponseDto.ok(mapper.toDetailDTO(repository.save(target)));
     }
 

@@ -15,6 +15,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -230,4 +232,9 @@ public class AuthController {
                 .location(URI.create("/oauth2/authorization/github"))
                 .build();
     }
+
+    @GetMapping("/self")
+    public ResponseEntity<UserDetails> getCurrentUserPrincipal(@AuthenticationPrincipal UserDetails userDetails) {
+            return ResponseEntity.ok(userDetails);
+        }
 }

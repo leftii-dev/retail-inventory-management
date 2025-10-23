@@ -52,7 +52,7 @@ public class PermissionController {
                     )
             ),
     })
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<ApiResponseDto<PermissionResponseDTO>> createPermission(@RequestBody @Valid PermissionRequestDTO request) {
         log.info("Create permission request: {}", request);
         return permissionService.createPermission(request);
@@ -101,7 +101,7 @@ public class PermissionController {
                             schema = @Schema(oneOf = {PermissionResponseBasicDTO.class, PermissionResponseDetailDTO.class}))),
             @ApiResponse(responseCode = "400", description = "Bad request, invalid input data")
     })
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<ApiResponseDto<List<PermissionResponseDTO>>> getAllPermissions(
             @ModelAttribute @Valid PermissionFilterDTO filterDTO,
             @RequestParam(required = false) Integer page,

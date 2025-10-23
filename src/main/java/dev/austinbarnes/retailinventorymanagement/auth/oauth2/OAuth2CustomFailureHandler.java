@@ -24,20 +24,16 @@ public class OAuth2CustomFailureHandler implements AuthenticationFailureHandler 
         // Log the exception with detailed information
         log.error("OAuth2 authentication failure:", exception);
 
-        // Retrieve more specific error details
         String errorCode = (String) request.getSession().getAttribute("error");
         String errorDescription = (String) request.getSession().getAttribute("error_description");
 
-        // Log the additional error details
         log.error("OAuth2 error code: {}", errorCode);
         log.error("OAuth2 error description: {}", errorDescription);
 
-        // Clear the session attributes to avoid leaking sensitive information
         request.getSession().removeAttribute("error");
         request.getSession().removeAttribute("error_description");
 
-        // Optionally, you can also set a custom error message in the response
-        response.sendRedirect("/login?error=true");
+        response.sendRedirect("http://localhost:3000/auth/callback");
     }
 
 }

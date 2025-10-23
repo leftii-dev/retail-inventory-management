@@ -1,19 +1,16 @@
 package dev.austinbarnes.retailinventorymanagement.auth.oauth2;
 
 import dev.austinbarnes.retailinventorymanagement.auth.CustomUserPrincipal;
-import dev.austinbarnes.retailinventorymanagement.auth.credentiallogin.CustomUserDetails;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * OAuth2CustomSuccessHandler is a custom implementation of AuthenticationSuccessHandler.
@@ -55,6 +52,6 @@ public class OAuth2CustomSuccessHandler implements AuthenticationSuccessHandler 
 
         session.setMaxInactiveInterval(1800);
 
-        response.sendRedirect("/");
+        response.sendRedirect("http://localhost:3000/auth/callback");
     }
 }
