@@ -20,6 +20,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * AuthController handles authentication and registration requests.
@@ -236,5 +238,19 @@ public class AuthController {
     @GetMapping("/self")
     public ResponseEntity<UserDetails> getCurrentUserPrincipal(@AuthenticationPrincipal UserDetails userDetails) {
             return ResponseEntity.ok(userDetails);
+    }
+
+    @PostMapping("/ping")
+    public ResponseEntity<Map<String, Object>> keepAlive(HttpSession session) {
+        Map<String,Object> response = new HashMap<>();
+        if(session == null){
+            response.put("active", false);
+            response.put("expiresAt", null);
+        } else {
+            response.put("active", true);
+            response.put("expiresAt", session.getLastAccessedTime() + session.getMaxInactiveInterval() * 1000L);
         }
+
+        return ResponseEntity.ok(response);
+    }
 }
