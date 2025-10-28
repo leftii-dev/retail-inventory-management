@@ -5,18 +5,21 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.UUID;
 
 /**
  * OAuth2CustomSuccessHandler is a custom implementation of AuthenticationSuccessHandler.
  * It handles successful authentication for OAuth2 login process.
  * It retrieves user information from the OAuth2 provider and stores it in the session.
  */
+@Slf4j
 @Component
 public class OAuth2CustomSuccessHandler implements AuthenticationSuccessHandler {
     /**
@@ -35,22 +38,34 @@ public class OAuth2CustomSuccessHandler implements AuthenticationSuccessHandler 
         OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) authentication;
         String provider = String.valueOf(token.getAuthorizedClientRegistrationId());
 
-        HttpSession session = request.getSession();
 
-        OAuth2UserInfo userInfo;
 
-        switch( provider ){
-            case "google" -> userInfo = new GoogleOAuth2UserInfo(((CustomUserPrincipal)authentication.getPrincipal()).getAttributes());
-            case "github" -> userInfo = new GithubOAuth2UserInfo(((CustomUserPrincipal)authentication.getPrincipal()).getAttributes());
-            default -> throw new ServletException("Unsupported provider: " + provider);
+        Object principalObj = authentication.getPrincipal();
+        if(principalObj instanceof CustomUserPrincipal principal) {
+            HttpSession session = request.getSession();
+            UUID userId = principal.getId();
+
+            OAuth2UserInfo userInfo;
+
+            switch( provider ){
+                case "google" -> userInfo = new GoogleOAuth2UserInfo(principal.getAttributes());
+                case "github" -> userInfo = new GithubOAuth2UserInfo(principal.getAttributes());
+                default -> throw new ServletException("Unsupported provider: " + provider);
+            }
+
+            session.setAttribute("userId", userId.toString());
+            session.setAttribute("providerUserId", userInfo.getId());
+            session.setAttribute("email", userInfo.getEmail());
+            session.setAttribute("name", userInfo.getName());
+            session.setAttribute("isAuthenticated", true);
+
+            session.setMaxInactiveInterval(1800);
+            log.info("User {} logged in with ID {} (session {})",
+                    principal.getEmail(), principal.getId(), session.getId());
+        } else {
+            log.warn("Principal is not CustomUserPrincipal {}", authentication.getPrincipal().getClass().getName());
         }
 
-        session.setAttribute("providerUserId", userInfo.getId());
-        session.setAttribute("email", userInfo.getEmail());
-        session.setAttribute("name", userInfo.getName());
-        session.setAttribute("isAuthenticated", true);
-
-        session.setMaxInactiveInterval(1800);
 
         response.sendRedirect("http://localhost:3000/auth/callback");
     }

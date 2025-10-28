@@ -1,5 +1,6 @@
 package dev.austinbarnes.retailinventorymanagement.auth.service;
 
+import dev.austinbarnes.retailinventorymanagement.auth.CustomUserPrincipal;
 import dev.austinbarnes.retailinventorymanagement.auth.dto.*;
 import dev.austinbarnes.retailinventorymanagement.auth.entity.ActivationToken;
 import dev.austinbarnes.retailinventorymanagement.auth.entity.User;
@@ -94,13 +95,23 @@ public class AuthService {
      * @return a response entity containing the registration result
      */
     public ResponseEntity<ApiResponseDto<UserResponseDto>> register(RegistrationRequestDto registrationRequest){
-            if(userRepository.findByEmail(registrationRequest.email()).isPresent()){
-                throw new DuplicateEmailRegistrationException(registrationRequest.email(), "Email already registered.");
+        User existing = userRepository.findByEmail(registrationRequest.email()).orElse(null);
+            if(existing != null) {
+                if (existing.getPassword() != null) {
+                    throw new DuplicateEmailRegistrationException(registrationRequest.email(), "Email already registered.");
+                }
+                // Account already exists as OAuth - Set password, enable credential account
+                userMapper.updateEntityFromRegistrationRequestDto(registrationRequest, existing);
+                existing.setPassword(passwordEncoder.encode(registrationRequest.password()));
+                existing.setEnabled(true);
+                return ApiResponseDto.ok(userMapper.toBasicDto(userRepository.save(existing), roleRepository));
             }
-            User user = userRepository.save(userMapper.toEntity(registrationRequest, roleRepository, passwordEncoder));
 
-            activationTokenService.activateAndSendEmail(user.getId(), registrationRequest.email());
-            return ApiResponseDto.created(userMapper.toBasicDto(user, roleRepository));
+        User user = userRepository.save(userMapper.toEntity(registrationRequest, roleRepository, passwordEncoder));
+
+
+        activationTokenService.activateAndSendEmail(user.getId(), registrationRequest.email());
+        return ApiResponseDto.created(userMapper.toBasicDto(user, roleRepository));
     }
 
     /**
@@ -143,6 +154,13 @@ public class AuthService {
         HttpServletRequest request = ((ServletRequestAttributes) attrs).getRequest();
         HttpSession session = request.getSession(true);
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext);
+
+        // Adding user info to the session for easy access
+        CustomUserPrincipal principal = (CustomUserPrincipal) auth.getPrincipal();
+        session.setAttribute("userId", principal.getId().toString());
+        session.setAttribute("email", principal.getEmail());
+        session.setAttribute("name", principal.getName());
+        session.setAttribute("isAuthenticated", true);
     }
 
 }

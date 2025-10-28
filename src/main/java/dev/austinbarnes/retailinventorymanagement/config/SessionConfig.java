@@ -14,10 +14,10 @@ import java.net.URI;
 /**
  * SessionConfig is a Spring configuration class that sets up Redis-based HTTP sessions.
  * It configures the session timeout, cookie settings, and Redis connection factory.
- * The session timeout is set to 3600 seconds (1 hour).
+ * The session timeout is set to 1800 seconds (30 Minutes).
  */
 @Configuration
-@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 3600)
+@EnableRedisHttpSession()
 public class SessionConfig {
 
     @Value("${app.frontend.url}")
@@ -47,8 +47,8 @@ public class SessionConfig {
         serializer.setCookieName("SESSION");
         serializer.setCookiePath("/");
         serializer.setSameSite("Lax");
-        serializer.setUseSecureCookie(true);
-        serializer.setCookieMaxAge(3600);
+        serializer.setUseSecureCookie(false); // Change for prod
+        serializer.setCookieMaxAge(1800);
 
         // If frontend and backend are on different domains
         if(!frontendUrl.isEmpty()) {

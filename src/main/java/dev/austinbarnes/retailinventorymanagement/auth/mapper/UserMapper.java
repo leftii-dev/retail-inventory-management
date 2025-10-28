@@ -57,4 +57,8 @@ public interface UserMapper {
 
     @Mapping(target = "roles", ignore = true)
     void updateEntityFromRequestWithoutRoles(UserRequestDto userRequestDto, @MappingTarget User user);
+
+    @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    void updateEntityFromRegistrationRequestDto(RegistrationRequestDto registrationRequestDto, @MappingTarget User user);
 }

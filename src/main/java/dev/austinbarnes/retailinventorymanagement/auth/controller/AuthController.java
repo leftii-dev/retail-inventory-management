@@ -241,7 +241,8 @@ public class AuthController {
     }
 
     @PostMapping("/ping")
-    public ResponseEntity<Map<String, Object>> keepAlive(HttpSession session) {
+    public ResponseEntity<Map<String, Object>> keepAlive(HttpServletRequest request) {
+        HttpSession session = request.getSession(false); // Check existing session, but don't create new
         Map<String,Object> response = new HashMap<>();
         if(session == null){
             response.put("active", false);
