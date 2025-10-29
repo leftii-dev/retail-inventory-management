@@ -13,6 +13,7 @@ import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import dev.austinbarnes.retailinventorymanagement.employee.repo.EmployeeRepository;
 import dev.austinbarnes.retailinventorymanagement.exception.ActivationTokenNotFoundException;
 import dev.austinbarnes.retailinventorymanagement.exception.DuplicateEmailRegistrationException;
+import dev.austinbarnes.retailinventorymanagement.exception.LinkTokenNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
@@ -104,6 +105,8 @@ public class AuthService {
                 userMapper.updateEntityFromRegistrationRequestDto(registrationRequest, existing);
                 existing.setPassword(passwordEncoder.encode(registrationRequest.password()));
                 existing.setEnabled(true);
+                existing.setCredentialsNonExpired(false); // Disable credential login until email link complete when linking to oauth user
+                activationTokenService.linkAndSendEmail(existing.getId(), existing.getEmail());
                 return ApiResponseDto.ok(userMapper.toBasicDto(userRepository.save(existing), roleRepository));
             }
 
@@ -129,6 +132,20 @@ public class AuthService {
                 .orElseThrow(() -> new UsernameNotFoundException("User attached to token not found. Try again"));
 
         user.setEnabled(true);
+        userRepository.save(user);
+
+        return ApiResponseDto.ok(userMapper.toBasicDto(user, roleRepository));
+    }
+
+    @Transactional
+    public ResponseEntity<ApiResponseDto<UserResponseDto>> linkCredentialsToOAuth(String token) {
+        ActivationToken linkToken = activationTokenRepository.findById(UUID.fromString(token))
+                .orElseThrow(() -> new LinkTokenNotFoundException(token));
+
+        User user = userRepository.findById(linkToken.getUserId())
+                .orElseThrow(() -> new UsernameNotFoundException("User attached to token not found. Try again"));
+
+        user.setCredentialsNonExpired(true);
         userRepository.save(user);
 
         return ApiResponseDto.ok(userMapper.toBasicDto(user, roleRepository));

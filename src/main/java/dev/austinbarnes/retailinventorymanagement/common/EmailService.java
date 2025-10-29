@@ -36,17 +36,8 @@ public class EmailService {
      */
     @Async
     public void sendActivationEmail(String to, UUID token){
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
-            helper.setFrom(fromEmail);
-            helper.setTo(to);
-            helper.setSubject("Activate Your Account");
-
+            String subject = "Activate Your Account";
             String link = "%s/auth/activate/%s".formatted(baseUrl, token);
-
-
             String htmlContent = """
                     <html>
                         <body>
@@ -61,14 +52,37 @@ public class EmailService {
                     </html>
                     """.formatted(link, link);
 
-            helper.setText(htmlContent, true);
+            sendEmail(to, subject, htmlContent);
+    }
 
-            mailSender.send(message);
-            log.info("Activation email sent successfully to: {}", to);
-        } catch(MessagingException e) {
-            log.error("Failed to send activation email {}", to, e);
-            throw new RuntimeException("Failed to send activation email", e);
-        }
+    /**
+     * Sends an account linking email to user with unique token
+     * @param to email of user
+     * @param token used for linking account
+     */
+    @Async
+    public void sendOAuthLinkEmail(String to, UUID token){
+            String subject = "Link to Existing OAuth Account";
+
+            String link = "%s/auth/link/%s".formatted(baseUrl, token);
+
+            String htmlContent = """
+                    <html>
+                        <body>
+                            <h1>Link you account</h1>
+                            <p>
+                            You are receiving this because you previously logged in with OAuth2 (Google or GitHub).
+                            To link your email/password to the existing account, please click the link below.
+                            </p>
+                            <p><a href="%s">Link Your Account</a></p>
+                            <p>If the link doesn't work, copy and paste this URL into your browser:</p>
+                            <p>%s</p>
+                            <p>This link will expire after 24 hours.</p>
+                            <p>Take care!</p>
+                        </body>
+                    </html>
+                    """.formatted(link, link);
+            sendEmail(to, subject, htmlContent);
     }
 
     /**

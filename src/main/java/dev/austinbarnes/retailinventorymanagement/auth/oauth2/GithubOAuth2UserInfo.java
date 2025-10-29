@@ -31,4 +31,8 @@ public class GithubOAuth2UserInfo extends OAuth2UserInfo {
     public String getImageUrl() {
         return attributes.get("avatar_url") != null ? String.valueOf(attributes.get("avatar_url")) : null;
     }
+
+    public boolean isVerified() {
+        return (Boolean) attributes.get("email_verified");
+    }
 }

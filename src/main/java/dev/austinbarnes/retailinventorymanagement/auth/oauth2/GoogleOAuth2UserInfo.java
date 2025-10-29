@@ -30,4 +30,7 @@ public class GoogleOAuth2UserInfo extends OAuth2UserInfo {
     public String getImageUrl() {
         return String.valueOf(attributes.get("picture"));
     }
+
+    public boolean isVerified(){return (Boolean) attributes.get("email_verified"); }
+
 }

@@ -42,18 +42,32 @@ public class ActivationTokenService {
      * Creates a new activation token for the specified user and sends an activation email.
      * This method is marked as REQUIRES_NEW to ensure that it runs in a separate transaction.
      *
-     * @param userId the ID of the user
+     * @param userId    the ID of the user
      * @param userEmail the email address of the user
-     * @return the newly created activation token
      */
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public ActivationToken activateAndSendEmail(UUID userId, String userEmail) {
+    public void activateAndSendEmail(UUID userId, String userEmail) {
         log.info("Beginning create new activation token for user {}", userId);
         ActivationToken newActivationToken = new ActivationToken();
         newActivationToken.setUserId(userId);
         newActivationToken = activationTokenRepository.save(newActivationToken);
         log.info("Created new activation token {} for user {}", newActivationToken, userId);
         mailer.sendActivationEmail(userEmail, newActivationToken.getId());
-        return newActivationToken;
+    }
+
+    /**
+     * Creates a new ActivationToken for linking credential account to existing OAuth2 account
+     *
+     * @param userId the ID of the user
+     * @param userEmail the email address of the user
+     */
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    public void linkAndSendEmail(UUID userId, String userEmail) {
+        log.info("Beginning create new link token for user {}", userId);
+        ActivationToken linkToken = new ActivationToken();
+        linkToken.setUserId(userId);
+        linkToken = activationTokenRepository.save(linkToken);
+        log.info("Created link token {} for user {}", linkToken, userId);
+        mailer.sendOAuthLinkEmail(userEmail, linkToken.getId());
     }
 }

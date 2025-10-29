@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -42,6 +43,10 @@ public class OAuth2CustomSuccessHandler implements AuthenticationSuccessHandler 
 
         Object principalObj = authentication.getPrincipal();
         if(principalObj instanceof CustomUserPrincipal principal) {
+
+            if(!principal.getUser().isEnabled()) {
+                throw new DisabledException("User account is not enabled");
+            }
             HttpSession session = request.getSession();
             UUID userId = principal.getId();
 

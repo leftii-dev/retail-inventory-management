@@ -7,16 +7,18 @@ import dev.austinbarnes.retailinventorymanagement.auth.repo.RoleRepository;
 import dev.austinbarnes.retailinventorymanagement.auth.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientException;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -42,7 +44,6 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
-
         try {
             return processOAuth2User(userRequest, oAuth2User);
         } catch(Exception e) {
@@ -60,8 +61,16 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
      */
     private OAuth2User processOAuth2User(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
         String provider = userRequest.getClientRegistration().getRegistrationId();
+        String accessToken = userRequest.getAccessToken().getTokenValue();
 
-        OAuth2UserInfo userInfo = getOAuth2UserInfo(provider, oAuth2User.getAttributes());
+        OAuth2UserInfo userInfo = getOAuth2UserInfo(provider, oAuth2User.getAttributes(), accessToken);
+
+        if(!userInfo.isVerified()){
+            throw new OAuth2AuthenticationException(
+                    new OAuth2Error("email_not_verified"),
+                    "Email associated with OAuth provider is not verified. Verify your email with the OAuth provider and try again."
+            );
+        }
 
         Optional<User> userOptional = userRepository.findByOauthProviderAndOauthProviderId(provider, userInfo.getId());
 
@@ -90,11 +99,53 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
      * @param attributes the user attributes from the OAuth2 provider
      * @return OAuth2UserInfo object containing user information
      */
-    private OAuth2UserInfo getOAuth2UserInfo(String provider, Map<String, Object> attributes) {
+    private OAuth2UserInfo getOAuth2UserInfo(String provider, Map<String, Object> attributes, String accessToken) {
         return switch (provider) {
             case "google" -> new GoogleOAuth2UserInfo(attributes);
-            case "github" -> new GithubOAuth2UserInfo(attributes);
-            default -> throw new OAuth2AuthenticationException("Provider not supported: " + provider);
+            case "github" -> {
+                Map<String, Object> newAttributes = new HashMap<>(attributes);
+
+                RestClient restClient = RestClient.create();
+
+                try {
+                    List<Map<String, Object>> emails = restClient.get()
+                            .uri("https://api.github.com/user/emails")
+                            .headers(headers -> {
+                                headers.setBearerAuth(accessToken);
+                                headers.set("Accept", "application/vnd.github+json");
+                            })
+                            .retrieve()
+                            .toEntity(new ParameterizedTypeReference<List<Map<String, Object>>>() {})
+                            .getBody();
+
+                    if(emails == null) {
+                        emails = Collections.emptyList();
+                    }
+
+                    Optional<Map<String, Object>> primaryVerified = emails.stream()
+                            .filter(e -> Boolean.TRUE.equals(e.get("verified")) && Boolean.TRUE.equals(e.get("primary")))
+                            .findFirst();
+
+                    if(primaryVerified.isPresent()){
+                        newAttributes.put("email", primaryVerified.get().get("email"));
+                        newAttributes.put("email_verified", true);
+                    } else {
+                        newAttributes.put("email", null);
+                        newAttributes.put("email_verified", false);
+                    }
+                } catch(RestClientException e) {
+                    throw new OAuth2AuthenticationException(
+                            new OAuth2Error("github_email_fetch_failed"),
+                            "Failed to fetch email from GitHub: " + e.getMessage()
+                    );
+                }
+
+                yield new GithubOAuth2UserInfo(newAttributes);
+            }
+            default -> throw new OAuth2AuthenticationException(
+                    new OAuth2Error("provider_not_supported"),
+                    "Provider not supported: " + provider
+            );
         };
     }
 
@@ -113,6 +164,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         user.setName(userInfo.getName());
         user.setEmail(userInfo.getEmail());
         user.setPictureUrl(userInfo.getImageUrl());
+        user.setEnabled(true); // Enable on initial OAuth success
 
         Set<Role> defaultShopperRole = roleRepository.findByName("SHOPPER")
                         .stream().collect(Collectors.toSet());
@@ -132,7 +184,9 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     private User updateExistingUser(User user, String provider, OAuth2UserInfo userInfo) {
         user.setOauthProvider(provider);
         user.setOauthProviderId(userInfo.getId());
-        user.setPictureUrl(userInfo.getImageUrl());
+        if(user.getPictureUrl() == null || user.getPictureUrl().isEmpty()) {
+            user.setPictureUrl(userInfo.getImageUrl());
+        }
 
         return userRepository.save(user);
     }
