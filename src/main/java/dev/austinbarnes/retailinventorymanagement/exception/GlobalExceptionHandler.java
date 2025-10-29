@@ -135,7 +135,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponseDto<String>> handleDisabledException(Exception ex){
         log.error("Account Disabled", ex);
 
-        return ApiResponseDto.unauthorized("Account Disabled. Check email for activation link or try again.");
+        return ApiResponseDto.unauthorized("Account Disabled. Check email for activation link or contact administrator.");
     }
 
     /**
@@ -162,6 +162,18 @@ public class GlobalExceptionHandler {
         log.error("Account Activation Token Expired", ex);
 
         return ApiResponseDto.badRequest("Activation token expired. Check your email for a new activation link");
+    }
+
+    /**
+     * Handles exceptions thrown when an account linking token has expired.
+     * @param ex the LinkTokenExpiredException
+     * @return a ResponseEntity with a Bad Request response
+     */
+    @ExceptionHandler(LinkTokenNotFoundException.class)
+    public ResponseEntity<ApiResponseDto<String>> handleLinkTokenExpiredException(Exception ex){
+        log.error("Account Link Token Expired", ex);
+
+        return ApiResponseDto.badRequest("Link token expired. Check your email for a new activation link");
     }
 
 
