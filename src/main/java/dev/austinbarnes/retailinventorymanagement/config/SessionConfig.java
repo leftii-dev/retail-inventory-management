@@ -20,8 +20,8 @@ import java.net.URI;
 @EnableRedisHttpSession()
 public class SessionConfig {
 
-    @Value("${app.frontend.url}")
-    private String frontendUrl; // pulls frontendUrl from application.properties if frontend is different domain
+    @Value("${session.cookie.domain}")
+    private String cookieDomain;
 
     @Value("${spring.data.redis.host:localhost}")
     private String redisHost;
@@ -49,16 +49,7 @@ public class SessionConfig {
         serializer.setSameSite("Lax");
         serializer.setUseSecureCookie(false); // Change for prod
         serializer.setCookieMaxAge(1800);
-
-        // If frontend and backend are on different domains
-        if(!frontendUrl.isEmpty()) {
-            String domain = extractDomain(frontendUrl);
-            serializer.setDomainName(domain);
-        } else {
-            serializer.setDomainNamePattern("^.+?\\.(\\w+\\.[a-z]+)$"); // Allows sharing between subdomains
-
-        }
-
+        serializer.setDomainName(cookieDomain); // Allows sharing between subdomains
         serializer.setRememberMeRequestAttribute("remember-me");
         serializer.setUseHttpOnlyCookie(true);
         return serializer;

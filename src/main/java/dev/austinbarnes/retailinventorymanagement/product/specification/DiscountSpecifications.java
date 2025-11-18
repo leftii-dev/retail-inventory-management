@@ -15,7 +15,7 @@ public class DiscountSpecifications {
             Predicate predicate = criteriaBuilder.conjunction();
 
             Specification<Discount> baseSpec = BaseSpecifications.applyBaseFilters(filterDTO != null ? filterDTO.baseFilterDTO() : null);
-            predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("discount"), filterDTO));
+            predicate = criteriaBuilder.and(predicate, baseSpec.toPredicate(root, query, criteriaBuilder));
 
             if(filterDTO != null) {
                 if(filterDTO.codeContains() != null) {

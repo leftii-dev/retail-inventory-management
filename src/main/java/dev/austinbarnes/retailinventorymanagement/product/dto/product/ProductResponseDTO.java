@@ -1,6 +1,7 @@
 package dev.austinbarnes.retailinventorymanagement.product.dto.product;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -26,4 +27,6 @@ public interface ProductResponseDTO {
     String brandName();
     UUID discountID();
     String discountName();
+    List<ProductImageResponseDTO> images();
+
 }

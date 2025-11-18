@@ -2,6 +2,7 @@ package dev.austinbarnes.retailinventorymanagement.product.dto.product;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -54,6 +55,7 @@ public record ProductResponseDetailDTO(
         UUID modifiedBy,
         UUID discountID,
         String discountName,
-        boolean active
+        boolean active,
+        List<ProductImageResponseDTO> images
 ) implements ProductResponseDTO {
 }

@@ -9,6 +9,8 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -83,4 +85,42 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "discount_id", referencedColumnName = "id")
     @Valid
     Discount discount;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("displayOrder ASC")
+    private List<ProductImage> images = new ArrayList<>();
+
+    public void setDefaultImage(ProductImage newDefault){
+        if (!images.contains(newDefault)){
+            throw new IllegalArgumentException("Image does not belong to this product.");
+        }
+
+        images.forEach(img -> img.setIsDefault(false));
+        newDefault.setIsDefault(true);
+    }
+
+    public ProductImage getDefaultImage() {
+        return images.stream()
+                .filter(ProductImage::getIsDefault)
+                .findFirst()
+                .orElse(images.isEmpty() ? null : images.getFirst());
+    }
+
+    public void addImage(ProductImage image) {
+        images.add(image);
+        image.setProduct(this);
+
+        if(images.size() == 1) {
+            image.setIsDefault(true);
+        }
+    }
+
+    public void removeImage(ProductImage image) {
+        images.remove(image);
+        image.setProduct(null);
+
+        if(image.getIsDefault() && !images.isEmpty()) {
+            images.getFirst().setIsDefault(true);
+        }
+    }
 }
