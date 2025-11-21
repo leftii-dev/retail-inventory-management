@@ -18,7 +18,6 @@ import java.util.Map;
 /**
  * SessionDebugFilter is a custom filter that logs session information and authorization requests.
  * It extends OncePerRequestFilter to ensure it is executed once per request.
- * This filter is useful for debugging purposes to inspect session attributes.
  */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
