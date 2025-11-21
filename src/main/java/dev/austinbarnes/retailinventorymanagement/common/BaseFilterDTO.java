@@ -7,6 +7,18 @@ import jakarta.validation.constraints.PastOrPresent;
 import java.time.Instant;
 import java.util.UUID;
 
+/**
+ * BaseFilterDTO is a data transfer object for filtering entities based on common attributes.
+ * @param createdAt
+ * @param createdBefore
+ * @param createdAfter
+ * @param modifiedAt
+ * @param modifiedBefore
+ * @param modifiedAfter
+ * @param createdBy
+ * @param modifiedBy
+ * @param showInactive
+ */
 public record BaseFilterDTO(
         @PastOrPresent(message = "createdAt must be past or present.")
         Instant createdAt,
