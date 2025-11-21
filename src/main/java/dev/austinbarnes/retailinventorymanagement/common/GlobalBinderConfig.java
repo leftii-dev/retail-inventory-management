@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.InitBinder;
 import java.time.Instant;
 import java.util.UUID;
 
+/**
+ * GlobalBinderConfig is a controller advice that configures data binding for FilterDTO objects.
+ * It extracts common filter parameters from the HTTP request and populates a BaseFilterDTO
+ * which can be used in controllers for filtering purposes.
+ */
 @ControllerAdvice
 public class GlobalBinderConfig {
 
@@ -32,7 +37,7 @@ public class GlobalBinderConfig {
             Instant modifiedBeforeVal = parseInstant(modifiedBefore);
             Instant modifiedAfterVal = parseInstant(modifiedAfter);
             UUID createdByVal = parseUUID(createdBy);
-            UUID modifiedByval = parseUUID(modifiedBy);
+            UUID modifiedByVal = parseUUID(modifiedBy);
             Boolean showInactiveVal = parseBoolean(showInactive);
 
             BaseFilterDTO baseFilter = new BaseFilterDTO(
@@ -43,7 +48,7 @@ public class GlobalBinderConfig {
                     modifiedBeforeVal,
                     modifiedAfterVal,
                     createdByVal,
-                    modifiedByval,
+                    modifiedByVal,
                     showInactiveVal
             );
 
