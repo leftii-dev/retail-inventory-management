@@ -42,7 +42,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                     .orElseThrow(() -> new UsernameNotFoundException("User not found with email " + usernameOrEmployeeCode));
             loginIdentifier = user.getEmail();
         } else {
-            // If not an email, treat as employee code - Ad prefix for searching with repository
+            // If not an email, treat as employee code - Add prefix for searching with repository
             // employee should only use the numbers in their employeeCode
             Employee employee = employeeRepository.findByEmployeeCode("EMP-" + usernameOrEmployeeCode)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found with employee code " + "EMP-" + usernameOrEmployeeCode));
