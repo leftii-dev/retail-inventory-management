@@ -6,6 +6,10 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 
+/**
+ * BaseSpecifications is a utility class that provides JPA Specifications for filtering entities
+ * based on common attributes defined in BaseFilterDTO. Handles base filtering for all entities extending BaseEntity.
+ */
 public class BaseSpecifications {
     public static <T extends BaseEntity> Specification<T> applyBaseFilters(BaseFilterDTO filterDTO) {
         return (Root<T> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) -> {

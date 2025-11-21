@@ -25,20 +25,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * ApiResponseDtoCustomizer customizes the OpenAPI documentation to wrap response schemas
+ * in the ApiResponseDto structure. It scans controller methods to determine the data types
+ * used in ApiResponseDto and modifies the OpenAPI paths accordingly.
+ */
 @Configuration
 @SuppressWarnings("unchecked")
 public class ApiResponseDtoCustomizer {
-
+    // Handler mapping to access controller methods
     private final RequestMappingHandlerMapping handlerMapping;
 
     public ApiResponseDtoCustomizer(RequestMappingHandlerMapping handlerMapping) {
         this.handlerMapping = handlerMapping;
     }
 
+    /**
+     * Customizes the OpenAPI documentation to wrap response schemas in ApiResponseDto.
+     *
+     * @return OpenApiCustomizer that modifies the OpenAPI paths
+     */
     @Bean
     public OpenApiCustomizer customizeApiResponses() {
         Map<String, Class<?>> operationIdToDataType = extractDataTypesFromControllerMethods();
 
+        // Return the OpenApiCustomizer
         return openApi -> {
             if (openApi.getPaths() == null || openApi.getComponents() == null) return;
 
@@ -74,6 +85,11 @@ public class ApiResponseDtoCustomizer {
         };
     }
 
+    /**
+     * Extracts the data types used in ApiResponseDto from controller methods.
+     *
+     * @return Map of operation IDs to their corresponding data types
+     */
     private Map<String, Class<?>> extractDataTypesFromControllerMethods() {
         Map<String, Class<?>> operationIdToType = new HashMap<>();
 
@@ -99,6 +115,13 @@ public class ApiResponseDtoCustomizer {
         return operationIdToType;
     }
 
+    /**
+     * Creates a Schema representing the ApiResponseDto structure for the given data type.
+     *
+     * @param dataType   The data type to be wrapped
+     * @param components The OpenAPI components
+     * @return Schema representing ApiResponseDto with the specified data type
+     */
     private Schema<?> createApiResponseDtoSchema(Class<?> dataType, Components components) {
         Schema<?> dataSchema;
 
@@ -129,6 +152,12 @@ public class ApiResponseDtoCustomizer {
         return wrapper;
     }
 
+    /**
+     * Finds all concrete implementations of the given interface within specified packages.
+     *
+     * @param iface The interface to find implementations for
+     * @return List of classes that implement the given interface
+     */
     private List<Class<?>> findImplementations(Class<?> iface) {
         List<Class<?>> implementations = new ArrayList<>();
         ClassPathScanningCandidateComponentProvider scanner =

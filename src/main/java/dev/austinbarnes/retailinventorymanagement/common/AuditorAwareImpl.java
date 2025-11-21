@@ -12,9 +12,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * AuditorAwareImpl is a Spring component that provides the current auditor's ID for auditing purposes.
- * It implements the AuditorAware interface and returns the ID of the currently authenticated user,
- * or a system employee ID if no user is authenticated.
+ * AuditorAwareImpl provides the currently logged-in user ID or system user ID.
+ * Enables automatic population of auditing fields in entities.
  */
 @Component
 @RequiredArgsConstructor
