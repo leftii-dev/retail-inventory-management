@@ -10,20 +10,15 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -201,7 +196,7 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Bad request, invalid input data"),
     })
     @PostMapping("/logout")
-    public <T> ResponseEntity<ApiResponseDto<T>> logout(HttpServletRequest request) {
+    public ResponseEntity<ApiResponseDto<Void>> logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
@@ -267,16 +262,6 @@ public class AuthController {
                 .build();
     }
 
-    @GetMapping("/self")
-    public ResponseEntity<UserDetails> getCurrentUserPrincipal(@AuthenticationPrincipal UserDetails userDetails) {
-            return ResponseEntity.ok(userDetails);
-    }
-
-    @PostMapping("/ping")
-    public ResponseEntity<Map<String, Object>> ping() {
-        return ResponseEntity.ok().build();
-    }
-
     @GetMapping("/session-status")
     public ResponseEntity<ApiResponseDto<UserResponseDto>> getSessionStatus(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
@@ -286,21 +271,4 @@ public class AuthController {
         return userService.getUserByID(UUID.fromString(session.getAttribute("userId").toString()));
     }
 
-    @GetMapping("/refresh-session")
-    public ResponseEntity<?> refreshSession(HttpServletRequest request, HttpServletResponse response) {
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Session expired");
-        }
-
-
-        // Set the updated cookie to front end
-        Cookie cookie = new Cookie("SESSION", session.getId());
-        cookie.setHttpOnly(true);
-        cookie.setSecure(false); // TODO: Change in prod
-        cookie.setPath("/");
-        response.addCookie(cookie);
-
-        return ResponseEntity.ok(Map.of("status", "ok"));
-    }
 }
