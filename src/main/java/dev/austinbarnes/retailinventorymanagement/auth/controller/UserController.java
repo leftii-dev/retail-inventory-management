@@ -26,6 +26,11 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponseDto<UserResponseDto>> getUserByID(@PathVariable UUID id) {
+        return userService.getUserByID(id);
+    }
+
     @GetMapping("/me")
     public ResponseEntity<ApiResponseDto<UserResponseDto>> getCurrentUser(HttpSession session) {
         String id = (String) session.getAttribute("userId");

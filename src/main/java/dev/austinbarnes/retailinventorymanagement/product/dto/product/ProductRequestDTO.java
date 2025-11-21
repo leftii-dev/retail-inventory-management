@@ -29,6 +29,7 @@ public record ProductRequestDTO(
         @Size(min = 5, max = 100, message = "Name must be between 5 and 100") @NotNull String name,
         @Size(max = 3000, message = "Description cannot exceed 3000 characters") String description,
         @DecimalMax(value = "9999999999.99", message = "Price cannot exceed $9,999,999,999.99") @DecimalMin(value = "0.01", message = "Price cannot be less than $0.01") @Digits(integer = 10, fraction = 2) BigDecimal price,
+        @DecimalMax(value = "9999999999.99", message = "Price cannot exceed $9,999,999,999.99") @DecimalMin(value = "-9999999999.99", message = "Cost cannot be less than -$9,999,999,999.99") @Digits(integer = 10, fraction = 2) BigDecimal cost,
         @DecimalMax(value = "999999.99", message = "Weight cannot exceed 999,999.99") @DecimalMin(value = "0.00", message = "Weight cannot be negative") @Digits(integer = 6, fraction = 2) BigDecimal weight,
         Map<String, Object> dimensions,
         Map<String, Object> additionalDetails,

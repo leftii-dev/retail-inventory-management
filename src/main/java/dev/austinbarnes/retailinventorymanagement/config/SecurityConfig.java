@@ -61,8 +61,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 //                .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/auth/**",
-                                            "/api/v1/public/**",
+                        .requestMatchers("/api/v1/**",
                                             "/login/oauth2/code/**",
                                             "/login/**",
                                             "/oauth2/**",

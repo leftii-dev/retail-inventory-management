@@ -2,6 +2,7 @@ package dev.austinbarnes.retailinventorymanagement.auth.controller;
 
 import dev.austinbarnes.retailinventorymanagement.auth.dto.*;
 import dev.austinbarnes.retailinventorymanagement.auth.service.AuthService;
+import dev.austinbarnes.retailinventorymanagement.auth.service.UserService;
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -9,7 +10,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +23,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * AuthController handles authentication and registration requests.
@@ -34,6 +37,7 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
+    private final UserService userService;
 
     /**
      * Handles user login requests.
@@ -146,6 +150,34 @@ public class AuthController {
     }
 
     /**
+     * Handles credential to OAuth2 link requests.
+     *
+     * @param token the activation token
+     * @return a response entity containing the linking result
+     */
+    @Operation(
+            summary = "Link Credential Account to OAuth2 Account",
+            description = "Links a user account to an existing OAuth2 account using the provided link token."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "User account linked successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    oneOf = {UserResponseBasicDto.class, UserResponseDetailDto.class}
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid input data"),
+    })
+    @PostMapping("/link/{token}")
+    public ResponseEntity<ApiResponseDto<UserResponseDto>> link(@PathVariable String token) {
+        return authService.linkCredentialsToOAuth(token);
+    }
+
+    /**
      * Handles logout requests.
      *
      * @param request the HTTP request
@@ -241,17 +273,34 @@ public class AuthController {
     }
 
     @PostMapping("/ping")
-    public ResponseEntity<Map<String, Object>> keepAlive(HttpServletRequest request) {
-        HttpSession session = request.getSession(false); // Check existing session, but don't create new
-        Map<String,Object> response = new HashMap<>();
-        if(session == null){
-            response.put("active", false);
-            response.put("expiresAt", null);
-        } else {
-            response.put("active", true);
-            response.put("expiresAt", session.getLastAccessedTime() + session.getMaxInactiveInterval() * 1000L);
+    public ResponseEntity<Map<String, Object>> ping() {
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/session-status")
+    public ResponseEntity<ApiResponseDto<UserResponseDto>> getSessionStatus(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        if(session == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        return userService.getUserByID(UUID.fromString(session.getAttribute("userId").toString()));
+    }
+
+    @GetMapping("/refresh-session")
+    public ResponseEntity<?> refreshSession(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Session expired");
         }
 
-        return ResponseEntity.ok(response);
+
+        // Set the updated cookie to front end
+        Cookie cookie = new Cookie("SESSION", session.getId());
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false); // TODO: Change in prod
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok(Map.of("status", "ok"));
     }
 }

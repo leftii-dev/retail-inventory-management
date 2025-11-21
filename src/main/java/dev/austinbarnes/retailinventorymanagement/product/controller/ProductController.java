@@ -174,4 +174,51 @@ public class ProductController {
         log.info("Deleting product {}", id);
         return service.deleteProduct(id);
     }
+
+    @GetMapping("/{productId}/images")
+    public ResponseEntity<ApiResponseDto<List<ProductImageResponseDTO>>> getProductImages(@PathVariable UUID productId) {
+        return service.getProductImages(productId);
+    }
+
+    @PostMapping("/{productId}/images")
+    public ResponseEntity<ApiResponseDto<ProductImageResponseDTO>> addImage(
+            @PathVariable UUID productId,
+            @Valid @RequestBody ProductImageRequestDTO request
+    ) {
+        return service.addImage(productId, request);
+    }
+
+    @PutMapping("{productId}/images/{imageId}")
+    public ResponseEntity<ApiResponseDto<ProductImageResponseDTO>> updateImage(
+            @PathVariable UUID productId,
+            @PathVariable UUID imageId,
+            @Valid @RequestBody ProductImageRequestDTO request
+    ) {
+        return service.updateImage(productId, imageId, request);
+    }
+
+    @PatchMapping("/{productId}/images/{imageId}/default")
+    public ResponseEntity<ApiResponseDto<Void>> setDefaultImage(
+            @PathVariable UUID productId,
+            @PathVariable UUID imageId
+    ){
+        return service.setDefaultImage(productId, imageId);
+    }
+
+    @DeleteMapping("/{productId}/images/{imageId}")
+    public ResponseEntity<ApiResponseDto<Void>> deleteImage(
+            @PathVariable UUID productId,
+            @PathVariable UUID imageId
+    ) {
+        return service.deleteImage(productId, imageId);
+    }
+
+    @PutMapping("/{productId}/images/reorder")
+    public ResponseEntity<ApiResponseDto<Void>> reorderImages(
+            @PathVariable UUID productId,
+            @RequestBody List<UUID> imageIds
+    ) {
+        return service.reorderImages(productId, imageIds);
+    }
+
 }
