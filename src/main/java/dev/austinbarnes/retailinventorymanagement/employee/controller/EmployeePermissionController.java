@@ -54,7 +54,7 @@ public class EmployeePermissionController {
     })
     @PostMapping
     public ResponseEntity<ApiResponseDto<EmployeePermissionResponseDTO>> createEmployeePermission(@RequestBody @Valid EmployeePermissionRequestDTO employeePermission) {
-        log.info("Creating employee permissions with employee ID: {} permission ID: {}", employeePermission.employeeID(), employeePermission.roleID());
+        log.info("Creating employee permissions with employee ID: {} permission ID: {}", employeePermission.employeeID(), employeePermission.permissionID());
         return service.createEmployeePermission(employeePermission);
     }
 
@@ -81,7 +81,7 @@ public class EmployeePermissionController {
     })
     @PutMapping("/{employeePermissionID}")
     public ResponseEntity<ApiResponseDto<EmployeePermissionResponseDTO>> updateEmployeePermission(@PathVariable UUID employeePermissionID, @RequestBody @Valid EmployeePermissionRequestDTO employeePermission) {
-        log.info("Updating employee permissions with employee ID: {} permission ID: {}", employeePermission.employeeID(), employeePermission.roleID());
+        log.info("Updating employee permissions with employee ID: {} permission ID: {}", employeePermission.employeeID(), employeePermission.permissionID());
         return service.updateEmployeePermission(employeePermissionID, employeePermission);
     }
 

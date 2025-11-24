@@ -4,11 +4,16 @@ import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.location.dto.retail.RetailLocationRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.retail.RetailLocationResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.retail.RetailLocationResponseDetailDTO;
+import dev.austinbarnes.retailinventorymanagement.location.entity.Location;
 import dev.austinbarnes.retailinventorymanagement.location.entity.RetailLocation;
+import dev.austinbarnes.retailinventorymanagement.location.repo.LocationRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.UUID;
 
 /**
  * RetailLocationMapper is an interface that defines the mapping between RetailLocation entity and its DTOs.
@@ -19,14 +24,17 @@ import org.mapstruct.Named;
  * to convert RetailLocation entity to different types of RetailLocationResponseDTOs.
  */
 @Mapper(config = GlobalMapperConfig.class, uses = {LocationMapper.class})
-public interface RetailLocationMapper {
+public abstract class RetailLocationMapper {
+    @Autowired
+    protected LocationRepository locationRepository;
     /**
      * Converts RetailLocationRequestDTO to RetailLocation entity.
      *
      * @param retailLocationRequestDTO the RetailLocationRequestDTO to convert
      * @return the converted RetailLocation entity
      */
-    RetailLocation toEntity(RetailLocationRequestDTO retailLocationRequestDTO);
+    @Mapping(target = "location", source = "locationID")
+    public abstract RetailLocation toEntity(RetailLocationRequestDTO retailLocationRequestDTO);
 
     /**
      * Converts RetailLocation entity to RetailLocationResponseBasicDTO.
@@ -36,7 +44,7 @@ public interface RetailLocationMapper {
      */
     @Mapping(target = "location", qualifiedByName = "basicLocation")
     @Named("basicRetailLocation")
-    RetailLocationResponseBasicDTO toBasicDTO(RetailLocation retailLocation);
+    public abstract RetailLocationResponseBasicDTO toBasicDTO(RetailLocation retailLocation);
 
     /**
      * Converts RetailLocation entity to RetailLocationResponseDetailDTO.
@@ -46,7 +54,7 @@ public interface RetailLocationMapper {
      */
     @Mapping(target = "location", qualifiedByName = "detailLocation")
     @Named("detailRetailLocation")
-    RetailLocationResponseDetailDTO toDetailDTO(RetailLocation retailLocation);
+    public abstract RetailLocationResponseDetailDTO toDetailDTO(RetailLocation retailLocation);
 
     /**
      * Updates an existing RetailLocation entity with the values from the RetailLocationRequestDTO.
@@ -54,5 +62,16 @@ public interface RetailLocationMapper {
      * @param retailLocationRequestDTO the RetailLocationRequestDTO containing the new values
      * @param retailLocation           the RetailLocation entity to update
      */
-    void updateEntityFromRequest(RetailLocationRequestDTO retailLocationRequestDTO, @MappingTarget RetailLocation retailLocation);
+    @Mapping(target = "location", source = "locationID")
+    public abstract void updateEntityFromRequest(RetailLocationRequestDTO retailLocationRequestDTO, @MappingTarget RetailLocation retailLocation);
+
+    /**
+     * Custom Resolver
+     */
+    protected Location resolveLocation(UUID locationID) {
+        if(locationID == null) {
+            return null;
+        }
+        return locationRepository.findById(locationID).orElse(null);
+    }
 }

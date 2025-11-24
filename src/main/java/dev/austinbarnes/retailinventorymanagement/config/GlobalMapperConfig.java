@@ -15,7 +15,7 @@ import org.mapstruct.ReportingPolicy;
         componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         unmappedSourcePolicy = ReportingPolicy.IGNORE,
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL,
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS
 )
 public interface GlobalMapperConfig {

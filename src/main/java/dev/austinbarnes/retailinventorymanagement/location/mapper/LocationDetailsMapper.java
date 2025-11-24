@@ -1,15 +1,22 @@
 package dev.austinbarnes.retailinventorymanagement.location.mapper;
 
 import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
+import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import dev.austinbarnes.retailinventorymanagement.employee.mapper.EmployeeMapper;
+import dev.austinbarnes.retailinventorymanagement.employee.repo.EmployeeRepository;
 import dev.austinbarnes.retailinventorymanagement.location.dto.details.LocationDetailsRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.details.LocationDetailsResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.details.LocationDetailsResponseDetailDTO;
+import dev.austinbarnes.retailinventorymanagement.location.entity.Location;
 import dev.austinbarnes.retailinventorymanagement.location.entity.LocationDetails;
+import dev.austinbarnes.retailinventorymanagement.location.repo.LocationRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.UUID;
 
 /**
  * LocationDetailsMapper is an interface that defines the mapping between LocationDetails entity and its DTOs.
@@ -20,14 +27,20 @@ import org.mapstruct.Named;
  * to convert LocationDetails entity to different types of LocationDetailsResponseDTOs.
  */
 @Mapper(config = GlobalMapperConfig.class, uses = {LocationMapper.class, EmployeeMapper.class})
-public interface LocationDetailsMapper {
+public abstract class LocationDetailsMapper {
+    @Autowired
+    protected LocationRepository locationRepository;
+    @Autowired
+    protected EmployeeRepository employeeRepository;
     /**
      * Converts LocationDetailsRequestDTO to LocationDetails entity.
      *
      * @param locationDetailsRequestDTO the LocationDetailsRequestDTO to convert
      * @return the converted LocationDetails entity
      */
-    LocationDetails toEntity(LocationDetailsRequestDTO locationDetailsRequestDTO);
+    @Mapping(target = "location", source = "locationID")
+    @Mapping(target = "manager", source = "managerID")
+    public abstract LocationDetails toEntity(LocationDetailsRequestDTO locationDetailsRequestDTO);
 
     /**
      * Converts LocationDetails entity to LocationDetailsResponseBasicDTO.
@@ -35,7 +48,7 @@ public interface LocationDetailsMapper {
     @Mapping(target = "manager", qualifiedByName = "basicEmployee")
     @Mapping(target = "location", qualifiedByName = "basicLocation")
     @Named("basicLocationDetails")
-    LocationDetailsResponseBasicDTO toBasicDTO(LocationDetails locationDetails);
+    public abstract LocationDetailsResponseBasicDTO toBasicDTO(LocationDetails locationDetails);
 
     /**
      * Converts LocationDetails entity to LocationDetailsResponseDetailDTO.
@@ -43,7 +56,7 @@ public interface LocationDetailsMapper {
     @Mapping(target = "manager", qualifiedByName = "detailEmployee")
     @Mapping(target = "location", qualifiedByName = "detailLocation")
     @Named("detailLocationDetails")
-    LocationDetailsResponseDetailDTO toDetailDTO(LocationDetails locationDetails);
+    public abstract LocationDetailsResponseDetailDTO toDetailDTO(LocationDetails locationDetails);
 
     /**
      * Updates an existing LocationDetails entity with the values from the LocationDetailsRequestDTO.
@@ -51,5 +64,18 @@ public interface LocationDetailsMapper {
      * @param locationDetailsRequestDTO the LocationDetailsRequestDTO containing the new values
      * @param locationDetails           the LocationDetails entity to update
      */
-    void updateEntityFromRequest(LocationDetailsRequestDTO locationDetailsRequestDTO, @MappingTarget LocationDetails locationDetails);
+    @Mapping(target = "location", source = "locationID")
+    @Mapping(target = "manager", source = "managerID")
+    public abstract void updateEntityFromRequest(LocationDetailsRequestDTO locationDetailsRequestDTO, @MappingTarget LocationDetails locationDetails);
+
+    /**
+     * Custom Resolvers
+     */
+    protected Location resolveLocation(UUID locationID) {
+        return locationID == null ? null : locationRepository.findById(locationID).orElse(null);
+    }
+
+    protected Employee resolveEmployee(UUID managerID) {
+        return managerID == null ? null : employeeRepository.findById(managerID).orElse(null);
+    }
 }

@@ -4,11 +4,16 @@ import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeHierarchyRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeHierarchyResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeHierarchyResponseDetailDTO;
+import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.EmployeeHierarchy;
+import dev.austinbarnes.retailinventorymanagement.employee.repo.EmployeeRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.UUID;
 
 /**
  * EmployeeHierarchyMapper is an interface for mapping between EmployeeHierarchy entities and their DTO representations.
@@ -16,14 +21,18 @@ import org.mapstruct.Named;
  * as well as methods to convert EmployeeHierarchy entities to EmployeeHierarchyResponseBasicDTO and EmployeeHierarchyResponseDetailDTO.
  */
 @Mapper(config = GlobalMapperConfig.class, uses = {EmployeeMapper.class})
-public interface EmployeeHierarchyMapper {
+public abstract class EmployeeHierarchyMapper {
+    @Autowired
+    protected EmployeeRepository employeeRepository;
     /**
      * Converts an EmployeeHierarchyRequestDTO to an EmployeeHierarchy entity.
      *
      * @param employeeHierarchyRequestDTO the EmployeeHierarchyRequestDTO to convert
      * @return the converted EmployeeHierarchy entity
      */
-    EmployeeHierarchy toEntity(EmployeeHierarchyRequestDTO employeeHierarchyRequestDTO);
+    @Mapping(target = "employee", source = "employeeID")
+    @Mapping(target = "manager", source = "managerID")
+    public abstract EmployeeHierarchy toEntity(EmployeeHierarchyRequestDTO employeeHierarchyRequestDTO);
 
     /**
      * Converts an EmployeeHierarchy entity to an EmployeeHierarchyResponseBasicDTO.
@@ -34,7 +43,7 @@ public interface EmployeeHierarchyMapper {
     @Named("basicEmployeeHierarchy")
     @Mapping(target = "employee", qualifiedByName = "basicEmployee")
     @Mapping(target = "manager", qualifiedByName = "basicEmployee")
-    EmployeeHierarchyResponseBasicDTO toBasicDTO(EmployeeHierarchy employeeHierarchy);
+    public abstract EmployeeHierarchyResponseBasicDTO toBasicDTO(EmployeeHierarchy employeeHierarchy);
 
     /**
      * Converts an EmployeeHierarchy entity to an EmployeeHierarchyResponseDetailDTO.
@@ -45,7 +54,7 @@ public interface EmployeeHierarchyMapper {
     @Mapping(target = "employee", qualifiedByName = "detailEmployee")
     @Mapping(target = "manager", qualifiedByName = "detailEmployee")
     @Named("detailEmployeeHierarchy")
-    EmployeeHierarchyResponseDetailDTO toDetailDTO(EmployeeHierarchy employeeHierarchy);
+    public abstract EmployeeHierarchyResponseDetailDTO toDetailDTO(EmployeeHierarchy employeeHierarchy);
 
     /**
      * Updates an existing EmployeeHierarchy entity with the values from the EmployeeHierarchyRequestDTO.
@@ -53,5 +62,14 @@ public interface EmployeeHierarchyMapper {
      * @param employeeHierarchyRequestDTO the EmployeeHierarchyRequestDTO containing the new values
      * @param employeeHierarchy           the EmployeeHierarchy entity to update
      */
-    void updateEntityFromRequest(EmployeeHierarchyRequestDTO employeeHierarchyRequestDTO, @MappingTarget EmployeeHierarchy employeeHierarchy);
+    @Mapping(target = "employee", source = "employeeID")
+    @Mapping(target = "manager", source = "managerID")
+    public abstract void updateEntityFromRequest(EmployeeHierarchyRequestDTO employeeHierarchyRequestDTO, @MappingTarget EmployeeHierarchy employeeHierarchy);
+
+    /**
+     * Custom Resolver
+     */
+    protected Employee resolveEmployee(UUID id) {
+        return id == null ? null : employeeRepository.findById(id).orElse(null);
+    }
 }

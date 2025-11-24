@@ -1,8 +1,12 @@
 package dev.austinbarnes.retailinventorymanagement.employee.dto.employee;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -17,7 +21,7 @@ import java.util.UUID;
  * @param phone       The phone number of the employee.
  * @param email       The email address of the employee.
  * @param dateOfBirth The date of birth of the employee.
- * @param userId      The ID of the user associated with the employee.
+ * @param userID      The ID of the user associated with the employee.
  */
 public record EmployeeRequestDTO(
         @Size(min = 1, max = 50, message = "First name must be between 1 and 50 characters")
@@ -31,6 +35,7 @@ public record EmployeeRequestDTO(
         String email,
         @Past
         LocalDate dateOfBirth,
-        UUID userId
+        UUID userID,
+        Set<UUID> permissionIDs
 ) {
 }

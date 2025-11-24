@@ -6,6 +6,9 @@ import dev.austinbarnes.retailinventorymanagement.product.dto.product.*;
 import dev.austinbarnes.retailinventorymanagement.product.entity.Product;
 import dev.austinbarnes.retailinventorymanagement.product.entity.ProductImage;
 import dev.austinbarnes.retailinventorymanagement.product.mapper.ProductMapper;
+import dev.austinbarnes.retailinventorymanagement.product.repo.BrandRepository;
+import dev.austinbarnes.retailinventorymanagement.product.repo.CategoryRepository;
+import dev.austinbarnes.retailinventorymanagement.product.repo.DiscountRepository;
 import dev.austinbarnes.retailinventorymanagement.product.repo.ProductRepository;
 import dev.austinbarnes.retailinventorymanagement.product.specification.ProductSpecifications;
 import jakarta.persistence.EntityNotFoundException;
@@ -35,6 +38,9 @@ public class ProductService {
     private final ProductRepository repository;
     private final ProductMapper mapper;
     private final CodeGenerator codeGenerator;
+    private final BrandRepository brandRepository;
+    private final DiscountRepository discountRepository;
+    private final CategoryRepository categoryRepository;
 
     /**
      * Creates new Product
@@ -219,9 +225,9 @@ public class ProductService {
 
         return ApiResponseDto.ok(isManager() ?
                 mapper.toImageDetailDTOList(product.getImages()).stream()
-                        .map(dto -> (ProductImageResponseDTO) dto).toList() :
+                        .map(dto -> dto).toList() :
                 mapper.toImageBasicDTOList(product.getImages()).stream()
-                        .map(dto -> (ProductImageResponseDTO) dto).toList());
+                        .map(dto -> dto).toList());
     }
 
     @Transactional

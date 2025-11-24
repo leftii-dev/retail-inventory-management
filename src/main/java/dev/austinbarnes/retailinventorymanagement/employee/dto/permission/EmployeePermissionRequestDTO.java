@@ -9,10 +9,10 @@ import java.util.UUID;
  * It contains the IDs of the employee and the role.
  *
  * @param employeeID The ID of the employee.
- * @param roleID     The ID of the role.
+ * @param permissionID     The ID of the role.
  */
 public record EmployeePermissionRequestDTO(
         UUID employeeID,
-        UUID roleID
+        UUID permissionID
 ) {
 }

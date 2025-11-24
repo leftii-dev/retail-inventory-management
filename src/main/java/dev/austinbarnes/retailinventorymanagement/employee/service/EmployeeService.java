@@ -50,14 +50,14 @@ public class EmployeeService {
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     public ResponseEntity<ApiResponseDto<EmployeeResponseDTO>> createEmployee(EmployeeRequestDTO employeeRequestDTO) {
         // Check if user already assigned to Employee object, return bad request, if so
-        if (employeeRepository.findByUserId(employeeRequestDTO.userId()).isPresent()) {
-            return ApiResponseDto.badRequest("Employee already exists for this User: %s".formatted(employeeRequestDTO.userId()));
+        if (employeeRepository.findByUserId(employeeRequestDTO.userID()).isPresent()) {
+            return ApiResponseDto.badRequest("Employee already exists for this User: %s".formatted(employeeRequestDTO.userID()));
         }
 
         //Create new Employee object return detail DTO as endpoint is only reachable by manager/admin
         Employee newEmployee = mapper.toEntity(employeeRequestDTO);
         newEmployee.setEmployeeCode(codeGenerator.generateEmployeeCode());
-        newEmployee.setUser(userRepository.findById(employeeRequestDTO.userId()).orElseThrow(() -> new EntityNotFoundException("User not found")));
+        newEmployee.setUser(userRepository.findById(employeeRequestDTO.userID()).orElseThrow(() -> new EntityNotFoundException("User not found")));
         return ApiResponseDto.created(mapper.toDetailDTO(employeeRepository.save(newEmployee)));
     }
 
@@ -71,13 +71,13 @@ public class EmployeeService {
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     public ResponseEntity<ApiResponseDto<EmployeeResponseDTO>> createEmployeeWithManager(EmployeeRequestDTO employeeRequestDTO, UUID managerID) {
         // Check if Entity exists already
-        if (employeeRepository.findByUserId(employeeRequestDTO.userId()).isPresent()) {
-            return ApiResponseDto.badRequest("Employee already exists for this User: %s".formatted(employeeRequestDTO.userId()));
+        if (employeeRepository.findByUserId(employeeRequestDTO.userID()).isPresent()) {
+            return ApiResponseDto.badRequest("Employee already exists for this User: %s".formatted(employeeRequestDTO.userID()));
         }
 
         Employee newEmployee = mapper.toEntity(employeeRequestDTO);
         newEmployee.setEmployeeCode(codeGenerator.generateEmployeeCode());
-        newEmployee.setUser(userRepository.findById(employeeRequestDTO.userId()).orElseThrow(() -> new EntityNotFoundException("User not found")));
+        newEmployee.setUser(userRepository.findById(employeeRequestDTO.userID()).orElseThrow(() -> new EntityNotFoundException("User not found")));
         EmployeeResponseDTO responseDTO = mapper.toDetailDTO(employeeRepository.save(newEmployee));
         EmployeeHierarchyRequestDTO hierarchyRequestDTO = new EmployeeHierarchyRequestDTO(responseDTO.id(), managerID);
         employeeHierarchyService.createEmployeeHierarchy(hierarchyRequestDTO);
@@ -133,10 +133,10 @@ public class EmployeeService {
         original.setEmail(employeeRequestDTO.email());
         original.setDateOfBirth(employeeRequestDTO.dateOfBirth());
 
-        if(employeeRequestDTO.userId() != null) {
-            User user = userRepository.findById(employeeRequestDTO.userId())
+        if(employeeRequestDTO.userID() != null) {
+            User user = userRepository.findById(employeeRequestDTO.userID())
                     .orElseThrow(() -> new EntityNotFoundException("Could not create employee. User with ID: %s Not Found."
-                                    .formatted(employeeRequestDTO.userId())));
+                                    .formatted(employeeRequestDTO.userID())));
 
             original.setUser(user);
         }

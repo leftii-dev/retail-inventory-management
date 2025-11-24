@@ -5,10 +5,15 @@ import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryR
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.product.entity.Category;
+import dev.austinbarnes.retailinventorymanagement.product.entity.Discount;
+import dev.austinbarnes.retailinventorymanagement.product.repo.DiscountRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.UUID;
 
 /**
  * CategoryMapper is an interface that defines the mapping between the Category entity and its corresponding DTOs.
@@ -17,14 +22,17 @@ import org.mapstruct.Named;
  * both a basic and detailed CategoryResponseDTO.
  */
 @Mapper(config = GlobalMapperConfig.class)
-public interface CategoryMapper {
+public abstract class CategoryMapper {
+    @Autowired
+    protected DiscountRepository discountRepository;
     /**
      * Converts a CategoryRequestDTO to a Category entity.
      *
      * @param categoryRequestDTO the CategoryRequestDTO to convert
      * @return the converted Category entity
      */
-    Category toEntity(CategoryRequestDTO categoryRequestDTO);
+    @Mapping(target = "discount", source = "discountID")
+    public abstract Category toEntity(CategoryRequestDTO categoryRequestDTO);
 
     /**
      * Converts a Category entity to a CategoryResponseBasicDTO.
@@ -34,7 +42,7 @@ public interface CategoryMapper {
      */
     @Mapping(target = "discountID", source = "discount.id")
     @Named("basicCategory")
-    CategoryResponseBasicDTO toBasicDTO(Category category);
+    public abstract CategoryResponseBasicDTO toBasicDTO(Category category);
 
     /**
      * Converts a Category entity to a CategoryResponseDetailDTO.
@@ -44,7 +52,7 @@ public interface CategoryMapper {
      */
     @Mapping(target = "discountID", source = "discount.id")
     @Named("detailCategory")
-    CategoryResponseDetailDTO toDetailDTO(Category category);
+    public abstract CategoryResponseDetailDTO toDetailDTO(Category category);
 
     /**
      * Updates an existing Category entity with the values from the CategoryRequestDTO.
@@ -52,5 +60,17 @@ public interface CategoryMapper {
      * @param categoryRequestDTO the CategoryRequestDTO containing the new values
      * @param category           the Category entity to update
      */
-    void updateEntityFromRequest(CategoryRequestDTO categoryRequestDTO, @MappingTarget Category category);
+    @Mapping(target = "discount", source = "discountID")
+    public abstract void updateEntityFromRequest(CategoryRequestDTO categoryRequestDTO, @MappingTarget Category category);
+
+    /**
+     * Custom Resolver
+     */
+    protected Discount resolveDiscount(UUID discountID) {
+        if (discountID == null) {
+            return null;
+        }
+        return discountRepository.findById(discountID).orElse(null);
+    }
 }
+
