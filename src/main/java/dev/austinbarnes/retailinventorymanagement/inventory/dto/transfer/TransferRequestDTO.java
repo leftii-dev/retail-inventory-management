@@ -23,6 +23,6 @@ public record TransferRequestDTO (
         @Min(value = 1, message = "Total quantity cannot be less that one (1), double check entered quantities")
         @Max(value = 10000, message = "Total quantity exceeds limit, double check entered quantities")
         int totalQuantity,
-        UUID locationTo,
-        UUID locationFrom
+        UUID locationToID,
+        UUID locationFromID
 ){}

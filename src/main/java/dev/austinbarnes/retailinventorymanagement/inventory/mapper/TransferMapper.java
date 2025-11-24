@@ -5,11 +5,16 @@ import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.Transfe
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Transfer;
+import dev.austinbarnes.retailinventorymanagement.location.entity.Location;
+import dev.austinbarnes.retailinventorymanagement.location.repo.LocationRepository;
 import dev.austinbarnes.retailinventorymanagement.location.service.LocationService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.UUID;
 
 /**
  * TransferMapper is an interface that defines the mapping between Transfer entity and its DTOs.
@@ -20,17 +25,18 @@ import org.mapstruct.Named;
  * to convert Transfer entity to different types of TransferResponseDTOs.
  */
 @Mapper(config = GlobalMapperConfig.class, uses = LocationService.class)
-public interface TransferMapper {
-
+public abstract class TransferMapper {
+    @Autowired
+    protected LocationRepository locationRepository;
     /**
      * Converts TransferRequestDTO to Transfer entity.
      *
      * @param transferRequestDTO the TransferRequestDTO to convert
      * @return the converted Transfer entity
      */
-    @Mapping(target = "locationTo", expression = "java(locationService.getLocationEntityById(transferRequestDTO.locationTo()))")
-    @Mapping(target = "locationFrom", expression = "java(locationService.getLocationEntityById(transferRequestDTO.locationFrom()))")
-    Transfer toEntity(TransferRequestDTO transferRequestDTO);
+    @Mapping(target = "locationTo", source = "locationToID")
+    @Mapping(target = "locationFrom", source = "locationFromID")
+    public abstract Transfer toEntity(TransferRequestDTO transferRequestDTO);
 
     /**
      * Converts Transfer entity to TransferResponseBasicDTO.
@@ -41,7 +47,7 @@ public interface TransferMapper {
     @Mapping(target = "locationToID", source = "locationTo.id")
     @Mapping(target = "locationFromID", source = "locationFrom.id")
     @Named("basicTransfer")
-    TransferResponseBasicDTO toBasicDTO(Transfer transfer);
+    public abstract TransferResponseBasicDTO toBasicDTO(Transfer transfer);
 
     /**
      * Converts Transfer entity to TransferResponseDetailDTO.
@@ -52,7 +58,7 @@ public interface TransferMapper {
     @Mapping(target = "locationToID", source = "locationTo.id")
     @Mapping(target = "locationFromID", source = "locationFrom.id")
     @Named("detailTransfer")
-    TransferResponseDetailDTO toDetailDTO(Transfer transfer);
+    public abstract TransferResponseDetailDTO toDetailDTO(Transfer transfer);
 
     /**
      * Updates an existing Transfer entity with the values from the TransferRequestDTO.
@@ -60,5 +66,14 @@ public interface TransferMapper {
      * @param transferRequestDTO the TransferRequestDTO containing the new values
      * @param transfer           the Transfer entity to update
      */
-    void updateEntityFromRequest(TransferRequestDTO transferRequestDTO, @MappingTarget Transfer transfer);
+    @Mapping(target = "locationTo", source = "locationToID")
+    @Mapping(target = "locationFrom", source = "locationFromID")
+    public abstract void updateEntityFromRequest(TransferRequestDTO transferRequestDTO, @MappingTarget Transfer transfer);
+
+    /**
+     * Custom Resolvers
+     */
+    protected Location resolveLocation(UUID id) {
+        return id == null ? null : locationRepository.findById(id).orElse(null);
+    }
 }

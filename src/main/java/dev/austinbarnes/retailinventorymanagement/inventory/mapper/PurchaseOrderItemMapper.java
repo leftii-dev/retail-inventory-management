@@ -4,12 +4,19 @@ import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemResponseDetailDTO;
+import dev.austinbarnes.retailinventorymanagement.inventory.entity.PurchaseOrder;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.PurchaseOrderItem;
+import dev.austinbarnes.retailinventorymanagement.inventory.repo.PurchaseOrderRepository;
+import dev.austinbarnes.retailinventorymanagement.product.entity.Product;
 import dev.austinbarnes.retailinventorymanagement.product.mapper.ProductMapper;
+import dev.austinbarnes.retailinventorymanagement.product.repo.ProductRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.UUID;
 
 /**
  * PurchaseOrderItemMapper is an interface that defines the mapping between PurchaseOrderItem entity and its DTOs.
@@ -20,14 +27,20 @@ import org.mapstruct.Named;
  * to convert PurchaseOrderItem entity to different types of PurchaseOrderItemResponseDTOs.
  */
 @Mapper(config = GlobalMapperConfig.class, uses = {ProductMapper.class})
-public interface PurchaseOrderItemMapper {
+public abstract class PurchaseOrderItemMapper {
+    @Autowired
+    protected ProductRepository productRepository;
+    @Autowired
+    protected PurchaseOrderRepository purchaseOrderRepository;
     /**
      * Converts PurchaseOrderItemRequestDTO to PurchaseOrderItem entity.
      *
      * @param purchaseOrderItemRequestDTO the PurchaseOrderItemRequestDTO to convert
      * @return the converted PurchaseOrderItem entity
      */
-    PurchaseOrderItem toEntity(PurchaseOrderItemRequestDTO purchaseOrderItemRequestDTO);
+    @Mapping(target = "purchaseOrder", source = "purchaseOrderID")
+    @Mapping(target = "product", source = "productID")
+    public abstract PurchaseOrderItem toEntity(PurchaseOrderItemRequestDTO purchaseOrderItemRequestDTO);
 
     /**
      * Converts PurchaseOrderItem entity to PurchaseOrderItemResponseBasicDTO.
@@ -38,7 +51,7 @@ public interface PurchaseOrderItemMapper {
     @Mapping(target = "product", qualifiedByName = "basicProduct")
     @Mapping(target = "purchaseOrderID", source = "purchaseOrder.id")
     @Named("basicPurchaseOrderItem")
-    PurchaseOrderItemResponseBasicDTO toBasicDTO(PurchaseOrderItem purchaseOrderItem);
+    public abstract PurchaseOrderItemResponseBasicDTO toBasicDTO(PurchaseOrderItem purchaseOrderItem);
 
     /**
      * Converts PurchaseOrderItem entity to PurchaseOrderItemResponseDetailDTO.
@@ -49,7 +62,7 @@ public interface PurchaseOrderItemMapper {
     @Mapping(target = "purchaseOrderID", source = "purchaseOrder.id")
     @Mapping(target = "product", qualifiedByName = "detailProduct")
     @Named("detailPurchaseOrderItem")
-    PurchaseOrderItemResponseDetailDTO toDetailDTO(PurchaseOrderItem purchaseOrderItem);
+    public abstract PurchaseOrderItemResponseDetailDTO toDetailDTO(PurchaseOrderItem purchaseOrderItem);
 
     /**
      * Updates an existing PurchaseOrderItem entity with the values from the PurchaseOrderItemRequestDTO.
@@ -57,5 +70,18 @@ public interface PurchaseOrderItemMapper {
      * @param purchaseOrderItemRequestDTO the PurchaseOrderItemRequestDTO containing the new values
      * @param purchaseOrderItem           the PurchaseOrderItem entity to update
      */
-    void updateEntityFromRequest(PurchaseOrderItemRequestDTO purchaseOrderItemRequestDTO, @MappingTarget PurchaseOrderItem purchaseOrderItem);
+    @Mapping(target = "purchaseOrder", source = "purchaseOrderID")
+    @Mapping(target = "product", source = "productID")
+    public abstract void updateEntityFromRequest(PurchaseOrderItemRequestDTO purchaseOrderItemRequestDTO, @MappingTarget PurchaseOrderItem purchaseOrderItem);
+
+    /**
+     * Custom Resolvers
+     */
+    protected PurchaseOrder resolvePurchaseOrder(UUID id) {
+        return id == null ? null : purchaseOrderRepository.findById(id).orElse(null);
+    }
+
+    protected Product resolveProduct(UUID id) {
+        return id == null ? null : productRepository.findById(id).orElse(null);
+    }
 }

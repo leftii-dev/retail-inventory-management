@@ -4,11 +4,16 @@ import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryHierarchyRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryHierarchyResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryHierarchyResponseDetailDTO;
+import dev.austinbarnes.retailinventorymanagement.product.entity.Category;
 import dev.austinbarnes.retailinventorymanagement.product.entity.CategoryHierarchy;
+import dev.austinbarnes.retailinventorymanagement.product.repo.CategoryRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.UUID;
 
 /**
  * CategoryHierarchyMapper is an interface that defines the mapping between the CategoryHierarchy entity and its corresponding DTOs.
@@ -17,14 +22,19 @@ import org.mapstruct.Named;
  * both a basic and detailed CategoryHierarchyResponseDTO.
  */
 @Mapper(config = GlobalMapperConfig.class)
-public interface CategoryHierarchyMapper {
+public abstract class CategoryHierarchyMapper {
+    @Autowired
+    protected CategoryRepository categoryRepository;
+
     /**
      * Converts a CategoryHierarchyRequestDTO to a CategoryHierarchy entity.
      *
      * @param categoryHierarchyRequestDTO the CategoryHierarchyRequestDTO to convert
      * @return the converted CategoryHierarchy entity
      */
-    CategoryHierarchy toEntity(CategoryHierarchyRequestDTO categoryHierarchyRequestDTO);
+    @Mapping(target = "category", source = "categoryID")
+    @Mapping(target = "parentCategory", source = "parentCategoryID")
+    public abstract CategoryHierarchy toEntity(CategoryHierarchyRequestDTO categoryHierarchyRequestDTO);
 
     /**
      * Converts a CategoryHierarchy entity to a CategoryHierarchyResponseBasicDTO.
@@ -35,7 +45,7 @@ public interface CategoryHierarchyMapper {
     @Mapping(target = "categoryID", source = "category.id")
     @Mapping(target = "parentCategoryID", source = "parentCategory.id")
     @Named("basicCategoryHierarchy")
-    CategoryHierarchyResponseBasicDTO toBasicDTO(CategoryHierarchy categoryHierarchy);
+    public abstract CategoryHierarchyResponseBasicDTO toBasicDTO(CategoryHierarchy categoryHierarchy);
 
     /**
      * Converts a CategoryHierarchy entity to a CategoryHierarchyResponseDetailDTO.
@@ -46,7 +56,7 @@ public interface CategoryHierarchyMapper {
     @Mapping(target = "categoryID", source = "category.id")
     @Mapping(target = "parentCategoryID", source = "parentCategory.id")
     @Named("detailCategoryHierarchy")
-    CategoryHierarchyResponseDetailDTO toDetailDTO(CategoryHierarchy categoryHierarchy);
+    public abstract CategoryHierarchyResponseDetailDTO toDetailDTO(CategoryHierarchy categoryHierarchy);
 
     /**
      * Updates an existing CategoryHierarchy entity with the values from the CategoryHierarchyRequestDTO.
@@ -54,5 +64,17 @@ public interface CategoryHierarchyMapper {
      * @param categoryHierarchyRequestDTO the CategoryHierarchyRequestDTO containing the new values
      * @param categoryHierarchy           the CategoryHierarchy entity to update
      */
-    void updateEntityFromRequest(CategoryHierarchyRequestDTO categoryHierarchyRequestDTO, @MappingTarget CategoryHierarchy categoryHierarchy);
+    @Mapping(target = "category", source = "categoryID")
+    @Mapping(target = "parentCategory", source = "parentCategoryID")
+    public abstract void updateEntityFromRequest(CategoryHierarchyRequestDTO categoryHierarchyRequestDTO, @MappingTarget CategoryHierarchy categoryHierarchy);
+
+    /**
+     * Custom Resolver
+     */
+    protected Category resolveCategory(UUID categoryID) {
+        if(categoryID == null) {
+            return null;
+        }
+        return categoryRepository.findById(categoryID).orElse(null);
+    }
 }

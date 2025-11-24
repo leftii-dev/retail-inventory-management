@@ -7,10 +7,13 @@ import dev.austinbarnes.retailinventorymanagement.employee.dto.permission.Employ
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.EmployeePermission;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Permission;
+import dev.austinbarnes.retailinventorymanagement.employee.repo.EmployeeRepository;
+import dev.austinbarnes.retailinventorymanagement.employee.repo.PermissionRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;
 
@@ -20,7 +23,11 @@ import java.util.UUID;
  * as well as methods to convert EmployeePermission entities to EmployeePermissionResponseBasicDTO and EmployeePermissionResponseDetailDTO.
  */
 @Mapper(config = GlobalMapperConfig.class, uses = {EmployeeMapper.class, PermissionMapper.class})
-public interface EmployeePermissionMapper {
+public abstract class EmployeePermissionMapper {
+    @Autowired
+    protected EmployeeRepository employeeRepository;
+    @Autowired
+    protected PermissionRepository permissionRepository;
     /**
      * Converts an EmployeePermissionRequestDTO to an EmployeePermission entity.
      *
@@ -29,22 +36,9 @@ public interface EmployeePermissionMapper {
      */
 
     @Mapping(target = "employee", source = "employeeID")
-    @Mapping(target = "permission", source = "roleID")
-    EmployeePermission toEntity(EmployeePermissionRequestDTO employeePermissionRequestDTO);
+    @Mapping(target = "permission", source = "permissionID")
+    public abstract EmployeePermission toEntity(EmployeePermissionRequestDTO employeePermissionRequestDTO);
 
-    default Employee mapEmployee(UUID employeeID) {
-        if(employeeID == null) return null;
-        Employee employee = new Employee();
-        employee.setId(employeeID);
-        return employee;
-    }
-
-    default Permission mapPermission(UUID permissionID) {
-        if(permissionID == null) return null;
-        Permission permission = new Permission();
-        permission.setId(permissionID);
-        return permission;
-    }
     /**
      * Converts an EmployeePermission entity to an EmployeePermissionResponseBasicDTO.
      *
@@ -54,7 +48,7 @@ public interface EmployeePermissionMapper {
     @Named("basicEmployeePermission")
     @Mapping(target = "employee", qualifiedByName = "basicEmployee")
     @Mapping(target = "permission", qualifiedByName = "basicPermission")
-    EmployeePermissionResponseBasicDTO toBasicDTO(EmployeePermission employeePermission);
+    public abstract EmployeePermissionResponseBasicDTO toBasicDTO(EmployeePermission employeePermission);
 
     /**
      * Converts an EmployeePermission entity to an EmployeePermissionResponseDetailDTO.
@@ -65,7 +59,7 @@ public interface EmployeePermissionMapper {
     @Named("detailEmployeePermission")
     @Mapping(target = "employee", qualifiedByName = "detailEmployee")
     @Mapping(target = "permission", qualifiedByName = "detailPermission")
-    EmployeePermissionResponseDetailDTO toDetailDTO(EmployeePermission employeePermission);
+    public abstract EmployeePermissionResponseDetailDTO toDetailDTO(EmployeePermission employeePermission);
 
     /**
      * Updates an existing EmployeePermission entity with the values from the EmployeePermissionRequestDTO.
@@ -73,5 +67,18 @@ public interface EmployeePermissionMapper {
      * @param employeePermissionRequestDTO the EmployeePermissionRequestDTO containing the new values
      * @param employeePermission           the EmployeePermission entity to update
      */
-    void updateEntityFromRequest(EmployeePermissionRequestDTO employeePermissionRequestDTO, @MappingTarget EmployeePermission employeePermission);
+    @Mapping(target = "employee", source = "employeeID")
+    @Mapping(target = "permission", source = "permissionID")
+    public abstract void updateEntityFromRequest(EmployeePermissionRequestDTO employeePermissionRequestDTO, @MappingTarget EmployeePermission employeePermission);
+
+    /**
+     * Custom Resolvers
+     */
+    protected Employee resolveEmployee(UUID id) {
+        return id == null ? null : employeeRepository.findById(id).orElse(null);
+    }
+
+    protected Permission resolvePermission(UUID id) {
+        return id == null ? null : permissionRepository.findById(id).orElse(null);
+    }
 }

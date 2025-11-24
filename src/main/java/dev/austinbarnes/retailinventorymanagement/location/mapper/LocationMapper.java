@@ -5,10 +5,15 @@ import dev.austinbarnes.retailinventorymanagement.location.dto.LocationRequestDT
 import dev.austinbarnes.retailinventorymanagement.location.dto.LocationResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.location.dto.LocationResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.location.entity.Location;
+import dev.austinbarnes.retailinventorymanagement.location.entity.LocationType;
+import dev.austinbarnes.retailinventorymanagement.location.repo.LocationTypeRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.UUID;
 
 /**
  * LocationMapper is an interface that defines the mapping between Location entity and its DTOs.
@@ -19,14 +24,17 @@ import org.mapstruct.Named;
  * to convert Location entity to different types of LocationResponseDTOs.
  */
 @Mapper(config = GlobalMapperConfig.class, uses = {LocationTypeMapper.class})
-public interface LocationMapper {
+public abstract class LocationMapper {
+    @Autowired
+    protected LocationTypeRepository locationTypeRepository;
     /**
      * Converts LocationRequestDTO to Location entity.
      *
      * @param locationRequestDTO the LocationRequestDTO to convert
      * @return the converted Location entity
      */
-    Location toEntity(LocationRequestDTO locationRequestDTO);
+    @Mapping(target = "locationType", source = "locationTypeID")
+    public abstract Location toEntity(LocationRequestDTO locationRequestDTO);
 
     /**
      * Converts Location entity to LocationResponseBasicDTO.
@@ -36,7 +44,7 @@ public interface LocationMapper {
      */
     @Mapping(target =  "locationType", qualifiedByName = "basicLocationType")
     @Named("basicLocation")
-    LocationResponseBasicDTO toBasicDTO(Location location);
+    public abstract LocationResponseBasicDTO toBasicDTO(Location location);
 
     /**
      * Converts Location entity to LocationResponseDetailDTO.
@@ -46,7 +54,7 @@ public interface LocationMapper {
      */
     @Mapping(target =  "locationType", qualifiedByName = "detailLocationType")
     @Named("detailLocation")
-    LocationResponseDetailDTO toDetailDTO(Location location);
+    public abstract LocationResponseDetailDTO toDetailDTO(Location location);
 
     /**
      * Updates an existing Location entity with the values from the LocationRequestDTO.
@@ -54,5 +62,16 @@ public interface LocationMapper {
      * @param locationRequestDTO the LocationRequestDTO containing the new values
      * @param location           the Location entity to update
      */
-    void updateEntityFromRequest(LocationRequestDTO locationRequestDTO, @MappingTarget Location location);
+    @Mapping(target = "locationType", source = "locationTypeID")
+    public abstract void updateEntityFromRequest(LocationRequestDTO locationRequestDTO, @MappingTarget Location location);
+
+    /**
+     * Custom Resolver
+     */
+    protected LocationType resolveLocationType(UUID locationTypeID) {
+        if (locationTypeID == null) {
+            return null;
+        }
+        return locationTypeRepository.findById(locationTypeID).orElse(null);
+    }
 }

@@ -4,12 +4,23 @@ import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherResponseDetailDTO;
+import dev.austinbarnes.retailinventorymanagement.inventory.entity.PurchaseOrder;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.ReceivingVoucher;
+import dev.austinbarnes.retailinventorymanagement.inventory.entity.Status;
+import dev.austinbarnes.retailinventorymanagement.inventory.entity.Vendor;
+import dev.austinbarnes.retailinventorymanagement.inventory.repo.PurchaseOrderRepository;
+import dev.austinbarnes.retailinventorymanagement.inventory.repo.StatusRepository;
+import dev.austinbarnes.retailinventorymanagement.inventory.repo.VendorRepository;
+import dev.austinbarnes.retailinventorymanagement.location.entity.Location;
 import dev.austinbarnes.retailinventorymanagement.location.mapper.LocationMapper;
+import dev.austinbarnes.retailinventorymanagement.location.repo.LocationRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.UUID;
 
 /**
  * ReceivingVoucherMapper is an interface that defines the mapping between ReceivingVoucher entity and its DTOs.
@@ -20,14 +31,26 @@ import org.mapstruct.Named;
  * to convert ReceivingVoucher entity to different types of ReceivingVoucherResponseDTOs.
  */
 @Mapper(config = GlobalMapperConfig.class, uses = {PurchaseOrderMapper.class, LocationMapper.class, VendorMapper.class, StatusMapper.class})
-public interface ReceivingVoucherMapper {
+public abstract class ReceivingVoucherMapper {
+    @Autowired
+    protected StatusRepository statusRepository;
+    @Autowired
+    protected LocationRepository locationRepository;
+    @Autowired
+    protected VendorRepository vendorRepository;
+    @Autowired
+    protected PurchaseOrderRepository purchaseOrderRepository;
     /**
      * Converts ReceivingVoucherRequestDTO to ReceivingVoucher entity.
      *
      * @param voucherRequestDTO the ReceivingVoucherRequestDTO to convert
      * @return the converted ReceivingVoucher entity
      */
-    ReceivingVoucher toEntity(ReceivingVoucherRequestDTO voucherRequestDTO);
+    @Mapping(target = "status", source = "statusId")
+    @Mapping(target = "location", source = "locationId")
+    @Mapping(target = "vendor", source = "vendorId")
+    @Mapping(target = "purchaseOrder", source = "purchaseOrderId")
+    public abstract ReceivingVoucher toEntity(ReceivingVoucherRequestDTO voucherRequestDTO);
 
     /**
      * Converts ReceivingVoucher entity to ReceivingVoucherResponseBasicDTO.
@@ -40,7 +63,7 @@ public interface ReceivingVoucherMapper {
     @Mapping(target = "vendor", qualifiedByName = "basicVendor")
     @Mapping(target = "status", qualifiedByName = "basicStatus")
     @Named("basicReceivingVoucher")
-    ReceivingVoucherResponseBasicDTO toBasicDTO(ReceivingVoucher receivingVoucher);
+    public abstract ReceivingVoucherResponseBasicDTO toBasicDTO(ReceivingVoucher receivingVoucher);
 
     /**
      * Converts ReceivingVoucher entity to ReceivingVoucherResponseDetailDTO.
@@ -53,7 +76,7 @@ public interface ReceivingVoucherMapper {
     @Mapping(target = "vendor", qualifiedByName = "detailVendor")
     @Mapping(target = "status", qualifiedByName = "detailStatus")
     @Named("detailReceivingVoucher")
-    ReceivingVoucherResponseDetailDTO toDetailDTO(ReceivingVoucher receivingVoucher);
+    public abstract ReceivingVoucherResponseDetailDTO toDetailDTO(ReceivingVoucher receivingVoucher);
 
     /**
      * Updates an existing ReceivingVoucher entity with the values from the ReceivingVoucherRequestDTO.
@@ -61,5 +84,28 @@ public interface ReceivingVoucherMapper {
      * @param voucherRequestDTO the ReceivingVoucherRequestDTO containing the new values
      * @param receivingVoucher   the ReceivingVoucher entity to update
      */
-    void updateEntityFromRequest(ReceivingVoucherRequestDTO voucherRequestDTO, @MappingTarget ReceivingVoucher receivingVoucher);
+    @Mapping(target = "status", source = "statusId")
+    @Mapping(target = "location", source = "locationId")
+    @Mapping(target = "vendor", source = "vendorId")
+    @Mapping(target = "purchaseOrder", source = "purchaseOrderId")
+    public abstract void updateEntityFromRequest(ReceivingVoucherRequestDTO voucherRequestDTO, @MappingTarget ReceivingVoucher receivingVoucher);
+
+    /**
+     * Custom Resolvers
+     */
+    protected Status resolveStatus(UUID statusID) {
+        return statusID == null ? null : statusRepository.findById(statusID).orElse(null);
+    }
+
+    protected Location resolveLocation(UUID locationID) {
+        return locationID == null ? null : locationRepository.findById(locationID).orElse(null);
+    }
+
+    protected Vendor resolveVendor(UUID vendorID) {
+        return vendorID == null ? null : vendorRepository.findById(vendorID).orElse(null);
+    }
+
+    protected PurchaseOrder resolvePurchaseOrder(UUID purchaseOrderID) {
+        return purchaseOrderID == null ? null : purchaseOrderRepository.findById(purchaseOrderID).orElse(null);
+    }
 }

@@ -45,7 +45,7 @@ public class EmployeePermissionService {
     public ResponseEntity<ApiResponseDto<EmployeePermissionResponseDTO>> createEmployeePermission(
             EmployeePermissionRequestDTO request
     ) {
-        log.info("Creating employee permission for employee ID: {} and permission ID: {}", request.employeeID(), request.roleID());
+        log.info("Creating employee permission for employee ID: {} and permission ID: {}", request.employeeID(), request.permissionID());
         return ApiResponseDto.created(mapper.toDetailDTO(repository.save(mapper.toEntity(request))));
     }
 
@@ -55,11 +55,11 @@ public class EmployeePermissionService {
      * @param request The request DTO containing updated employee permission details.
      */
     public ResponseEntity<ApiResponseDto<EmployeePermissionResponseDTO>> updateEmployeePermission(UUID employeePermissionID, EmployeePermissionRequestDTO request) {
-        log.info("Updating employee permission for employee ID: {} and permission ID: {}", request.employeeID(), request.roleID());
+        log.info("Updating employee permission for employee ID: {} and permission ID: {}", request.employeeID(), request.permissionID());
         EmployeePermission target = repository.findById(employeePermissionID)
-                .orElseThrow(() -> new EntityNotFoundException("Employee permission with ID: %s not found".formatted(request.roleID())));
-        target.setPermission(permissionRepository.findById(request.roleID())
-                .orElseThrow(() -> new EntityNotFoundException("Permission with ID: %s not found".formatted(request.roleID()))));
+                .orElseThrow(() -> new EntityNotFoundException("Employee permission with ID: %s not found".formatted(request.permissionID())));
+        target.setPermission(permissionRepository.findById(request.permissionID())
+                .orElseThrow(() -> new EntityNotFoundException("Permission with ID: %s not found".formatted(request.permissionID()))));
         target.setEmployee(employeeRepository.findById(request.employeeID())
                 .orElseThrow(() -> new EntityNotFoundException("Employee with ID: %s not found".formatted(request.employeeID()))));
         return ApiResponseDto.ok(mapper.toDetailDTO(repository.save(target)));

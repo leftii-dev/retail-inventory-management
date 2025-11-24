@@ -2,14 +2,18 @@ package dev.austinbarnes.retailinventorymanagement.product.mapper;
 
 import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.product.dto.product.*;
-import dev.austinbarnes.retailinventorymanagement.product.entity.Product;
-import dev.austinbarnes.retailinventorymanagement.product.entity.ProductImage;
+import dev.austinbarnes.retailinventorymanagement.product.entity.*;
+import dev.austinbarnes.retailinventorymanagement.product.repo.BrandRepository;
+import dev.austinbarnes.retailinventorymanagement.product.repo.CategoryRepository;
+import dev.austinbarnes.retailinventorymanagement.product.repo.DiscountRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -19,14 +23,25 @@ import java.util.stream.Collectors;
  * both a basic and detailed ProductResponseDTO.
  */
 @Mapper(config = GlobalMapperConfig.class)
-public interface ProductMapper {
+public abstract class ProductMapper {
+
+    @Autowired
+    protected BrandRepository brandRepository;
+    @Autowired
+    protected CategoryRepository categoryRepository;
+    @Autowired
+    protected DiscountRepository discountRepository;
+
     /**
      * Converts a ProductRequestDTO to a Product entity.
      *
      * @param productRequestDTO the ProductRequestDTO to convert
      * @return the converted Product entity
      */
-    Product toEntity(ProductRequestDTO productRequestDTO);
+    @Mapping(target = "brand", source = "brandID")
+    @Mapping(target = "category", source = "categoryID")
+    @Mapping(target = "discount", source = "discountID")
+    public abstract Product toEntity(ProductRequestDTO productRequestDTO);
 
     /**
      * Converts a Product entity to a ProductResponseBasicDTO.
@@ -42,7 +57,7 @@ public interface ProductMapper {
     @Mapping(target = "discountName", source = "discount.name")
     @Mapping(target = "images", qualifiedByName = "toImageBasicDTOList")
     @Named("basicProduct")
-    ProductResponseBasicDTO toBasicDTO(Product product);
+    public abstract ProductResponseBasicDTO toBasicDTO(Product product);
 
     /**
      * Converts a Product entity to a ProductResponseDetailDTO.
@@ -58,7 +73,7 @@ public interface ProductMapper {
     @Mapping(target = "discountName", source = "discount.name")
     @Mapping(target = "images", qualifiedByName = "toImageDetailDTOList")
     @Named("detailProduct")
-    ProductResponseDetailDTO toDetailDTO(Product product);
+    public abstract ProductResponseDetailDTO toDetailDTO(Product product);
 
     /**
      * Updates an existing Product entity with the values from the ProductRequestDTO.
@@ -66,7 +81,28 @@ public interface ProductMapper {
      * @param productRequestDTO the ProductRequestDTO containing the new values
      * @param product           the Product entity to update
      */
-    void updateEntityFromRequest(ProductRequestDTO productRequestDTO, @MappingTarget Product product);
+    @Mapping(target = "brand", source = "brandID")
+    @Mapping(target = "category", source = "categoryID")
+    @Mapping(target = "discount", source = "discountID")
+    public abstract void updateEntityFromRequest(ProductRequestDTO productRequestDTO, @MappingTarget Product product);
+
+    /**
+     * Custom Resolvers
+     */
+    protected Brand resolveBrand(UUID brandID){
+        if(brandID == null) return null;
+        return brandRepository.findById(brandID).orElse(null);
+    }
+
+    protected Category resolveCategory(UUID categoryID){
+        if(categoryID == null) return null;
+        return categoryRepository.findById(categoryID).orElse(null);
+    }
+
+    protected Discount resolveDiscount(UUID discountID){
+        if(discountID == null) return null;
+        return discountRepository.findById(discountID).orElse(null);
+    }
 
     /**
      * Converts a ProductImageRequestDTO to a ProductImage entity.
@@ -75,7 +111,7 @@ public interface ProductMapper {
      * @param requestDTO the ProductImageRequestDTO to convert
      * @return the converted ProductImage entity
      */
-    ProductImage toImageEntity(ProductImageRequestDTO requestDTO);
+    public abstract ProductImage toImageEntity(ProductImageRequestDTO requestDTO);
 
     /**
      * Converts ProductImage entity into ProductImageResponseBasicDTO
@@ -83,7 +119,7 @@ public interface ProductMapper {
      * @return the converted ProductImageResponseBasicDTO
      */
     @Mapping(target = "productId", source = "product.id")
-    ProductImageResponseBasicDTO toImageBasicDTO(ProductImage image);
+    public abstract ProductImageResponseBasicDTO toImageBasicDTO(ProductImage image);
 
     /**
      * Converts ProductImage entity into ProductImageResponseDetailDTO
@@ -91,7 +127,7 @@ public interface ProductMapper {
      * @return the converted ProductImageResponseDetailDTO
      */
     @Mapping(target = "productId", source = "product.id")
-    ProductImageResponseDetailDTO toImageDetailDTO(ProductImage image);
+    public abstract ProductImageResponseDetailDTO toImageDetailDTO(ProductImage image);
 
     /**
      * Converts a list of ProductImage entities to a list of ProductImageResponseBasicDTOs.
@@ -100,7 +136,7 @@ public interface ProductMapper {
      * @return the converted list of ProductImageResponseBasicDTOs
      */
     @Named("toImageBasicDTOList")
-    default List<ProductImageResponseDTO> toImageBasicDTOList(List<ProductImage> images) {
+    public List<ProductImageResponseDTO> toImageBasicDTOList(List<ProductImage> images) {
         if (images == null) {
             return null;
         }
@@ -116,7 +152,7 @@ public interface ProductMapper {
      * @return the converted list of ProductImageResponseDTOs
      */
     @Named("toImageDetailDTOList")
-    default List<ProductImageResponseDTO> toImageDetailDTOList(List<ProductImage> images) {
+    public List<ProductImageResponseDTO> toImageDetailDTOList(List<ProductImage> images) {
         if (images == null) {
             return null;
         }
@@ -132,6 +168,6 @@ public interface ProductMapper {
      * @param requestDTO the ProductImageRequestDTO containing the new values
      * @param image      the ProductImage entity to update
      */
-    void updateImageFromRequest(ProductImageRequestDTO requestDTO, @MappingTarget ProductImage image);
+    public abstract void updateImageFromRequest(ProductImageRequestDTO requestDTO, @MappingTarget ProductImage image);
 }
 
