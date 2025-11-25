@@ -6,8 +6,6 @@ import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherResponseDetailDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.PurchaseOrder;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.ReceivingVoucher;
-import dev.austinbarnes.retailinventorymanagement.inventory.entity.Status;
-import dev.austinbarnes.retailinventorymanagement.inventory.entity.Vendor;
 import dev.austinbarnes.retailinventorymanagement.inventory.repo.PurchaseOrderRepository;
 import dev.austinbarnes.retailinventorymanagement.inventory.repo.StatusRepository;
 import dev.austinbarnes.retailinventorymanagement.inventory.repo.VendorRepository;
@@ -46,10 +44,10 @@ public abstract class ReceivingVoucherMapper {
      * @param voucherRequestDTO the ReceivingVoucherRequestDTO to convert
      * @return the converted ReceivingVoucher entity
      */
-    @Mapping(target = "status", source = "statusId")
-    @Mapping(target = "location", source = "locationId")
-    @Mapping(target = "vendor", source = "vendorId")
-    @Mapping(target = "purchaseOrder", source = "purchaseOrderId")
+    @Mapping(target = "status", source = "statusID")
+    @Mapping(target = "location", source = "locationID")
+    @Mapping(target = "vendor", source = "vendorID")
+    @Mapping(target = "purchaseOrder", source = "purchaseOrderID")
     public abstract ReceivingVoucher toEntity(ReceivingVoucherRequestDTO voucherRequestDTO);
 
     /**
@@ -84,25 +82,17 @@ public abstract class ReceivingVoucherMapper {
      * @param voucherRequestDTO the ReceivingVoucherRequestDTO containing the new values
      * @param receivingVoucher   the ReceivingVoucher entity to update
      */
-    @Mapping(target = "status", source = "statusId")
-    @Mapping(target = "location", source = "locationId")
-    @Mapping(target = "vendor", source = "vendorId")
-    @Mapping(target = "purchaseOrder", source = "purchaseOrderId")
+    @Mapping(target = "status", source = "statusID")
+    @Mapping(target = "location", source = "locationID")
+    @Mapping(target = "vendor", source = "vendorID")
+    @Mapping(target = "purchaseOrder", source = "purchaseOrderID")
     public abstract void updateEntityFromRequest(ReceivingVoucherRequestDTO voucherRequestDTO, @MappingTarget ReceivingVoucher receivingVoucher);
 
     /**
      * Custom Resolvers
      */
-    protected Status resolveStatus(UUID statusID) {
-        return statusID == null ? null : statusRepository.findById(statusID).orElse(null);
-    }
-
     protected Location resolveLocation(UUID locationID) {
         return locationID == null ? null : locationRepository.findById(locationID).orElse(null);
-    }
-
-    protected Vendor resolveVendor(UUID vendorID) {
-        return vendorID == null ? null : vendorRepository.findById(vendorID).orElse(null);
     }
 
     protected PurchaseOrder resolvePurchaseOrder(UUID purchaseOrderID) {

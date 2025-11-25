@@ -7,7 +7,6 @@ import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.Transfe
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Transfer;
 import dev.austinbarnes.retailinventorymanagement.location.entity.Location;
 import dev.austinbarnes.retailinventorymanagement.location.repo.LocationRepository;
-import dev.austinbarnes.retailinventorymanagement.location.service.LocationService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -24,7 +23,7 @@ import java.util.UUID;
  * The interface includes methods to convert TransferRequestDTO to Transfer entity and
  * to convert Transfer entity to different types of TransferResponseDTOs.
  */
-@Mapper(config = GlobalMapperConfig.class, uses = LocationService.class)
+@Mapper(config = GlobalMapperConfig.class)
 public abstract class TransferMapper {
     @Autowired
     protected LocationRepository locationRepository;
