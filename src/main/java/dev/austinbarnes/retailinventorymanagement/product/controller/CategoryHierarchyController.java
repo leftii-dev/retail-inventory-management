@@ -29,7 +29,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("api/v1/category-hierarchy")
 @Slf4j
-public class CategoryHierarchyController {
+public class    CategoryHierarchyController {
     private final CategoryHierarchyService service;
 
     /**
