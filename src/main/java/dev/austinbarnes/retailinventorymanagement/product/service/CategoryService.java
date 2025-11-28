@@ -3,6 +3,7 @@ package dev.austinbarnes.retailinventorymanagement.product.service;
 import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
 import dev.austinbarnes.retailinventorymanagement.entitycode.CodeGenerator;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryFilterDTO;
+import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryHierarchyRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.product.dto.category.CategoryResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.product.entity.Category;
@@ -32,6 +33,7 @@ import java.util.UUID;
 @Slf4j
 public class CategoryService {
     private final CategoryRepository repository;
+    private final CategoryHierarchyService hierarchyService;
     private final CategoryMapper mapper;
     private final CodeGenerator codeGenerator;
 
@@ -43,14 +45,22 @@ public class CategoryService {
      */
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'MANAGER') and hasAuthority('WRITE_PRODUCT')")
-    public ResponseEntity<ApiResponseDto<CategoryResponseDTO>> createCategory(CategoryRequestDTO request) {
+    public ResponseEntity<ApiResponseDto<CategoryResponseDTO>> createCategory(CategoryRequestDTO request, UUID parentID) {
         log.info("Creating category: {}", request);
         Category newCategory = mapper.toEntity(request);
         newCategory.setCategoryCode(codeGenerator.generateCategoryCode());
-        return ApiResponseDto.created(isManager()?
+
+        CategoryResponseDTO savedCategory = isManager()?
                 mapper.toDetailDTO(repository.save(newCategory)) :
-                mapper.toBasicDTO(repository.save(newCategory))
-                );
+                mapper.toBasicDTO(repository.save(newCategory));
+
+        if(parentID != null) {
+            Category parentCategory = repository.findById(parentID)
+                    .orElseThrow(() -> new EntityNotFoundException("Parent category not found"));
+            CategoryHierarchyRequestDTO hierarchyRequestDTO = new CategoryHierarchyRequestDTO(savedCategory.id(), parentCategory.getId());
+            hierarchyService.createCategoryHierarchy(hierarchyRequestDTO);
+        }
+        return ApiResponseDto.created(savedCategory);
     }
 
     /**

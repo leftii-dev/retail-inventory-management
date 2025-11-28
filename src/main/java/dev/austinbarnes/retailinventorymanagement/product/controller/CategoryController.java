@@ -55,9 +55,12 @@ public class CategoryController {
             @ApiResponse(responseCode = "400", description = "Bad request, invalid input data or category already exists")
     })
     @PostMapping
-    public ResponseEntity<ApiResponseDto<CategoryResponseDTO>> createCategory(@RequestBody @Valid CategoryRequestDTO request) {
+    public ResponseEntity<ApiResponseDto<CategoryResponseDTO>> createCategory(
+            @RequestBody @Valid CategoryRequestDTO request,
+            @RequestParam(required = false) UUID parent
+    ) {
         log.info("Creating category: {}", request);
-        return service.createCategory(request);
+        return service.createCategory(request, parent);
     }
 
     /**
