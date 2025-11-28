@@ -32,7 +32,7 @@ import java.util.UUID;
 @Slf4j
 public class CategoryHierarchyService {
     private final CategoryHierarchyRepository repository;
-    private CategoryHierarchyMapper mapper;
+    private final CategoryHierarchyMapper mapper;
 
     /**
      * Create new CategoryHierarchy.
