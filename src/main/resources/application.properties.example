@@ -53,3 +53,8 @@ spring.mail.properties.mail.smtp.starttls.enable=true
 app.frontend.url=http://localhost:3000
 system.employee.id=0eb9051d-f61d-495e-8157-3f2edf93c323
 session.cookie.domain=
+
+# Initial admin details (complete here or use env vars mapped to here)
+# If password is left blank, one will be generated and print to the logs on first run
+initial.admin.email=
+initial.admin.password=

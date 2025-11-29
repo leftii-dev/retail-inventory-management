@@ -63,10 +63,15 @@ public class Employee extends BaseEntity {
     @NotNull
     private String employeeCode;
 
-    @Column(name = "is_current_employee", nullable = false)
+    @Column(name = "is_current_employee")
     @NotNull
     private boolean isCurrentEmployee = true;
 
-    @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<EmployeePermission> employeePermissions = new HashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "employee_permissions",
+            joinColumns = @JoinColumn(name = "employee_id"),
+            inverseJoinColumns = @JoinColumn(name = "permission_id")
+    )
+    private Set<Permission> permissions = new HashSet<>();
 }
