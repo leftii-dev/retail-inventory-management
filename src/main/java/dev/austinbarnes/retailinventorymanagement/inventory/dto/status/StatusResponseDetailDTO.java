@@ -17,8 +17,8 @@ public record StatusResponseDetailDTO(
         String description,
         Instant createdAt,
         Instant modifiedAt,
-        UUID createdBy,
-        UUID modifiedBy,
+        UUID createdByID,
+        UUID modifiedByID,
         boolean active
 ) implements StatusResponseDTO{
 }

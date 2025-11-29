@@ -23,10 +23,10 @@ public record VendorResponseDetailDTO(
         String phone,
         String email,
         boolean isActive,
-        Instant createdAtID,
-        Instant modifiedAtID,
-        UUID createdBy,
-        UUID modifiedBy,
+        Instant createdAt,
+        Instant modifiedAt,
+        UUID createdByID,
+        UUID modifiedByID,
         boolean active
 ) implements VendorResponseDTO{
 }

@@ -16,6 +16,7 @@ import java.util.UUID;
  */
 public record PurchaseOrderResponseBasicDTO(
         UUID id,
+        String PurchaseOrderCode,
         LocalDate dateExpected,
         BigDecimal totalCost,
         String notes,
