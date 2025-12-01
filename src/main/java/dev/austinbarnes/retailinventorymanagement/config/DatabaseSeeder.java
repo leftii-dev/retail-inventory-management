@@ -10,6 +10,7 @@ import dev.austinbarnes.retailinventorymanagement.employee.repo.EmployeeReposito
 import dev.austinbarnes.retailinventorymanagement.employee.repo.PermissionRepository;
 import dev.austinbarnes.retailinventorymanagement.entitycode.entity.CodeEntity;
 import dev.austinbarnes.retailinventorymanagement.entitycode.repo.CodeEntityRepository;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +36,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final PermissionRepository permissionRepository;
     private final RoleRepository roleRepository;
     private final CodeEntityRepository codeEntityRepository;
+    private final EntityManager entityManager; // Used to persist with custom UUID
 
     @Value("${system.employee.id}")
     private UUID systemEmployeeId;
@@ -188,15 +191,23 @@ public class DatabaseSeeder implements CommandLineRunner {
                     return userRepository.save(sysUser);
                 });
 
-        if(employeeRepository.findById(systemEmployeeId).isEmpty()) {
-            Employee sysEmployee = new Employee();
-            sysEmployee.setId(systemEmployeeId);
-            sysEmployee.setUser(savedSystemUser);
-            sysEmployee.setNameFirst("SYSTEM");
-            sysEmployee.setNameLast("SYSTEM");
-            sysEmployee.setEmail(systemUserEmail);
-            sysEmployee.setEmployeeCode("EMP-100000");
-            employeeRepository.save(sysEmployee);
+        if (employeeRepository.findById(systemEmployeeId).isEmpty()) {
+            String sql = "INSERT INTO employee " +
+                    "(id, created_at, modified_at, created_by, modified_by, active, " +
+                    "email, employee_code, is_current_employee, name_first, name_last, user_id) " +
+                    "VALUES (:id, :now, :now, :auditId, :auditId, true, " +
+                    ":email, :code, true, :first, :last, :userId)";
+
+            entityManager.createNativeQuery(sql)
+                    .setParameter("id", systemEmployeeId)
+                    .setParameter("now", Instant.now())
+                    .setParameter("auditId", systemEmployeeId)
+                    .setParameter("email", systemUserEmail)
+                    .setParameter("code", "EMP-100000")
+                    .setParameter("first", "SYSTEM")
+                    .setParameter("last", "SYSTEM")
+                    .setParameter("userId", savedSystemUser.getId())
+                    .executeUpdate();
         }
     }
 }
