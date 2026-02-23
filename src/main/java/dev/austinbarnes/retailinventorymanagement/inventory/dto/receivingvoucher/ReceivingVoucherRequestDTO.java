@@ -35,7 +35,7 @@ public record ReceivingVoucherRequestDTO(
         @Digits(integer = 10, fraction = 2)
         BigDecimal feeCost,
         @DecimalMin(value = "0.00", message = "Discount percentage cannot be negative")
-        @DecimalMax(value = "100.00", message = "Discount percantage cannot exceed 100.00")
+        @DecimalMax(value = "100.00", message = "Discount percentage cannot exceed 100.00")
         @Digits(integer = 3, fraction = 2)
         BigDecimal discountPercent,
         @FutureOrPresent(message = "Payment discount date cannot be in the past")

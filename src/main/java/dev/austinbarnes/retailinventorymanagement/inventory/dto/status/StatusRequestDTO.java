@@ -11,7 +11,9 @@ import jakarta.validation.constraints.Size;
  * and that the description does not exceed 3000 characters.
  */
 public record StatusRequestDTO(
-        @Size(min = 2, max = 50, message = "Status must be between 2 and 50 characters") String name,
-        @Size(max = 3000, message = "Description cannot exceed 3000 characters") String description
+        @Size(min = 2, max = 50, message = "Status must be between 2 and 50 characters")
+        String name,
+        @Size(max = 3000, message = "Description cannot exceed 3000 characters")
+        String description
 ) {
 }

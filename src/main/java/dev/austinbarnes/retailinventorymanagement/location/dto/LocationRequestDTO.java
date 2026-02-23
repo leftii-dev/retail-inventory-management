@@ -1,5 +1,7 @@
 package dev.austinbarnes.retailinventorymanagement.location.dto;
 
+import jakarta.validation.constraints.Size;
+
 import java.util.UUID;
 
 /**
@@ -11,7 +13,7 @@ import java.util.UUID;
  * @param locationTypeID the unique identifier of the location type
  */
 public record LocationRequestDTO(
-    String name,
+    @Size(max = 100, message = "Location Name must not exceed 100 characters") String name,
     UUID locationTypeID
 ) {
 }

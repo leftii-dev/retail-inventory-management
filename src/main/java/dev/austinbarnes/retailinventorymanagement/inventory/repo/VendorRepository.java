@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -19,6 +20,8 @@ import java.util.UUID;
  */
 @Repository
 public interface VendorRepository extends JpaRepository<Vendor, UUID>, JpaSpecificationExecutor<Vendor> {
+    Optional<Vendor> findByName(String name);
+
     @Modifying
     @Query("UPDATE Vendor v SET v.active = false WHERE v.id = :id")
     void softDeleteById(UUID id);

@@ -80,6 +80,9 @@ public abstract class PurchaseOrderMapper {
     }
 
     protected Status resolveStatus(UUID id) {
-        return id == null ? null : statusRepository.findById(id).orElse(null);
+        if (id == null) {
+            return statusRepository.findByName("DRAFT").orElse(null);
+        }
+        return statusRepository.findById(id).orElse(null);
     }
 }

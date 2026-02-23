@@ -25,12 +25,16 @@ public class PurchaseOrderSpecifications {
                     predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("dateExpected"), filterDTO.dateExpected()));
                 }
 
-                if(filterDTO.totalLessThan() != null){
-                    predicate = criteriaBuilder.and(predicate, criteriaBuilder.lessThan(root.get("totalCost"), filterDTO.totalLessThan()));
+                if(filterDTO.totalBelow() != null){
+                    predicate = criteriaBuilder.and(predicate, criteriaBuilder.lessThan(root.get("totalCost"), filterDTO.totalBelow()));
                 }
 
-                if(filterDTO.totalGreaterThan() != null){
-                    predicate = criteriaBuilder.and(predicate, criteriaBuilder.greaterThan(root.get("totalCost"), filterDTO.totalGreaterThan()));
+                if(filterDTO.totalAbove() != null){
+                    predicate = criteriaBuilder.and(predicate, criteriaBuilder.greaterThan(root.get("totalCost"), filterDTO.totalAbove()));
+                }
+
+                if(filterDTO.totalEqual() != null){
+                    predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("totalCost"), filterDTO.totalEqual()));
                 }
 
                 if(filterDTO.vendor() != null){

@@ -59,7 +59,7 @@ public class Vendor extends BaseEntity {
     private String contactName;
 
     @Column(name = "phone")
-    @Pattern(regexp = "//d{10}", message = "Phone must be 10 digits, no spaces or hyphens")
+    @Pattern(regexp = "\\d{10}", message = "Phone must be 10 digits, no spaces or hyphens")
     private String phone;
 
     @Column(name = "email")

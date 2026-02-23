@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -19,6 +20,9 @@ import java.util.UUID;
  */
 @Repository
 public interface StatusRepository extends JpaRepository<Status, UUID>, JpaSpecificationExecutor<Status> {
+
+    Optional<Status> findByName(String name);
+
     @Modifying
     @Query("UPDATE Status s SET s.active = false WHERE s.id = :id")
     void softDeleteById(UUID id);

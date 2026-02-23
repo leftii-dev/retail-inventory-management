@@ -8,8 +8,13 @@ import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Permission;
 import dev.austinbarnes.retailinventorymanagement.employee.repo.EmployeeRepository;
 import dev.austinbarnes.retailinventorymanagement.employee.repo.PermissionRepository;
+import dev.austinbarnes.retailinventorymanagement.entitycode.CodeGenerator;
 import dev.austinbarnes.retailinventorymanagement.entitycode.entity.CodeEntity;
 import dev.austinbarnes.retailinventorymanagement.entitycode.repo.CodeEntityRepository;
+import dev.austinbarnes.retailinventorymanagement.inventory.entity.Status;
+import dev.austinbarnes.retailinventorymanagement.inventory.entity.Vendor;
+import dev.austinbarnes.retailinventorymanagement.inventory.repo.StatusRepository;
+import dev.austinbarnes.retailinventorymanagement.inventory.repo.VendorRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +25,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -37,6 +39,9 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final CodeEntityRepository codeEntityRepository;
     private final EntityManager entityManager; // Used to persist with custom UUID
+    private final StatusRepository statusRepository;
+    private final VendorRepository vendorRepository;
+    private final CodeGenerator codeGenerator;
 
     @Value("${system.employee.id}")
     private UUID systemEmployeeId;
@@ -55,22 +60,24 @@ public class DatabaseSeeder implements CommandLineRunner {
         createRoles();
         createCodeGeneratorIndices();
         createInitialAdminUser();
+        createDefaultStatuses();
+        createFillerVendors();
     }
 
     private void createInitialAdminUser() {
-        if(initialAdminEmail == null || initialAdminEmail.isBlank()) {
+        if (initialAdminEmail == null || initialAdminEmail.isBlank()) {
             return;
         }
 
-        if(userRepository.findByEmail(initialAdminEmail).isPresent()) {
+        if (userRepository.findByEmail(initialAdminEmail).isPresent()) {
             return;
         }
-         log.info("Seeding initial admin user...");
+        log.info("Seeding initial admin user...");
 
         String rawPassword;
         boolean isRandom = false;
 
-        if(initialAdminPassword != null && !initialAdminPassword.isEmpty()) {
+        if (initialAdminPassword != null && !initialAdminPassword.isEmpty()) {
             rawPassword = initialAdminPassword;
         } else {
             rawPassword = UUID.randomUUID().toString().substring(0, 8);
@@ -109,7 +116,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         log.info("-------------------------------------------------------------------");
         log.info("ADMIN ACCOUNT CREATED SUCCESSFULLY");
         log.info("Email:     {}", initialAdminEmail);
-        if(isRandom) {
+        if (isRandom) {
             log.info("Password:  {}   <-- COPY THIS NOW, IT WILL NOT BE SHOWN AGAIN", rawPassword);
         } else {
             log.info("Password: [Provided via Configuration]");
@@ -134,49 +141,49 @@ public class DatabaseSeeder implements CommandLineRunner {
                 new CodeEntity("employee", 2)
         );
         codeEntities.forEach(code -> {
-            if(codeEntityRepository.findByName(code.getName()).isEmpty()){
+            if (codeEntityRepository.findByName(code.getName()).isEmpty()) {
                 codeEntityRepository.save(code);
             }
         });
     }
 
     private void createRoles() {
-            List<Role> roles = List.of(
-                    new Role("ADMIN"),
-                    new Role("SHOPPER"),
-                    new Role("MANAGER"),
-                    new Role("EMPLOYEE")
-            );
+        List<Role> roles = List.of(
+                new Role("ADMIN"),
+                new Role("SHOPPER"),
+                new Role("MANAGER"),
+                new Role("EMPLOYEE")
+        );
 
-            roles.forEach(role -> {
-                if(roleRepository.findByName(role.getName()).isEmpty()){
-                    roleRepository.save(role);
-                }
-            });
+        roles.forEach(role -> {
+            if (roleRepository.findByName(role.getName()).isEmpty()) {
+                roleRepository.save(role);
+            }
+        });
     }
 
     private void createPermissions() {
-            List<Permission> permissions = List.of(
-                    new Permission("WRITE_PO", "Write permissions for purchase order records"),
-                    new Permission("WRITE_INVENTORY", "Write permissions for inventory records"),
-                    new Permission("WRITE_RV", "Write permissions for receiving voucher records"),
-                    new Permission("WRITE_STATUS", "Write permissions for status types"),
-                    new Permission("WRITE_TRANSFER", "Write permissions for transfer slip records"),
-                    new Permission("WRITE_VENDOR", "Write permissions for vendor records"),
-                    new Permission("WRITE_LOCATION", "Write permissions for location records"),
-                    new Permission("WRITE_PRODUCT", "Write permissions for product records"),
-                    new Permission("WRITE_DISCOUNT", "Write permissions for discount records"),
-                    new Permission("READ_PO", "Read permissions for purchase order records"),
-                    new Permission("READ_RV", "Read permissions for receiving voucher records"),
-                    new Permission("READ_STATUS", "Read permissions for status type records"),
-                    new Permission("READ_TRANSFER", "Read permissions for transfer slip records"),
-                    new Permission("READ_VENDOR", "Read permissions for vendor records")
-                );
-            permissions.forEach(permission -> {
-                if(permissionRepository.findByName(permission.getName()).isEmpty()){
-                    permissionRepository.save(permission);
-                }
-            });
+        List<Permission> permissions = List.of(
+                new Permission("WRITE_PO", "Write permissions for purchase order records"),
+                new Permission("WRITE_INVENTORY", "Write permissions for inventory records"),
+                new Permission("WRITE_RV", "Write permissions for receiving voucher records"),
+                new Permission("WRITE_STATUS", "Write permissions for status types"),
+                new Permission("WRITE_TRANSFER", "Write permissions for transfer slip records"),
+                new Permission("WRITE_VENDOR", "Write permissions for vendor records"),
+                new Permission("WRITE_LOCATION", "Write permissions for location records"),
+                new Permission("WRITE_PRODUCT", "Write permissions for product records"),
+                new Permission("WRITE_DISCOUNT", "Write permissions for discount records"),
+                new Permission("READ_PO", "Read permissions for purchase order records"),
+                new Permission("READ_RV", "Read permissions for receiving voucher records"),
+                new Permission("READ_STATUS", "Read permissions for status type records"),
+                new Permission("READ_TRANSFER", "Read permissions for transfer slip records"),
+                new Permission("READ_VENDOR", "Read permissions for vendor records")
+        );
+        permissions.forEach(permission -> {
+            if (permissionRepository.findByName(permission.getName()).isEmpty()) {
+                permissionRepository.save(permission);
+            }
+        });
     }
 
     private void createSystemUserAndEmployee() {
@@ -209,5 +216,35 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .setParameter("userId", savedSystemUser.getId())
                     .executeUpdate();
         }
+    }
+
+    private void createDefaultStatuses() {
+        Map<String, String> defaultStatuses = Map.of("PENDING", "Item has been processed and is pending.",
+                "OPEN", "Item has been started, but not yet processed.",
+                "CLOSED", "Item has been closed and can no longer be processed.",
+                "APPROVED", "Item has been approved and is awaiting processing.",
+                "RECEIVED", "Item has been received and is awaiting processing.",
+                "CANCELLED", "Item has been cancelled and will not be processed.",
+                "DRAFT", "Item is in draft form and has not yet been submitted for processing.",
+                "COMPLETED", "Item has been completed and processed successfully.");
+        defaultStatuses.forEach((statusName, statusDescription) -> {
+            if (statusRepository.findByName(statusName).isEmpty()) {
+                statusRepository.save(new Status(statusName, statusDescription));
+            }
+        });
+    }
+
+    private void createFillerVendors() {
+        List<Vendor> vendors = List.of(
+                new Vendor(codeGenerator.generateVendorCode(), "Acme Corporation", "123 ACME Way", null, "Anytown", "NY", "12345", "John Doe", "5551234567", "john.doe@acme.biz"),
+                new Vendor(codeGenerator.generateVendorCode(), "Peebody Electronics", "999 Belt Way", null, "CityDale", "CA", "95432", "Katie Fray", "9991234567", "katie.fray@pb.xyz"),
+                new Vendor(codeGenerator.generateVendorCode(), "Esther Corp", "3955 Mckinley Parkway", null, "Townsville", "AL", "45682", "Jerry Stone", "1231234567", "jerry.stone@esther.dev")
+        );
+        vendors.forEach(vendor -> {
+            if(vendorRepository.findByName(vendor.getName()).isEmpty()) {
+                vendorRepository.save(vendor);
+            }
+        });
+
     }
 }
