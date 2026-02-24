@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
@@ -19,6 +20,9 @@ import java.util.UUID;
  */
 @Repository
 public interface PurchaseOrderItemRepository extends JpaRepository<PurchaseOrderItem, UUID>, JpaSpecificationExecutor<PurchaseOrderItem> {
+    @Query("SELECT COALESCE(SUM(p.costLineTotal), 0) FROM PurchaseOrderItem p WHERE p.purchaseOrder.id = :purchaseOrderId AND p.active = true")
+    BigDecimal sumCostLineTotalByPurchaseOrderId(UUID purchaseOrderId);
+
     @Modifying
     @Query("UPDATE PurchaseOrderItem p SET p.active = false WHERE p.id = :id")
     void softDeleteById(UUID id);

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -18,6 +19,8 @@ import java.util.UUID;
  */
 @Repository
 public interface PermissionRepository extends JpaRepository<Permission, UUID>, JpaSpecificationExecutor<Permission> {
+    Optional<Permission> findByName(String name);
+
     @Modifying
     @Query("UPDATE Permission p SET p.active = false WHERE p.id = :id")
     void softDeleteById(UUID id);

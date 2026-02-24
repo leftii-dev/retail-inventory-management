@@ -52,8 +52,8 @@ public class CustomUserPrincipal implements OAuth2User, UserDetails {
                     // Map User roles to authorities (e.g., ROLE_ADMIN, ROLE_EMPLOYEE)
                     user.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName())),
                     // Map Employee permissions to authorities (e.g., READ_PRODUCTS, WRITE_INVENTORY)
-                    user.getEmployee().getEmployeePermissions().stream()
-                            .map(empPerm -> new SimpleGrantedAuthority(empPerm.getPermission().getName())))
+                    user.getEmployee().getPermissions().stream()
+                            .map(empPerm -> new SimpleGrantedAuthority(empPerm.getName())))
             .collect(Collectors.toSet());
         } else {
             this.authorities = user.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName())).collect(Collectors.toSet());

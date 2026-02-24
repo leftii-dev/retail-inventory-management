@@ -4,7 +4,6 @@ import dev.austinbarnes.retailinventorymanagement.auth.entity.User;
 import dev.austinbarnes.retailinventorymanagement.common.BaseSpecifications;
 import dev.austinbarnes.retailinventorymanagement.employee.dto.employee.EmployeeFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Employee;
-import dev.austinbarnes.retailinventorymanagement.employee.entity.EmployeePermission;
 import dev.austinbarnes.retailinventorymanagement.employee.entity.Permission;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
@@ -45,8 +44,7 @@ public class EmployeeSpecifications {
                 }
 
                 if (filterDTO.hasPermission() != null) {
-                    Join<Employee, EmployeePermission> employeePermissionJoin = root.join("employeePermissions");
-                    Join<EmployeePermission, Permission> permissionJoin = employeePermissionJoin.join("permission");
+                    Join<Employee, Permission> permissionJoin = root.join("permission");
                     predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(criteriaBuilder.lower(permissionJoin.get("name")), "%" + filterDTO.hasPermission().toLowerCase() + "%"));
                 }
             }

@@ -26,11 +26,11 @@ import java.util.Set;
 @ToString(exclude = {"password", "oauthProvider", "oauthProviderId", "employee", "roles"}, callSuper = true)
 public class User extends BaseEntity {
 
-    @Column(name = "email", unique = true)
+    @Column(name = "email", unique = true, nullable = false)
     @Email(message = "Invalid email format")
     private String email;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
     private String name;
 

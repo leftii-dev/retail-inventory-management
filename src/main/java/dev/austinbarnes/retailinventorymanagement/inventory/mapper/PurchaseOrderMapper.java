@@ -38,7 +38,7 @@ public abstract class PurchaseOrderMapper {
      * @return the converted PurchaseOrder entity
      */
     @Mapping(target = "vendor", source = "vendorID")
-    @Mapping(target = "status", source = "statusID")
+    @Mapping(target = "status", expression = "java(resolveStatus(purchaseOrderRequestDTO.statusID()))")
     public abstract PurchaseOrder toEntity(PurchaseOrderRequestDTO purchaseOrderRequestDTO);
 
     /**
@@ -80,6 +80,9 @@ public abstract class PurchaseOrderMapper {
     }
 
     protected Status resolveStatus(UUID id) {
-        return id == null ? null : statusRepository.findById(id).orElse(null);
+        if (id == null) {
+            return statusRepository.findByName("DRAFT").orElse(null);
+        }
+        return statusRepository.findById(id).orElse(null);
     }
 }

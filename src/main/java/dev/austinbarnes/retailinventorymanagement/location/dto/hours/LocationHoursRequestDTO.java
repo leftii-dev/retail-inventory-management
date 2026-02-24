@@ -12,7 +12,7 @@ import java.util.UUID;
  * The day of the week is validated to be between 0 and 6 (inclusive).
  */
 public record LocationHoursRequestDTO (
-        @Min(value = 0, message = "Day of week value cannot be negative (0-6)") @Max(value = 7, message = "Day of week value cannot be over 6 (0-6)") short dayOfWeek,
+        @Min(value = 0, message = "Day of week value cannot be negative (0-6)") @Max(value = 6, message = "Day of week value cannot be over 6 (0-6)") short dayOfWeek,
         LocalTime openTime,
         LocalTime closeTime,
         UUID locationID
