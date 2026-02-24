@@ -38,7 +38,7 @@ public abstract class PurchaseOrderMapper {
      * @return the converted PurchaseOrder entity
      */
     @Mapping(target = "vendor", source = "vendorID")
-    @Mapping(target = "status", source = "statusID")
+    @Mapping(target = "status", expression = "java(resolveStatus(purchaseOrderRequestDTO.statusID()))")
     public abstract PurchaseOrder toEntity(PurchaseOrderRequestDTO purchaseOrderRequestDTO);
 
     /**

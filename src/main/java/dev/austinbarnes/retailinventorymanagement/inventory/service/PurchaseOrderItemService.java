@@ -4,9 +4,11 @@ import dev.austinbarnes.retailinventorymanagement.common.ApiResponseDto;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderItemResponseDTO;
+import dev.austinbarnes.retailinventorymanagement.inventory.entity.PurchaseOrder;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.PurchaseOrderItem;
 import dev.austinbarnes.retailinventorymanagement.inventory.mapper.PurchaseOrderItemMapper;
 import dev.austinbarnes.retailinventorymanagement.inventory.repo.PurchaseOrderItemRepository;
+import dev.austinbarnes.retailinventorymanagement.inventory.repo.PurchaseOrderRepository;
 import dev.austinbarnes.retailinventorymanagement.inventory.specification.PurchaseOrderItemSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,7 @@ import java.util.UUID;
 @Slf4j
 public class PurchaseOrderItemService {
     private final PurchaseOrderItemRepository repository;
+    private final PurchaseOrderRepository purchaseOrderRepository;
     private final PurchaseOrderItemMapper mapper;
 
     /**
@@ -42,11 +45,9 @@ public class PurchaseOrderItemService {
     public ResponseEntity<ApiResponseDto<PurchaseOrderItemResponseDTO>> createPurchaseOrderItem(
             PurchaseOrderItemRequestDTO request) {
         log.info("Creating purchase order item: {}", request);
-        return ApiResponseDto.created(isManager() ?
-                mapper.toDetailDTO(repository.save(mapper.toEntity(request)))
-                :
-                mapper.toBasicDTO(repository.save(mapper.toEntity(request)))
-        );
+        PurchaseOrderItem saved = repository.save(mapper.toEntity(request));
+        recalculateTotalCost(saved.getPurchaseOrder());
+        return ApiResponseDto.created(isManager() ? mapper.toDetailDTO(saved) : mapper.toBasicDTO(saved));
     }
 
     /**
@@ -102,10 +103,9 @@ public class PurchaseOrderItemService {
         PurchaseOrderItem target = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Purchase Order Item not found"));
         mapper.updateEntityFromRequest(request, target);
-        return ApiResponseDto.ok(isManager() ?
-                mapper.toDetailDTO(repository.save(target))
-                :
-                mapper.toBasicDTO(repository.save(target)));
+        PurchaseOrderItem saved = repository.save(target);
+        recalculateTotalCost(saved.getPurchaseOrder());
+        return ApiResponseDto.ok(isManager() ? mapper.toDetailDTO(saved) : mapper.toBasicDTO(saved));
     }
 
     /**
@@ -117,7 +117,11 @@ public class PurchaseOrderItemService {
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('WRITE_PO')")
     public ResponseEntity<ApiResponseDto<Void>> deletePurchaseOrderItem(UUID id) {
         log.info("Deleting purchase order item: {}", id);
+        PurchaseOrderItem item = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Purchase Order Item not found"));
+        PurchaseOrder purchaseOrder = item.getPurchaseOrder();
         repository.deleteById(id);
+        recalculateTotalCost(purchaseOrder);
         return ApiResponseDto.noContent();
     }
 
@@ -126,6 +130,11 @@ public class PurchaseOrderItemService {
      *
      * @return true if the user is a manager or admin, false otherwise.
      */
+    private void recalculateTotalCost(PurchaseOrder purchaseOrder) {
+        purchaseOrder.setTotalCost(repository.sumCostLineTotalByPurchaseOrderId(purchaseOrder.getId()));
+        purchaseOrderRepository.save(purchaseOrder);
+    }
+
     private boolean isManager() {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(
                 authority -> authority.getAuthority().equals("ROLE_MANAGER") || authority.getAuthority().equals("ROLE_ADMIN")
