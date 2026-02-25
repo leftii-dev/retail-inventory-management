@@ -2,6 +2,7 @@ package dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder;
 
 import dev.austinbarnes.retailinventorymanagement.product.dto.product.ProductResponseDTO;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
@@ -14,6 +15,8 @@ import java.util.UUID;
 public record PurchaseOrderItemResponseBasicDTO(
         UUID id,
         short quantity,
+        BigDecimal costUnit,
+        BigDecimal costLineTotal,
         UUID purchaseOrderID,
         ProductResponseDTO product
 ) implements PurchaseOrderItemResponseDTO{
