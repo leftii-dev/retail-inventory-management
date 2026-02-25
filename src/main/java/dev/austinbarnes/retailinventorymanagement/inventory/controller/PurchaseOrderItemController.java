@@ -88,6 +88,35 @@ public class PurchaseOrderItemController {
     }
 
     /**
+     * Retrieves all purchase order items for a specific purchase order.
+     *
+     * @param purchaseOrderId the UUID of the parent purchase order
+     * @return ResponseEntity with a list of purchase order items
+     */
+    @Operation(
+            summary = "Get Purchase Order Items by Purchase Order ID",
+            description = "Retrieves all purchase order items associated with a specific purchase order ID."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Purchase order items retrieved successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(oneOf = {PurchaseOrderItemResponseBasicDTO.class, PurchaseOrderItemResponseDetailDTO.class})
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid purchase order ID")
+    })
+    @GetMapping("/by-purchase-order/{purchaseOrderId}")
+    public ResponseEntity<ApiResponseDto<List<PurchaseOrderItemResponseDTO>>> getPurchaseOrderItemsByPurchaseOrderId(
+            @PathVariable UUID purchaseOrderId
+    ) {
+        log.info("Getting purchase order items for purchase order ID: {}", purchaseOrderId);
+        return service.getPurchaseOrderItemsByPurchaseOrderId(purchaseOrderId);
+    }
+
+    /**
      * Retrieves all purchase order items.
      * This endpoint is accessible to users with roles MANAGER, ADMIN, or EMPLOYEE
      * and requires the READ_PO authority.

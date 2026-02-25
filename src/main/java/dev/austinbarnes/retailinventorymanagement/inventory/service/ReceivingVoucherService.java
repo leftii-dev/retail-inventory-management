@@ -6,7 +6,9 @@ import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.ReceivingVoucher;
+import dev.austinbarnes.retailinventorymanagement.inventory.entity.ReceivingVoucherItem;
 import dev.austinbarnes.retailinventorymanagement.inventory.mapper.ReceivingVoucherMapper;
+import dev.austinbarnes.retailinventorymanagement.inventory.repo.ReceivingVoucherItemRepository;
 import dev.austinbarnes.retailinventorymanagement.inventory.repo.ReceivingVoucherRepository;
 import dev.austinbarnes.retailinventorymanagement.inventory.specification.ReceivingVoucherSpecifications;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,6 +30,8 @@ import java.util.UUID;
 @Slf4j
 public class ReceivingVoucherService {
     private final ReceivingVoucherRepository repository;
+    private final ReceivingVoucherItemRepository receivingVoucherItemRepository;
+    private final ReceivingVoucherItemService receivingVoucherItemService;
     private final ReceivingVoucherMapper mapper;
     private final CodeGenerator codeGenerator;
 
@@ -107,8 +112,14 @@ public class ReceivingVoucherService {
      * @return ResponseEntity indicating the result of the deletion operation.
      */
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('WRITE_RV')")
+    @Transactional
     public ResponseEntity<ApiResponseDto<Void>> deleteReceivingVoucher(UUID id) {
         log.info("Deleting receiving voucher with ID: {}", id);
+        List<UUID> itemIds = receivingVoucherItemRepository.findAllByReceivingVoucher_IdAndActiveTrue(id).stream()
+                .map(ReceivingVoucherItem::getId)
+                .toList();
+        itemIds.forEach(receivingVoucherItemId ->
+                receivingVoucherItemService.deleteReceivingVoucherItem(receivingVoucherItemId));
         repository.deleteById(id);
         return ApiResponseDto.noContent();
     }

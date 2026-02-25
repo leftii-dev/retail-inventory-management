@@ -89,6 +89,26 @@ public class ReceivingVoucherItemService {
     }
 
     /**
+     * Retrieves all receiving voucher items by parent receiving voucher ID.
+     *
+     * @param receivingVoucherId the UUID of the parent receiving voucher.
+     * @return ResponseEntity with a list of receiving voucher items.
+     */
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE') and hasAuthority('READ_RV')")
+    public ResponseEntity<ApiResponseDto<List<ReceivingVoucherItemResponseDTO>>> getReceivingVoucherItemsByReceivingVoucherId(
+            UUID receivingVoucherId
+    ) {
+        log.info("Retrieving receiving voucher items by receiving voucher ID: {}", receivingVoucherId);
+        List<ReceivingVoucherItemResponseDTO> items = repository.findAllByReceivingVoucher_IdAndActiveTrue(receivingVoucherId).stream()
+                .map(item -> isManager() ?
+                        (ReceivingVoucherItemResponseDTO) mapper.toDetailDTO(item) :
+                        mapper.toBasicDTO(item))
+                .toList();
+        return ApiResponseDto.ok(items);
+    }
+
+    /**
      * Updates an existing receiving voucher item.
      *
      * @param id      the ID of the receiving voucher item to update.

@@ -6,7 +6,9 @@ import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.Pu
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.purchaseorder.PurchaseOrderResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.PurchaseOrder;
+import dev.austinbarnes.retailinventorymanagement.inventory.entity.PurchaseOrderItem;
 import dev.austinbarnes.retailinventorymanagement.inventory.mapper.PurchaseOrderMapper;
+import dev.austinbarnes.retailinventorymanagement.inventory.repo.PurchaseOrderItemRepository;
 import dev.austinbarnes.retailinventorymanagement.inventory.repo.PurchaseOrderRepository;
 import dev.austinbarnes.retailinventorymanagement.inventory.specification.PurchaseOrderSpecifications;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -32,6 +35,8 @@ import java.util.UUID;
 @Slf4j
 public class PurchaseOrderService {
     private final PurchaseOrderRepository repository;
+    private final PurchaseOrderItemRepository purchaseOrderItemRepository;
+    private final PurchaseOrderItemService purchaseOrderItemService;
     private final PurchaseOrderMapper mapper;
     private final CodeGenerator codeGenerator;
 
@@ -110,8 +115,14 @@ public class PurchaseOrderService {
      * @return ResponseEntity indicating the result of the deletion operation.
      */
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER') and hasAuthority('WRITE_PO')")
+    @Transactional
     public ResponseEntity<ApiResponseDto<Void>> deletePurchaseOrder(UUID id) {
         log.info("Deleting purchase order with ID: {}", id);
+        List<UUID> itemIds = purchaseOrderItemRepository.findAllByPurchaseOrder_IdAndActiveTrue(id).stream()
+                .map(PurchaseOrderItem::getId)
+                .toList();
+        itemIds.forEach(purchaseOrderItemId ->
+                purchaseOrderItemService.deletePurchaseOrderItem(purchaseOrderItemId));
         repository.deleteById(id);
         return ApiResponseDto.noContent();
     }

@@ -86,6 +86,37 @@ public class TransferItemController {
     }
 
     /**
+     * Retrieves all transfer items for a specific transfer.
+     *
+     * @param transferId the UUID of the parent transfer
+     * @return ResponseEntity with a list of transfer items
+     */
+    @Operation(
+            summary = "Get Transfer Items by Transfer ID",
+            description = "Retrieves all transfer items associated with a specific transfer ID."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Transfer items retrieved successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    oneOf = {TransferItemResponseBasicDTO.class, TransferItemResponseDetailDTO.class}
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid transfer ID")
+    })
+    @GetMapping("/by-transfer/{transferId}")
+    public ResponseEntity<ApiResponseDto<List<TransferItemResponseDTO>>> getTransferItemsByTransferId(
+            @PathVariable UUID transferId
+    ) {
+        log.info("Retrieving transfer items for transfer ID: {}", transferId);
+        return service.getTransferItemsByTransferId(transferId);
+    }
+
+    /**
      * Retrieves all transfer items.
      *
      * @return ResponseEntity with a list of all transfer items.

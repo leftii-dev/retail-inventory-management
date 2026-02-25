@@ -85,6 +85,35 @@ public class ReceivingVoucherItemController {
     }
 
     /**
+     * Retrieves all receiving voucher items for a specific receiving voucher.
+     *
+     * @param receivingVoucherId the UUID of the parent receiving voucher
+     * @return ResponseEntity with a list of receiving voucher items
+     */
+    @Operation(
+            summary = "Get Receiving Voucher Items by Receiving Voucher ID",
+            description = "Retrieves all receiving voucher items associated with a specific receiving voucher ID."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Receiving voucher items retrieved successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(oneOf = {ReceivingVoucherItemResponseBasicDTO.class, ReceivingVoucherItemResponseDetailDTO.class})
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Bad request, invalid receiving voucher ID")
+    })
+    @GetMapping("/by-receiving-voucher/{receivingVoucherId}")
+    public ResponseEntity<ApiResponseDto<List<ReceivingVoucherItemResponseDTO>>> getReceivingVoucherItemsByReceivingVoucherId(
+            @PathVariable UUID receivingVoucherId
+    ) {
+        log.info("Retrieving receiving voucher items for receiving voucher ID: {}", receivingVoucherId);
+        return service.getReceivingVoucherItemsByReceivingVoucherId(receivingVoucherId);
+    }
+
+    /**
      * Retrieves all receiving voucher items.
      *
      * @return ResponseEntity with a list of all receiving voucher items.

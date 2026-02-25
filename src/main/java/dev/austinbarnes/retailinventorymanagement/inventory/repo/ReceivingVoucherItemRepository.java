@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -19,6 +20,8 @@ import java.util.UUID;
  */
 @Repository
 public interface ReceivingVoucherItemRepository extends JpaRepository<ReceivingVoucherItem, UUID>, JpaSpecificationExecutor<ReceivingVoucherItem> {
+    List<ReceivingVoucherItem> findAllByReceivingVoucher_IdAndActiveTrue(UUID receivingVoucherId);
+
     @Modifying
     @Query("UPDATE ReceivingVoucherItem r SET r.active = false WHERE r.id = :id")
     void softDeleteById(UUID id);

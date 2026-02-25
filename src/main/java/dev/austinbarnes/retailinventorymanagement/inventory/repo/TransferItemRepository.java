@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -19,6 +20,8 @@ import java.util.UUID;
  */
 @Repository
 public interface TransferItemRepository extends JpaRepository<TransferItem, UUID>, JpaSpecificationExecutor<TransferItem> {
+    List<TransferItem> findAllByTransfer_IdAndActiveTrue(UUID transferId);
+
     @Modifying
     @Query("UPDATE TransferItem t SET t.active = false WHERE t.id = :id")
     void softDeleteById(UUID id);

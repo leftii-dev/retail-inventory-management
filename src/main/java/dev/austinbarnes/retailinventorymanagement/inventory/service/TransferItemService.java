@@ -83,6 +83,24 @@ public class TransferItemService {
     }
 
     /**
+     * Retrieves all transfer items by parent transfer ID.
+     *
+     * @param transferId the UUID of the parent transfer.
+     * @return ResponseEntity with a list of transfer items.
+     */
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('READ_TRANSFER')")
+    public ResponseEntity<ApiResponseDto<List<TransferItemResponseDTO>>> getTransferItemsByTransferId(UUID transferId) {
+        log.info("Retrieving transfer items by transfer ID: {}", transferId);
+        List<TransferItemResponseDTO> items = repository.findAllByTransfer_IdAndActiveTrue(transferId).stream()
+                .map(transferItem -> isManager() ?
+                        (TransferItemResponseDTO) mapper.toDetailDTO(transferItem) :
+                        mapper.toBasicDTO(transferItem))
+                .toList();
+        return ApiResponseDto.ok(items);
+    }
+
+    /**
      * Updates an existing transfer item by its ID.
      *
      * @param id the ID of the transfer item to update.

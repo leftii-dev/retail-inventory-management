@@ -6,7 +6,9 @@ import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.Transfe
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferResponseDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Transfer;
+import dev.austinbarnes.retailinventorymanagement.inventory.entity.TransferItem;
 import dev.austinbarnes.retailinventorymanagement.inventory.mapper.TransferMapper;
+import dev.austinbarnes.retailinventorymanagement.inventory.repo.TransferItemRepository;
 import dev.austinbarnes.retailinventorymanagement.inventory.repo.TransferRepository;
 import dev.austinbarnes.retailinventorymanagement.inventory.specification.TransferSpecifications;
 import jakarta.persistence.EntityNotFoundException;
@@ -28,6 +30,8 @@ import java.util.UUID;
 @Slf4j
 public class TransferService {
     private final TransferRepository repository;
+    private final TransferItemRepository transferItemRepository;
+    private final TransferItemService transferItemService;
     private final TransferMapper mapper;
     private final CodeGenerator codeGenerator;
 
@@ -114,6 +118,11 @@ public class TransferService {
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('WRITE_TRANSFER')")
     public ResponseEntity<ApiResponseDto<Void>> deleteTransfer(UUID id) {
         log.info("Deleting transfer with ID: {}", id);
+        List<UUID> itemIds = transferItemRepository.findAllByTransfer_IdAndActiveTrue(id).stream()
+                .map(TransferItem::getId)
+                .toList();
+        itemIds.forEach(transferItemId ->
+                transferItemService.deleteTransferItem(transferItemId));
         repository.deleteById(id);
         return ApiResponseDto.noContent();
     }

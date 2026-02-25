@@ -95,6 +95,27 @@ public class PurchaseOrderItemService {
     }
 
     /**
+     * Retrieves all purchase order items by parent purchase order ID.
+     *
+     * @param purchaseOrderId the UUID of the parent purchase order.
+     * @return ResponseEntity with a list of purchase order item details.
+     */
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('READ_PO')")
+    public ResponseEntity<ApiResponseDto<List<PurchaseOrderItemResponseDTO>>> getPurchaseOrderItemsByPurchaseOrderId(
+            UUID purchaseOrderId
+    ) {
+        log.info("Getting purchase order items by purchase order ID: {}", purchaseOrderId);
+        List<PurchaseOrderItemResponseDTO> items = repository.findAllByPurchaseOrder_IdAndActiveTrue(purchaseOrderId).stream()
+                .map(item -> isManager()
+                        ?
+                        (PurchaseOrderItemResponseDTO) mapper.toDetailDTO(item)
+                        :
+                        mapper.toBasicDTO(item))
+                .toList();
+        return ApiResponseDto.ok(items);
+    }
+
+    /**
      * Updates an existing purchase order item.
      *
      * @param id      The UUID of the purchase order item to update.
