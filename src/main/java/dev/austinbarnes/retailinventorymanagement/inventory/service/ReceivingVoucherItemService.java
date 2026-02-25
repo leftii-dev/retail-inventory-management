@@ -20,6 +20,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,9 +42,12 @@ public class ReceivingVoucherItemService {
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE') and hasAuthority('WRITE_RV')")
     public ResponseEntity<ApiResponseDto<ReceivingVoucherItemResponseDTO>> createReceivingVoucherItem(@Valid ReceivingVoucherItemRequestDTO request) {
         log.info("Creating receiving voucher item: {}", request);
+        ReceivingVoucherItem entity = mapper.toEntity(request);
+        entity.setCostLineTotal(calculateLineTotal(entity.getCostUnit(), entity.getQuantity()));
+        ReceivingVoucherItem saved = repository.save(entity);
         return ApiResponseDto.created(isManager() ?
-                mapper.toDetailDTO(repository.save(mapper.toEntity(request))) :
-                mapper.toBasicDTO(repository.save(mapper.toEntity(request)))
+                mapper.toDetailDTO(saved) :
+                mapper.toBasicDTO(saved)
         );
     }
 
@@ -97,9 +102,11 @@ public class ReceivingVoucherItemService {
         ReceivingVoucherItem target = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Receiving Voucher Item not found with ID: " + id));
         mapper.updateEntityFromRequest(request, target);
+        target.setCostLineTotal(calculateLineTotal(target.getCostUnit(), target.getQuantity()));
+        ReceivingVoucherItem saved = repository.save(target);
         return ApiResponseDto.ok(isManager() ?
-                mapper.toDetailDTO(repository.save(target)) :
-                mapper.toBasicDTO(repository.save(target))
+                mapper.toDetailDTO(saved) :
+                mapper.toBasicDTO(saved)
         );
     }
 
@@ -126,5 +133,12 @@ public class ReceivingVoucherItemService {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(
                 authority -> authority.getAuthority().equals("ROLE_MANAGER") || authority.getAuthority().equals("ROLE_ADMIN")
         );
+    }
+
+    private BigDecimal calculateLineTotal(BigDecimal costUnit, short quantity) {
+        if (costUnit == null) {
+            return null;
+        }
+        return costUnit.multiply(BigDecimal.valueOf(quantity)).setScale(2, RoundingMode.HALF_UP);
     }
 }
