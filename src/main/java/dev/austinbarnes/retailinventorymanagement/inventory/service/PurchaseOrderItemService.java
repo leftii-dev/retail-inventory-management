@@ -20,6 +20,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,7 +47,9 @@ public class PurchaseOrderItemService {
     public ResponseEntity<ApiResponseDto<PurchaseOrderItemResponseDTO>> createPurchaseOrderItem(
             PurchaseOrderItemRequestDTO request) {
         log.info("Creating purchase order item: {}", request);
-        PurchaseOrderItem saved = repository.save(mapper.toEntity(request));
+        PurchaseOrderItem entity = mapper.toEntity(request);
+        entity.setCostLineTotal(calculateLineTotal(entity.getCostUnit(), entity.getQuantity()));
+        PurchaseOrderItem saved = repository.save(entity);
         recalculateTotalCost(saved.getPurchaseOrder());
         return ApiResponseDto.created(isManager() ? mapper.toDetailDTO(saved) : mapper.toBasicDTO(saved));
     }
@@ -103,6 +107,7 @@ public class PurchaseOrderItemService {
         PurchaseOrderItem target = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Purchase Order Item not found"));
         mapper.updateEntityFromRequest(request, target);
+        target.setCostLineTotal(calculateLineTotal(target.getCostUnit(), target.getQuantity()));
         PurchaseOrderItem saved = repository.save(target);
         recalculateTotalCost(saved.getPurchaseOrder());
         return ApiResponseDto.ok(isManager() ? mapper.toDetailDTO(saved) : mapper.toBasicDTO(saved));
@@ -133,6 +138,13 @@ public class PurchaseOrderItemService {
     private void recalculateTotalCost(PurchaseOrder purchaseOrder) {
         purchaseOrder.setTotalCost(repository.sumCostLineTotalByPurchaseOrderId(purchaseOrder.getId()));
         purchaseOrderRepository.save(purchaseOrder);
+    }
+
+    private BigDecimal calculateLineTotal(BigDecimal costUnit, short quantity) {
+        if (costUnit == null) {
+            return null;
+        }
+        return costUnit.multiply(BigDecimal.valueOf(quantity)).setScale(2, RoundingMode.HALF_UP);
     }
 
     private boolean isManager() {

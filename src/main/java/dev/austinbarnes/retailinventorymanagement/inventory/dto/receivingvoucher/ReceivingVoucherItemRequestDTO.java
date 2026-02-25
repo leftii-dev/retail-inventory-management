@@ -9,14 +9,14 @@ import java.util.UUID;
  * ReceivingVoucherItemRequestDTO is a Data Transfer Object (DTO) used for creating or updating
  * receiving voucher items.
  * <p>
- * It contains fields for quantity, discount percentage, discount reason, unit cost, line cost total,
+ * It contains fields for quantity, discount percentage, discount reason, and unit cost,
  * product ID, and receiving voucher ID.
+ * Line total is derived by the backend from unit cost and quantity.
  *
  * @param quantity          The quantity of the item.
  * @param discountPercentage The discount percentage applied to the item.
  * @param discountReason     The reason for the discount.
  * @param costUnit          The unit cost of the item.
- * @param costLineTotal     The total cost of the line item.
  * @param productID         The ID of the product associated with the item.
  * @param receivingVoucherID The ID of the receiving voucher associated with the item.
  */
@@ -35,10 +35,6 @@ public record ReceivingVoucherItemRequestDTO(
         @DecimalMax(value = "9999999999.99", message = "Max unit cost annoy exceed $9,999,999,999.99, double check costs")
         @Digits(integer = 10, fraction = 2)
         BigDecimal costUnit,
-        @DecimalMin(value = "0.00", message = "Line cost total cannot be negative")
-        @DecimalMax(value = "9999999999.99", message = "Max line cost total cannot exceed $9,999,999,999.99, double check costs")
-        @Digits(integer = 10, fraction = 2)
-        BigDecimal costLineTotal,
         UUID productID,
         UUID receivingVoucherID
 ) {
