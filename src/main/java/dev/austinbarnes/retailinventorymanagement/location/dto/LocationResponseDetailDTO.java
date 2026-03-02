@@ -17,9 +17,7 @@ import java.util.UUID;
  * @param modifiedAt     the timestamp when the location was last modified
  * @param locationType   the location type of the location
  * @param createdByID    the unique identifier of the user who created the location
- * @param createdByName  the name of the user who created the location
  * @param modifiedByID   the unique identifier of the user who last modified the location
- * @param modifiedByName the name of the user who last modified the location
  * @param active         indicates whether the location is active or not
  */
 public record LocationResponseDetailDTO(
@@ -29,9 +27,7 @@ public record LocationResponseDetailDTO(
     Instant modifiedAt,
     LocationTypeResponseDTO locationType,
     UUID createdByID,
-    String createdByName,
     UUID modifiedByID,
-    String modifiedByName,
     boolean active
 ) implements LocationResponseDTO{
 }

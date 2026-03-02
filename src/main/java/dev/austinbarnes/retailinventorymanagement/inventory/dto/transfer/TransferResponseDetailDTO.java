@@ -25,6 +25,7 @@ public record TransferResponseDetailDTO(
         UUID modifiedBy,
         UUID locationToID,
         UUID locationFromID,
+        UUID statusId,
         boolean active
 ) implements TransferResponseDTO{
 }

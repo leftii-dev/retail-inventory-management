@@ -16,7 +16,7 @@ import java.util.UUID;
  * @param modifiedBy the unique identifier of the user who last modified the location type
  * @param active     indicates whether the location type is active or not
  */
-public record LocationTypeResponseDetailDTO(
+public record   LocationTypeResponseDetailDTO(
         UUID id,
         String name,
         Instant createdAt,

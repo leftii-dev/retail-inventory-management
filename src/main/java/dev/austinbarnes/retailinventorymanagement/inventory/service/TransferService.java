@@ -5,9 +5,12 @@ import dev.austinbarnes.retailinventorymanagement.entitycode.CodeGenerator;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferResponseDTO;
+import dev.austinbarnes.retailinventorymanagement.inventory.entity.Inventory;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Transfer;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.TransferItem;
 import dev.austinbarnes.retailinventorymanagement.inventory.mapper.TransferMapper;
+import dev.austinbarnes.retailinventorymanagement.inventory.repo.InventoryRepository;
+import dev.austinbarnes.retailinventorymanagement.inventory.repo.StatusRepository;
 import dev.austinbarnes.retailinventorymanagement.inventory.repo.TransferItemRepository;
 import dev.austinbarnes.retailinventorymanagement.inventory.repo.TransferRepository;
 import dev.austinbarnes.retailinventorymanagement.inventory.specification.TransferSpecifications;
@@ -22,7 +25,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -34,6 +39,8 @@ public class TransferService {
     private final TransferItemService transferItemService;
     private final TransferMapper mapper;
     private final CodeGenerator codeGenerator;
+    private final InventoryRepository inventoryRepository;
+    private final StatusRepository statusRepository;
 
     /**
      * Creates a new transfer.
@@ -125,6 +132,77 @@ public class TransferService {
                 transferItemService.deleteTransferItem(transferItemId));
         repository.deleteById(id);
         return ApiResponseDto.noContent();
+    }
+
+    /**
+     * Finalizes a transfer by decrementing inventory at the source location and
+     * incrementing (or creating) inventory at the destination location.
+     * All items are validated for sufficient stock before any changes are committed.
+     *
+     * @param id the ID of the transfer to finalize.
+     * @return ResponseEntity with the updated transfer details.
+     */
+    @Transactional
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN') and hasAuthority('WRITE_TRANSFER')")
+    public ResponseEntity<ApiResponseDto<TransferResponseDTO>> finalizeTransfer(UUID id) {
+        log.info("Finalizing transfer with ID: {}", id);
+        Transfer transfer = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Transfer not found with ID: " + id));
+        if (transfer.getStatus() == null) {
+            throw new IllegalStateException("Transfer cannot be finalized: status is not set");
+        }
+        String statusName = transfer.getStatus().getName();
+        if ("COMPLETED".equals(statusName) || "CANCELLED".equals(statusName)) {
+            throw new IllegalStateException(
+                    "Transfer cannot be finalized: current status is " + statusName);
+        }
+        List<TransferItem> items = transferItemRepository.findAllByTransfer_IdAndActiveTrue(id);
+        List<String> insufficientItems = new ArrayList<>();
+        for (TransferItem item : items) {
+            Optional<Inventory> sourceInventory = inventoryRepository
+                    .findByProductIdAndLocationIdAndActiveTrue(
+                            item.getProduct().getId(), transfer.getLocationFrom().getId());
+            if (sourceInventory.isEmpty() || sourceInventory.get().getQuantity() < item.getQuantity()) {
+                int available = sourceInventory.map(Inventory::getQuantity).orElse(0);
+                insufficientItems.add(String.format("Product '%s' (id=%s): required=%d, available=%d",
+                        item.getProduct().getName(), item.getProduct().getId(),
+                        (int) item.getQuantity(), available));
+            }
+        }
+        if (!insufficientItems.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Insufficient stock for the following items:\n" + String.join("\n", insufficientItems));
+        }
+        for (TransferItem item : items) {
+            Inventory sourceInventory = inventoryRepository
+                    .findByProductIdAndLocationIdAndActiveTrue(
+                            item.getProduct().getId(), transfer.getLocationFrom().getId())
+                    .orElseThrow();
+            sourceInventory.setQuantity(sourceInventory.getQuantity() - item.getQuantity());
+            inventoryRepository.save(sourceInventory);
+            inventoryRepository
+                    .findByProductIdAndLocationIdAndActiveTrue(
+                            item.getProduct().getId(), transfer.getLocationTo().getId())
+                    .ifPresentOrElse(
+                            destInventory -> {
+                                destInventory.setQuantity(destInventory.getQuantity() + item.getQuantity());
+                                inventoryRepository.save(destInventory);
+                            },
+                            () -> {
+                                Inventory newInventory = new Inventory();
+                                newInventory.setProduct(item.getProduct());
+                                newInventory.setLocation(transfer.getLocationTo());
+                                newInventory.setQuantity(item.getQuantity());
+                                inventoryRepository.save(newInventory);
+                            }
+                    );
+        }
+        transfer.setStatus(statusRepository.findByName("COMPLETED")
+                .orElseThrow(() -> new EntityNotFoundException("Status 'COMPLETED' not found")));
+        repository.save(transfer);
+        return ApiResponseDto.ok(isManager() ?
+                (TransferResponseDTO) mapper.toDetailDTO(transfer) :
+                mapper.toBasicDTO(transfer));
     }
 
     /**

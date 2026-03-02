@@ -21,6 +21,7 @@ public record ReceivingVoucherItemResponseBasicDTO(
         BigDecimal costUnit,
         BigDecimal costLineTotal,
         ProductResponseDTO product,
-        UUID receivingVoucherID
+        UUID receivingVoucherID,
+        String notes
 ) implements ReceivingVoucherItemResponseDTO {
 }

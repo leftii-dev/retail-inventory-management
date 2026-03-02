@@ -4,7 +4,9 @@ import dev.austinbarnes.retailinventorymanagement.config.GlobalMapperConfig;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferResponseBasicDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.transfer.TransferResponseDetailDTO;
+import dev.austinbarnes.retailinventorymanagement.inventory.entity.Status;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Transfer;
+import dev.austinbarnes.retailinventorymanagement.inventory.repo.StatusRepository;
 import dev.austinbarnes.retailinventorymanagement.location.entity.Location;
 import dev.austinbarnes.retailinventorymanagement.location.repo.LocationRepository;
 import org.mapstruct.Mapper;
@@ -27,6 +29,8 @@ import java.util.UUID;
 public abstract class TransferMapper {
     @Autowired
     protected LocationRepository locationRepository;
+    @Autowired
+    protected StatusRepository statusRepository;
     /**
      * Converts TransferRequestDTO to Transfer entity.
      *
@@ -35,6 +39,7 @@ public abstract class TransferMapper {
      */
     @Mapping(target = "locationTo", source = "locationToID")
     @Mapping(target = "locationFrom", source = "locationFromID")
+    @Mapping(target = "status", source = "statusId")
     public abstract Transfer toEntity(TransferRequestDTO transferRequestDTO);
 
     /**
@@ -45,6 +50,7 @@ public abstract class TransferMapper {
      */
     @Mapping(target = "locationToID", source = "locationTo.id")
     @Mapping(target = "locationFromID", source = "locationFrom.id")
+    @Mapping(target = "statusId", source = "status.id")
     @Named("basicTransfer")
     public abstract TransferResponseBasicDTO toBasicDTO(Transfer transfer);
 
@@ -56,6 +62,7 @@ public abstract class TransferMapper {
      */
     @Mapping(target = "locationToID", source = "locationTo.id")
     @Mapping(target = "locationFromID", source = "locationFrom.id")
+    @Mapping(target = "statusId", source = "status.id")
     @Named("detailTransfer")
     public abstract TransferResponseDetailDTO toDetailDTO(Transfer transfer);
 
@@ -67,6 +74,7 @@ public abstract class TransferMapper {
      */
     @Mapping(target = "locationTo", source = "locationToID")
     @Mapping(target = "locationFrom", source = "locationFromID")
+    @Mapping(target = "status", source = "statusId")
     public abstract void updateEntityFromRequest(TransferRequestDTO transferRequestDTO, @MappingTarget Transfer transfer);
 
     /**
@@ -74,5 +82,9 @@ public abstract class TransferMapper {
      */
     protected Location resolveLocation(UUID id) {
         return id == null ? null : locationRepository.findById(id).orElse(null);
+    }
+
+    protected Status resolveStatus(UUID id) {
+        return id == null ? null : statusRepository.findById(id).orElse(null);
     }
 }

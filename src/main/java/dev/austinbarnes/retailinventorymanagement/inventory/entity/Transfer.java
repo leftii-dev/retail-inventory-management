@@ -46,6 +46,11 @@ public class Transfer extends BaseEntity {
     private int totalQuantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "status_id", referencedColumnName = "id")
+    @Valid
+    private Status status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_to_id", referencedColumnName = "id")
     @Valid
     private Location locationTo;

@@ -15,6 +15,12 @@ import dev.austinbarnes.retailinventorymanagement.inventory.entity.Status;
 import dev.austinbarnes.retailinventorymanagement.inventory.entity.Vendor;
 import dev.austinbarnes.retailinventorymanagement.inventory.repo.StatusRepository;
 import dev.austinbarnes.retailinventorymanagement.inventory.repo.VendorRepository;
+import dev.austinbarnes.retailinventorymanagement.location.entity.Location;
+import dev.austinbarnes.retailinventorymanagement.location.entity.LocationType;
+import dev.austinbarnes.retailinventorymanagement.location.entity.WarehouseLocation;
+import dev.austinbarnes.retailinventorymanagement.location.repo.LocationRepository;
+import dev.austinbarnes.retailinventorymanagement.location.repo.LocationTypeRepository;
+import dev.austinbarnes.retailinventorymanagement.location.repo.WarehouseLocationRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +48,9 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final StatusRepository statusRepository;
     private final VendorRepository vendorRepository;
     private final CodeGenerator codeGenerator;
+    private final LocationTypeRepository locationTypeRepository;
+    private final LocationRepository locationRepository;
+    private final WarehouseLocationRepository warehouseLocationRepository;
 
     @Value("${system.employee.id}")
     private UUID systemEmployeeId;
@@ -62,6 +71,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         createInitialAdminUser();
         createDefaultStatuses();
         createFillerVendors();
+        createDefaultWarehouseLocation();
     }
 
     private void createInitialAdminUser() {
@@ -245,6 +255,19 @@ public class DatabaseSeeder implements CommandLineRunner {
                 vendorRepository.save(vendor);
             }
         });
+    }
 
+    private void createDefaultWarehouseLocation() {
+        if (locationRepository.findByName("Default Warehouse").isPresent()) {
+            return;
+        }
+        log.info("Seeding default warehouse location...");
+        LocationType warehouseType = locationTypeRepository.findByName("WAREHOUSE")
+                .orElseGet(() -> locationTypeRepository.save(new LocationType("WAREHOUSE")));
+        Location location = new Location("Default Warehouse", warehouseType);
+        Location savedLocation = locationRepository.save(location);
+        WarehouseLocation warehouse = new WarehouseLocation(
+                codeGenerator.generateWarehouseLocationCode(), savedLocation);
+        warehouseLocationRepository.save(warehouse);
     }
 }

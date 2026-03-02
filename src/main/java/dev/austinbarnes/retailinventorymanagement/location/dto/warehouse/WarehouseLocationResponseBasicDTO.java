@@ -14,6 +14,7 @@ import java.util.UUID;
  */
 public record WarehouseLocationResponseBasicDTO(
         UUID id,
+        String warehouseCode,
         LocationResponseDTO location
 ) implements WarehouseLocationResponseDTO {
 }

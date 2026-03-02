@@ -176,4 +176,33 @@ public class TransferController {
         log.info("Deleting transfer with ID: {}", id);
         return service.deleteTransfer(id);
     }
+
+    /**
+     * Finalizes a transfer, decrementing source inventory and incrementing destination inventory.
+     *
+     * @param id the ID of the transfer to finalize.
+     * @return ResponseEntity with the finalized transfer details.
+     */
+    @Operation(
+            summary = "Finalize Transfer",
+            description = "Finalizes a transfer by updating inventory at source and destination locations."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Transfer finalized successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(oneOf = {TransferResponseBasicDTO.class, TransferResponseDetailDTO.class})
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Transfer not found"),
+            @ApiResponse(responseCode = "409", description = "Transfer already completed or cancelled"),
+            @ApiResponse(responseCode = "400", description = "Insufficient stock at source location")
+    })
+    @PostMapping("/{id}/finalize")
+    public ResponseEntity<ApiResponseDto<TransferResponseDTO>> finalizeTransfer(@PathVariable UUID id) {
+        log.info("Finalizing transfer with ID: {}", id);
+        return service.finalizeTransfer(id);
+    }
 }

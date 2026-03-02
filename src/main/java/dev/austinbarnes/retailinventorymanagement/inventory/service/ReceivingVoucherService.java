@@ -5,12 +5,12 @@ import dev.austinbarnes.retailinventorymanagement.entitycode.CodeGenerator;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherFilterDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherRequestDTO;
 import dev.austinbarnes.retailinventorymanagement.inventory.dto.receivingvoucher.ReceivingVoucherResponseDTO;
-import dev.austinbarnes.retailinventorymanagement.inventory.entity.ReceivingVoucher;
-import dev.austinbarnes.retailinventorymanagement.inventory.entity.ReceivingVoucherItem;
+import dev.austinbarnes.retailinventorymanagement.inventory.entity.*;
 import dev.austinbarnes.retailinventorymanagement.inventory.mapper.ReceivingVoucherMapper;
-import dev.austinbarnes.retailinventorymanagement.inventory.repo.ReceivingVoucherItemRepository;
-import dev.austinbarnes.retailinventorymanagement.inventory.repo.ReceivingVoucherRepository;
+import dev.austinbarnes.retailinventorymanagement.inventory.repo.*;
 import dev.austinbarnes.retailinventorymanagement.inventory.specification.ReceivingVoucherSpecifications;
+import dev.austinbarnes.retailinventorymanagement.location.entity.Location;
+import dev.austinbarnes.retailinventorymanagement.location.repo.LocationRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +34,11 @@ public class ReceivingVoucherService {
     private final ReceivingVoucherItemService receivingVoucherItemService;
     private final ReceivingVoucherMapper mapper;
     private final CodeGenerator codeGenerator;
+    private final InventoryRepository inventoryRepository;
+    private final StatusRepository statusRepository;
+    private final PurchaseOrderRepository purchaseOrderRepository;
+    private final PurchaseOrderItemRepository purchaseOrderItemRepository;
+    private final LocationRepository locationRepository;
 
     /**
      * Creates a new receiving voucher.
@@ -41,7 +46,7 @@ public class ReceivingVoucherService {
      * @param request the receiving voucher request DTO containing the details of the receiving voucher to create.
      * @return ResponseEntity with the created receiving voucher details.
      */
-    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE' and hasAuthority('WRITE_RV'))")
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('WRITE_RV')")
     public ResponseEntity<ApiResponseDto<ReceivingVoucherResponseDTO>> createReceivingVoucher(
             ReceivingVoucherRequestDTO request) {
         log.info("Creating receiving voucher: {}", request);
@@ -122,6 +127,95 @@ public class ReceivingVoucherService {
                 receivingVoucherItemService.deleteReceivingVoucherItem(receivingVoucherItemId));
         repository.deleteById(id);
         return ApiResponseDto.noContent();
+    }
+
+    /**
+     * Creates a new receiving voucher pre-populated from a purchase order.
+     * RV items are created from the PO's active line items. Vendor, total cost, notes,
+     * and the PO reference are copied from the PO. Status defaults to DRAFT.
+     * Location defaults to the seeded "Default Warehouse" location.
+     *
+     * @param purchaseOrderId the ID of the purchase order to build the receiving voucher from.
+     * @return ResponseEntity with the created receiving voucher details.
+     */
+    @Transactional
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN', 'EMPLOYEE') and hasAuthority('WRITE_RV')")
+    public ResponseEntity<ApiResponseDto<ReceivingVoucherResponseDTO>> createReceivingVoucherFromPurchaseOrder(
+            UUID purchaseOrderId) {
+        log.info("Creating receiving voucher from purchase order ID: {}", purchaseOrderId);
+        PurchaseOrder po = purchaseOrderRepository.findById(purchaseOrderId)
+                .orElseThrow(() -> new EntityNotFoundException("Purchase Order not found with ID: " + purchaseOrderId));
+        Location defaultLocation = locationRepository.findByName("Default Warehouse")
+                .orElseThrow(() -> new EntityNotFoundException("Default Warehouse location not found"));
+        ReceivingVoucher rv = new ReceivingVoucher();
+        rv.setReceivingVoucherCode(codeGenerator.generateReceivingVoucherCode());
+        rv.setPurchaseOrder(po);
+        rv.setVendor(po.getVendor());
+        rv.setTotalCost(po.getTotalCost());
+        rv.setNotes(po.getNotes());
+        rv.setLocation(defaultLocation);
+        rv.setStatus(statusRepository.findByName("DRAFT")
+                .orElseThrow(() -> new EntityNotFoundException("Status 'DRAFT' not found")));
+        ReceivingVoucher savedRv = repository.save(rv);
+        List<PurchaseOrderItem> poItems =
+                purchaseOrderItemRepository.findAllByPurchaseOrder_IdAndActiveTrue(purchaseOrderId);
+        for (PurchaseOrderItem poi : poItems) {
+            ReceivingVoucherItem rvi = new ReceivingVoucherItem();
+            rvi.setReceivingVoucher(savedRv);
+            rvi.setProduct(poi.getProduct());
+            rvi.setQuantity(poi.getQuantity());
+            rvi.setCostUnit(poi.getCostUnit());
+            rvi.setCostLineTotal(poi.getCostLineTotal());
+            receivingVoucherItemRepository.save(rvi);
+        }
+        return ApiResponseDto.created(isManager() ?
+                mapper.toDetailDTO(savedRv) :
+                mapper.toBasicDTO(savedRv));
+    }
+
+    /**
+     * Finalizes a receiving voucher by incrementing or creating inventory records
+     * for each item at the voucher's receiving location.
+     *
+     * @param id the ID of the receiving voucher to finalize.
+     * @return ResponseEntity with the updated receiving voucher details.
+     */
+    @Transactional
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN') and hasAuthority('WRITE_RV')")
+    public ResponseEntity<ApiResponseDto<ReceivingVoucherResponseDTO>> finalizeReceivingVoucher(UUID id) {
+        log.info("Finalizing receiving voucher with ID: {}", id);
+        ReceivingVoucher rv = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Receiving Voucher not found with ID: " + id));
+        String statusName = rv.getStatus().getName();
+        if ("COMPLETED".equals(statusName) || "CANCELLED".equals(statusName)) {
+            throw new IllegalStateException(
+                    "Receiving voucher cannot be finalized: current status is " + statusName);
+        }
+        List<ReceivingVoucherItem> items =
+                receivingVoucherItemRepository.findAllByReceivingVoucher_IdAndActiveTrue(id);
+        for (ReceivingVoucherItem item : items) {
+            inventoryRepository
+                    .findByProductIdAndLocationIdAndActiveTrue(item.getProduct().getId(), rv.getLocation().getId())
+                    .ifPresentOrElse(
+                            inv -> {
+                                inv.setQuantity(inv.getQuantity() + item.getQuantity());
+                                inventoryRepository.save(inv);
+                            },
+                            () -> {
+                                Inventory newInventory = new Inventory();
+                                newInventory.setProduct(item.getProduct());
+                                newInventory.setLocation(rv.getLocation());
+                                newInventory.setQuantity(item.getQuantity());
+                                inventoryRepository.save(newInventory);
+                            }
+                    );
+        }
+        rv.setStatus(statusRepository.findByName("COMPLETED")
+                .orElseThrow(() -> new EntityNotFoundException("Status 'COMPLETED' not found")));
+        repository.save(rv);
+        return ApiResponseDto.ok(isManager() ?
+                (ReceivingVoucherResponseDTO) mapper.toDetailDTO(rv) :
+                mapper.toBasicDTO(rv));
     }
 
     /**

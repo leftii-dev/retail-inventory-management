@@ -24,6 +24,7 @@ public record ReceivingVoucherItemResponseDetailDTO(
         Instant createdAt,
         Instant modifiedAt,
         ProductResponseDTO product,
+        String notes,
         UUID receivingVoucherID,
         UUID createdBy,
         UUID modifiedBy,

@@ -9,6 +9,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -22,6 +23,7 @@ import java.util.UUID;
 public interface InventoryRepository extends JpaRepository<Inventory, UUID>, JpaSpecificationExecutor<Inventory> {
     List<Inventory> findAllByProductId(UUID productId);
     List<Inventory> findAllByLocationId(UUID locationId);
+    Optional<Inventory> findByProductIdAndLocationIdAndActiveTrue(UUID productId, UUID locationId);
 
     @Modifying
     @Query("UPDATE Inventory i SET i.active = false WHERE i.id = :id")

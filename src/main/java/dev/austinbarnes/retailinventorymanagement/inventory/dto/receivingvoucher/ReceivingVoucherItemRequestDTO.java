@@ -35,6 +35,8 @@ public record ReceivingVoucherItemRequestDTO(
         @DecimalMax(value = "9999999999.99", message = "Max unit cost annoy exceed $9,999,999,999.99, double check costs")
         @Digits(integer = 10, fraction = 2)
         BigDecimal costUnit,
+        @Size(max = 3000, message = "Notes cannot exceed 3000 characters")
+        String notes,
         UUID productID,
         UUID receivingVoucherID
 ) {

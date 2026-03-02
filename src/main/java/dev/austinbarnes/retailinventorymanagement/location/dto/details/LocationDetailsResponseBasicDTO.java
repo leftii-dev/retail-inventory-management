@@ -32,6 +32,7 @@ public record LocationDetailsResponseBasicDTO(
     String phone,
     String fax,
     String email,
+    String notes,
     EmployeeResponseDTO manager,
     LocationResponseDTO location
 ) implements LocationDetailsResponseDTO{

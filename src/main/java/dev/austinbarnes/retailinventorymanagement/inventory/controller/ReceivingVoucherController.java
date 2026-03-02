@@ -56,6 +56,34 @@ public class ReceivingVoucherController {
     }
 
     /**
+     * Creates a new receiving voucher pre-populated from a purchase order's line items.
+     *
+     * @param purchaseOrderId the ID of the purchase order to build from.
+     * @return ResponseEntity with the created receiving voucher details.
+     */
+    @Operation(
+            summary = "Create Receiving Voucher from Purchase Order",
+            description = "Creates a receiving voucher pre-populated with items and fields from the given purchase order."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Receiving Voucher created successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(oneOf = {ReceivingVoucherResponseBasicDTO.class, ReceivingVoucherResponseDetailDTO.class})
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Purchase Order or Location not found")
+    })
+    @PostMapping("/from-purchase-order/{purchaseOrderId}")
+    public ResponseEntity<ApiResponseDto<ReceivingVoucherResponseDTO>> createReceivingVoucherFromPurchaseOrder(
+            @PathVariable UUID purchaseOrderId) {
+        log.info("Creating Receiving Voucher from Purchase Order ID: {}", purchaseOrderId);
+        return service.createReceivingVoucherFromPurchaseOrder(purchaseOrderId);
+    }
+
+    /**
      * Retrieves a receiving voucher by its ID.
      *
      * @param id the ID of the receiving voucher to retrieve.
@@ -170,5 +198,33 @@ public class ReceivingVoucherController {
     public ResponseEntity<ApiResponseDto<Void>> deleteReceivingVoucher(@PathVariable UUID id) {
         log.info("Deleting Receiving Voucher with ID: {}", id);
         return service.deleteReceivingVoucher(id);
+    }
+
+    /**
+     * Finalizes a receiving voucher, creating or incrementing inventory records for each item.
+     *
+     * @param id the ID of the receiving voucher to finalize.
+     * @return ResponseEntity with the finalized receiving voucher details.
+     */
+    @Operation(
+            summary = "Finalize Receiving Voucher",
+            description = "Finalizes a receiving voucher by updating inventory at the receiving location."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Receiving Voucher finalized successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(oneOf = {ReceivingVoucherResponseBasicDTO.class, ReceivingVoucherResponseDetailDTO.class})
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Receiving Voucher not found"),
+            @ApiResponse(responseCode = "409", description = "Receiving Voucher already completed or cancelled")
+    })
+    @PostMapping("/{id}/finalize")
+    public ResponseEntity<ApiResponseDto<ReceivingVoucherResponseDTO>> finalizeReceivingVoucher(@PathVariable UUID id) {
+        log.info("Finalizing Receiving Voucher with ID: {}", id);
+        return service.finalizeReceivingVoucher(id);
     }
 }

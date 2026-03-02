@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -17,6 +18,7 @@ import java.util.UUID;
  */
 @Repository
 public interface LocationTypeRepository extends JpaRepository<LocationType, UUID>, JpaSpecificationExecutor<LocationType> {
+    Optional<LocationType> findByName(String name);
     @Modifying
     @Query("UPDATE LocationType l SET l.active = false WHERE l.id = :id")
     void softDeleteById(UUID id);

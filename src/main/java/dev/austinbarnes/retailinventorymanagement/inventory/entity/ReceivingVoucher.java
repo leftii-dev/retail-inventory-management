@@ -83,19 +83,16 @@ public class ReceivingVoucher extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id", referencedColumnName = "id")
-    @NotNull(message = "Location must be set")
     @Valid
     private Location location;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vendor_id", referencedColumnName = "id")
-    @NotNull(message = "Vendor must be set")
     @Valid
     private Vendor vendor;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_id", referencedColumnName = "id")
-    @NotNull(message = "Status must be set")
     @Valid
     private Status status;
 }
